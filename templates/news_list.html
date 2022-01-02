@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+{% block title %} Latest News  {% endblock %}
+
+{% block content %}
+
+<!-- Begin Page Content -->
+                <div class="container-fluid">
+
+                    <!-- Page Heading -->
+                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                        <h1 class="h3 mb-0 text-gray-800">News</h1>
+
+                    </div>
+
+
+                    <div class="row">
+
+                        <!-- Listed Company Card -->
+                        {% for new in page_obj %}
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card border-left-primary shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                                <a href="{{ new.get_absolute_url }}">{{ new.title}}</a>
+                                            </div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800"><i class="fa fa-user" aria-hidden="true"></i> {{ new.author }}</div>
+                                            <p>{{ new.details|truncatewords:20|linebreaks }}</p>
+                                        </div>
+                                        <div class="col-auto">
+                                            <img src="{{ new.picture.url }}" alt="" height="100" width="100">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+
+                    </div>
+
+                    <div class="row">
+                      <div class="col-sm-12">
+                        <nav class="pagination-a">
+                          <ul class="pagination justify-content-end">
+                            {% if page_obj.has_previous %}
+                              <li class="page-item">
+                                <a class="page-link" href="?page=1" tabindex="-1">
+                                  <i class="fa fa-fast-backward" aria-hidden="true"></i>
+                                </a>
+                              </li>
+                              <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                              </li>
+                            {% endif %}
+
+                            {% if page_obj.has_next %}
+                              <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+                              </li>
+                              <li class="page-item next">
+                                <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">
+                                  <i class="fa fa-fast-forward" aria-hidden="true"></i>
+                                </a>
+                              </li>
+                            {% endif %}
+                          </ul>
+                        </nav>
+                      </div>
+                    </div>
+
+                </div>
+                <!-- /.container-fluid -->
+
+{% endblock %}

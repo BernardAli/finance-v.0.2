@@ -1,0 +1,579 @@
+{% extends 'base.html' %}
+{% load humanize %}
+{% load static %}
+
+{% block title %} {{ company.company_id }}  {% endblock %}
+
+{% block content %}
+
+<!-- Begin Page Content -->
+                <div class="container-fluid">
+
+                    <!-- Page Heading -->
+                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                        <h1 class="h3 mb-0 text-gray-800">{{ company.name }} ({{ company.company_id }})</h1>
+                        <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
+                                class="fas fa-download fa-sm text-white-50"></i> Latest Report</a>
+                    </div>
+
+                   <div class="row">
+
+                        <!-- Earnings (Monthly) Card Example -->
+                        <div class="col-xl-12 col-md-12 mb-6">
+                            <div class="card border-left-primary shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">{{ company.isin }}</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                                {{ company.name }}
+                                            </div>
+                                            <div class="h6 mb-0 font-weight-light text-gray-800">
+                                                <strong>{{ company.country.currency_code }} {{ price.price }}</strong>
+                                            </div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <img src="{{ company.logo.url }}" alt="" height="100">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <br>
+
+                    <div class="row">
+
+                        <div class="col-lg-8">
+
+                            <!-- Default Card Example -->
+                            <div class="card mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">{{ company.name }} Summary</h6>
+                                </div>
+                                <div class="card-body text text-center">
+                                    <ul class="nav nav-tabs" id="myTab" role="tablist">
+                                      <li class="nav-item">
+                                        <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Profile</a>
+                                      </li>
+                                      <li class="nav-item">
+                                        <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Financial Summary</a>
+                                      </li>
+                                      <li class="nav-item">
+                                        <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">Chart</a>
+                                      </li>
+                                        <li class="nav-item">
+                                        <a class="nav-link" id="technical-tab" data-toggle="tab" href="#technical" role="tab" aria-controls="contact" aria-selected="false">Technical</a>
+                                      </li>
+                                        </li>
+                                        <li class="nav-item">
+                                        <a class="nav-link" id="analysis-tab" data-toggle="tab" href="#analysis" role="tab" aria-controls="contact" aria-selected="false">Analysis</a>
+                                      </li>
+                                        </li>
+                                        <li class="nav-item">
+                                        <a class="nav-link" id="ownership-tab" data-toggle="tab" href="#ownership" role="tab" aria-controls="contact" aria-selected="false">Ownership</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" id="ratings-tab" data-toggle="tab" href="#ratings" role="tab" aria-controls="contact" aria-selected="false">Ratings</a>
+                                        </li>
+                                    </ul>
+                                    <div class="tab-content" id="myTabContent">
+                                      <div class="tab-pane fade show active pt-5" id="home" role="tabpanel" aria-labelledby="home-tab">
+                                        <p>{{ company.summary }}</p>
+                                      </div>
+                                      <div class="tab-pane fade pt-5" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                                          <p>Financial Statements for</p>
+                                        <!-- <p>Financials Here</p> -->
+                                        <div class="row">
+                                            <div class="col-3">
+                                              <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                                                <a class="nav-link active" id="v-pills-home-tab" data-toggle="pill" href="#v-pills-home" role="tab" aria-controls="v-pills-home" aria-selected="true">Income Statement</a>
+                                                <a class="nav-link" id="v-pills-profile-tab" data-toggle="pill" href="#v-pills-profile" role="tab" aria-controls="v-pills-profile" aria-selected="false">Balance Sheet</a>
+                                                <a class="nav-link" id="v-pills-messages-tab" data-toggle="pill" href="#v-pills-messages" role="tab" aria-controls="v-pills-messages" aria-selected="false">Cash Flow</a>
+                                                <a class="nav-link" id="v-pills-settings-tab" data-toggle="pill" href="#v-pills-settings" role="tab" aria-controls="v-pills-settings" aria-selected="false">Profitability</a>
+                                                <a class="nav-link" id="v-pills-valuation-tab" data-toggle="pill" href="#v-pills-valuation" role="tab" aria-controls="v-pills-valuation" aria-selected="false">Valuations</a>
+                                              </div>
+                                            </div>
+                                            <div class="col-9">
+                                              <div class="tab-content" id="v-pills-tabContent">
+                                                <div class="tab-pane fade show active" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab">
+                                                    <table class="table-hover table-bordered">
+                                                        <tr>
+                                                            <th></th>
+                                                            <th>{{company.country.currency_code}}</th>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Revenue</td>
+                                                            <td> </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Revenue Per Share</td>
+                                                            <td></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Revenue Growth</td>
+                                                            <td></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Gross Profit</td>
+                                                            <td></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Net Income</td>
+                                                            <td></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Diluted EPS</td>
+                                                            <td></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Earning Growth</td>
+                                                            <td></td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                                <div class="tab-pane fade" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
+                                                    <table class="table-hover table-bordered">
+                                                        <tr>
+                                                            <th></th>
+                                                            <th>{{company.country.currency_code}}</th>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Total Cash</td>
+                                                            <td> </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Total Cash Per Share</td>
+                                                            <td></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Total Debt</td>
+                                                            <td></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Total Debt/ Equity</td>
+                                                            <td></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Current Ratio</td>
+                                                            <td></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Book Value Per Share</td>
+                                                            <td></td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                                <div class="tab-pane fade" id="v-pills-messages" role="tabpanel" aria-labelledby="v-pills-messages-tab">
+                                                    <table class="table-hover table-bordered">
+                                                        <tr>
+                                                            <th></th>
+                                                            <th>{{company.country.currency_code}}</th>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Operating Cash Flow</td>
+                                                            <td> </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Levered Free Cash Flow</td>
+                                                            <td></td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                                <div class="tab-pane fade" id="v-pills-settings" role="tabpanel" aria-labelledby="v-pills-settings-tab">
+                                                    <table class="table-hover table-bordered">
+                                                        <tr>
+                                                            <th></th>
+                                                            <th>{{company.country.currency_code}}</th>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Profit Margin</td>
+                                                            <td> </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Operating Margin</td>
+                                                            <td></td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                                <div class="tab-pane fade" id="v-pills-valuation" role="tabpanel" aria-labelledby="v-pills-valuation-tab">
+                                                    <table class="table-hover table-bordered">
+                                                        <tr>
+                                                            <th></th>
+                                                            <th>{{company.country.currency_code}}</th>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Market Cap</td>
+                                                            <td> </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Enterprise Value</td>
+                                                            <td></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Trailing P/E </td>
+                                                            <td></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Price/Sales</td>
+                                                            <td></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Price/Book</td>
+                                                            <td></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Enterprise Value/ Revenue</td>
+                                                            <td></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Enterprise Value/ EBITDA</td>
+                                                            <td></td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                          
+                                      </div>
+                                      <div class="tab-pane fade pt-5" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+
+                                      </div>
+                                        <div class="tab-pane fade pt-5" id="technical" role="tabpanel" aria-labelledby="technical-tab">
+
+                                      </div>
+                                        <div class="tab-pane fade pt-5" id="analysis" role="tabpanel" aria-labelledby="analysis-tab">
+
+                                      </div>
+                                      <div class="tab-pane fade pt-5" id="ownership" role="tabpanel" aria-labelledby="ownership-tab">
+                                          <p><strong></strong></p>
+                                          <div class="table-responsive">
+                                              {% if ownership %}
+                                              <h5>Largest Shareholders as at {{ ownership.date }}</h5>
+                                            <table class="table table-bordered" width="50%" cellspacing="0">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Shareholders</th>
+                                                        <th>Number of Shares</th>
+                                                        <th>Percentage Holding (%)</th>
+                                                    </tr>
+                                                </thead>
+                                                <tfoot>
+                                                    <tr>
+                                                        <th>Shareholders</th>
+                                                        <th>Number of Shares</th>
+                                                        <th>{{percent_sum__sum}} (%)</th>
+                                                    </tr>
+                                                </tfoot>
+                                                <tbody>
+                                                {% for shareholder in ownership %}
+                                                    <tr>
+                                                        <td>{{ shareholder.shareholder_name }}</td>
+                                                        <td>{{ shareholder.shares_owned }}</td>
+                                                        <td>{{ shareholder.percentage_holding }}</td>
+                                                    </tr>
+                                                {% endfor %}
+                                                </tbody>
+                                            </table>
+                                            {% else %}
+                                                No Ownership Details Added Yet
+                                            {% endif %}
+                                        </div>
+                                        </div>
+
+                                        <div class="tab-pane fade pt-5" id="ratings" role="tabpanel" aria-labelledby="ratings-tab">
+                                            <p>Ratings Here</p>
+                                        </div>
+                                        
+                                        
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Basic Card Example -->
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">Financial Statements</h6>
+                                </div>
+                                <div class="card-body">
+                                    The styling for this basic card example is created by using default Bootstrap
+                                    utility classes. By using utility classes, the style of the card component can be
+                                    easily modified with no need for any custom CSS!
+                                </div>
+                            </div>
+
+                            <!-- Basic Card Example -->
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">Subsidiaries</h6>
+                                </div>
+                                <div class="card-body">
+                                    {% for subsidiary in subsidiaries  %}
+                                        {{ subsidiary.subsidiary_name }}
+                                    {% empty %}
+                                        No subsidiary added yet
+                                    {% endfor %}
+                                </div>
+                            </div>
+
+                            <!-- Basic Card Example -->
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">Key People</h6>
+                                </div>
+                                <div class="card-body">
+                                    {% for people in key_people %}
+                                        <li>{{ people.position }} -
+                                            {{ people.name }}  
+                                        </li>
+                                    {% empty %}
+                                        No person listed here
+                                    {% endfor %}
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="col-lg-4">
+
+                            <!-- Dropdown Card Example -->
+                            <div class="card shadow mb-4">
+                                <!-- Card Header - Dropdown -->
+                                <div
+                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                    <h6 class="m-0 font-weight-bold text-primary">Basic Info.</h6>
+                                    <div class="dropdown no-arrow">
+                                        <a class="dropdown-toggle" href="#" role="button" id="basicInfo"
+                                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                                        </a>
+                                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
+                                            aria-labelledby="basicInfo">
+                                            <div class="dropdown-header">Dropdown Header:</div>
+                                            <a class="dropdown-item" href="#">Action</a>
+                                            <a class="dropdown-item" href="#">Another action</a>
+                                            <div class="dropdown-divider"></div>
+                                            <a class="dropdown-item" href="#">Something else here</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Card Body -->
+                                <div class="card-body">
+                                    <p><strong>Industry:</strong> {% for industry in company.industry.all %}<a href="{{ industry.get_absolute_url }}">{{ industry }}</a>{% endfor %}</p>
+                                    <p><strong>Country:</strong> <a href="{% url 'country' company.country.slug %}">{{ company.country }}</a></p>
+                                    <p><strong>Auditors:</strong> {% for auditor in auditor %}<a href="{{ auditor.get_absolute_url }}">{{ auditor.name }}</a>{% empty %}No Auditor{% endfor %}</p>
+                                    <p><strong>Secretary:</strong> {% for secretary in secretaries %}{{ secretary.name }}{% empty %}No Secretary{% endfor %}</p>
+                                    <p><strong>Registrar:</strong> {% for registrar in registrars %}{{ registrar.name }}{% empty %}No Registrar{% endfor %}</p>
+                                    <p><strong>Registered Office:</strong> {{ company.registered_office }}</p>
+                                    <p><strong>Incorporate Date:</strong> {{ company.incorporated_date }}</p>
+                                </div>
+                            </div>
+
+
+                            <!-- Dropdown Card Example -->
+                            <div class="card shadow mb-4">
+                                <!-- Card Header - Dropdown -->
+                                <div
+                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                    <h6 class="m-0 font-weight-bold text-primary">Stock Price Summary</h6>
+                                    <div class="dropdown no-arrow">
+                                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+                                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                                        </a>
+                                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
+                                            aria-labelledby="dropdownMenuLink">
+                                            <div class="dropdown-header">Dropdown Header:</div>
+                                            <a class="dropdown-item" href="#">Action</a>
+                                            <a class="dropdown-item" href="#">Another action</a>
+                                            <div class="dropdown-divider"></div>
+                                            <a class="dropdown-item" href="#">Something else here</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Card Body -->
+                                <div class="card-body">
+                                    <p><strong>Previous Close: </strong>{{ company.country.currency_code }}</p>
+                                    <p><strong>Open:</strong> {{ company.country.currency_code }} {{ price.price }}</p>
+                                    <p><strong>Volume:</strong> {{ price.volume }}</p>
+                                    <p><strong>Market Cap:</strong>{{ company.country.currency_code }}</p>
+                                    <p><strong>EPS:</strong></p>
+                                    <p><strong>YTD(%):</strong></p>
+                                    <p><strong>1-Year Change:</strong></p>
+                                    <p><strong>Shares Outstanding:</strong>{% for detail in share %} {{ detail.issued_shares|intcomma }}{% endfor %}</p>
+                                </div>
+                            </div>
+
+                            <!-- Dropdown Card Example -->
+                            <div class="card shadow mb-4">
+                                <!-- Card Header - Dropdown -->
+                                <div
+                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                    <h6 class="m-0 font-weight-bold text-primary">Latest Press Releases</h6>
+                                    <div class="dropdown no-arrow">
+                                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+                                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                                        </a>
+                                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
+                                            aria-labelledby="dropdownMenuLink">
+                                            <div class="dropdown-header">Press Releases:</div>
+                                            <a class="dropdown-item" href="{% url 'company_press_details' company.id %}">All Press Releases</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Card Body -->
+                                <div class="card-body">
+                                    <div class="text">
+                                        {% for press in release %}
+                                            <p><img src="{% static 'img/pdf.png' %}" alt="" height="30"><a href="{{ press.file.url }}" target="_blank"> {{ press.title }} <small>[{{ press.date|date:"d/m/Y" }}]</small></a><i class="fas fa-download"></i></p>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Collapsable Card Example -->
+                            <div class="card shadow mb-4">
+                                <!-- Card Header - Accordion -->
+                                <a href="#collapse1" class="d-block card-header py-3" data-toggle="collapse"
+                                    role="button" aria-expanded="true" aria-controls="collapseCardExample">
+                                    <h6 class="m-0 font-weight-bold text-primary">Stock Price History</h6>
+                                </a>
+                                <!-- Card Content - Collapse -->
+                                <div class="collapse show" id="collapse1">
+<!--                                    <div class="card-body">-->
+<!--                                        <table>-->
+<!--                                            {% for price in share_price %}-->
+<!--                                                <li>{{ price.date }} - {{ price.price }}</li>-->
+<!--                                            {% endfor %}-->
+<!--                                        </table>-->
+<!--                                    </div>-->
+
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered" id="dataTable" width="70%" cellspacing="0">
+                                            <thead>
+                                                <tr>
+                                                    <th>Date</th>
+                                                    <th>Close</th>
+                                                    <th>Volume</th>
+                                                </tr>
+                                            </thead>
+<!--                                            <tfoot>-->
+<!--                                                <tr>-->
+<!--                                                    <th>Date</th>-->
+<!--                                                    <th>Close</th>-->
+<!--                                                    <th>Volume</th>-->
+<!--                                                </tr>-->
+<!--                                            </tfoot>-->
+                                            <tbody>
+                                            {% for price in share_price %}
+                                                <tr>
+                                                    <td>{{ price.date|date:"Y/m/d" }}</td>
+                                                    <td>{{ price.price }}</td>
+                                                    <td>{{ price.volume }}</td>
+                                                </tr>
+                                            {% endfor %}
+                                            </tbody>
+                                        </table>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card shadow mb-4">
+                                <!-- Card Header - Accordion -->
+                                <a href="#collapse2" class="d-block card-header py-3" data-toggle="collapse"
+                                    role="button" aria-expanded="true" aria-controls="collapseCardExample">
+                                    <h6 class="m-0 font-weight-bold text-primary">Share Listing Details</h6>
+                                </a>
+                                <!-- Card Content - Collapse -->
+                                <div class="collapse show" id="collapse2">
+                                    <div class="card-body">
+                                        {% for detail in share %}
+                                        <p><strong>Issued Shares:</strong> {{ detail.issued_shares|intcomma }}</p>
+                                        {% if detail.stated_capital%} <p><strong>Stated Capital:</strong> {{ detail.stated_capital|intcomma }}</p> {% endif %}
+                                        {% if detail.listed_date%} <p><strong>Listed Date:</strong> {{ detail.listed_date }}</p> {% endif %}
+                                        {% if detail.financial_period_ends%} <p><strong>Financial Year Ends:</strong> {{ detail.financial_period_ends }}</p> {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card shadow mb-4">
+                                <!-- Card Header - Accordion -->
+                                <a href="#collapse3" class="d-block card-header py-3" data-toggle="collapse"
+                                    role="button" aria-expanded="true" aria-controls="collapseCardExample">
+                                    <h6 class="m-0 font-weight-bold text-primary">Latest Dividend</h6>
+                                </a>
+                                <!-- Card Content - Collapse -->
+                                <div class="collapse show" id="collapse3">
+                                    <div class="card-body">
+                                        {% for dividend in dividends %}
+                                            <p><strong>Final Dividend:</strong>GHS {{ dividend.final_dividend }} </p>
+                                            <p><strong>File:</strong><a href="{{ dividend.file.url }}" target="_blank"> Dividend File</a><i class="fas fa-download"></i></p>
+                                            <p><strong>Qualifying Date:</strong>{{ dividend.qualifying_date }} </p>
+                                            <p><strong>Register Closure:</strong> {{ dividend.register_closure }}</p>
+                                            <p><strong>Ex Dividend Date:</strong> {{ dividend.ex_dividend_date }}</p>
+                                            <p><strong>Payment Date:</strong> {{ dividend.payment_date }}</p>
+                                            <p><strong>AGM Date:</strong> {{ dividend.agm }}</p>
+
+                                            <h6></h6><a href="{% url 'company_dividend_details' company.id %}">Dividends & Splits Page</a></h6>
+                                        {% empty %}
+                                            <p><strong>{{ company.company_id }} is yet to pay dividend</strong></p>
+                                        {% endfor %}
+                                        
+
+                                        
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card shadow mb-4">
+                                <!-- Card Header - Dropdown -->
+                                <div
+                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                    <h6 class="m-0 font-weight-bold text-primary">Listing Information</h6>
+                                </div>
+                                <!-- Card Body -->
+                                <div class="card-body">
+                                    {% for ipo in ipos %}
+                                        <p><strong>Prospectus:</strong><a href="{{ ipo.prospectus }}" target="_blank"> Prospectus  </a><i class="fas fa-download"></i></p>
+                                        <p><strong>First Trading Date:</strong> {{ ipo.ipo_date }} </p>
+                                        <p><strong>IPO Share Price:</strong> GHS {{ ipo.ipo_price }}</p>
+                                    {% endfor %}
+                                </div>
+                            </div>
+
+                            <div class="card shadow mb-4">
+                                <!-- Card Header - Dropdown -->
+                                <div
+                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                    <h6 class="m-0 font-weight-bold text-primary">Contact Information</h6>
+                                </div>
+                                <!-- Card Body -->
+                                <div class="card-body">
+                                    <p><strong>Telephone:</strong> {{ company.telephone }}</p>
+                                    <p><strong>Email:</strong> {{ company.email }}</p>
+                                    <p><strong>Website:</strong> {{ company.website }}</p>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+                <!-- /.container-fluid -->
+
+{% endblock %}
+{% block script %}
+<!-- Page level plugins -->
+    <script src="{% static 'vendor/datatables/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'vendor/datatables/dataTables.bootstrap4.min.js' %}"></script>
+
+    <!-- Page level custom scripts -->
+    <script src="{% static 'js/demo/datatables-demo.js' %}"></script>
+{% endblock %}

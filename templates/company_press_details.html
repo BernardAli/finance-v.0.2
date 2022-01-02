@@ -1,0 +1,243 @@
+{% extends 'base.html' %}
+{% load humanize %}
+{% load static %}
+
+{% block title %} {{ company.company_id }}  {% endblock %}
+
+{% block content %}
+
+<!-- Begin Page Content -->
+                <div class="container-fluid">
+
+                    <!-- Page Heading -->
+                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                        <h1 class="h3 mb-0 text-gray-800">{{ company.name }} ({{ company.company_id }})</h1>
+                        <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
+                                class="fas fa-download fa-sm text-white-50"></i> Latest Report</a>
+                    </div>
+
+                   <div class="row">
+
+                        <!-- Earnings (Monthly) Card Example -->
+                        <div class="col-xl-12 col-md-12 mb-6">
+                            <div class="card border-left-primary shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">{{ company.isin }}</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                                {{ company.name }} Press Page
+                                            </div>
+                                            <div class="h6 mb-0 font-weight-light text-gray-800">
+                                                <strong>GHS {{ price.price }}</strong>
+                                            </div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <img src="{{ company.logo.url }}" alt="" height="100">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <br>
+
+                    <div class="row">
+
+                        <div class="col-lg-8">
+
+                            <!-- Default Card Example -->
+                            <div class="card mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">{{ company.name }} Press Page</h6>
+                                </div>
+                                <div class="card-body text text-center">
+                                    <ul class="nav nav-tabs" id="myTab" role="tablist">
+                                      <li class="nav-item">
+                                        <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Profile & Ownership</a>
+                                      </li>
+                                      <li class="nav-item">
+                                        <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Financials</a>
+                                      </li>
+                                      <li class="nav-item">
+                                        <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">Chart</a>
+                                      </li>
+                                        <li class="nav-item">
+                                        <a class="nav-link" id="technical-tab" data-toggle="tab" href="#technical" role="tab" aria-controls="contact" aria-selected="false">Technical</a>
+                                      </li>
+                                        </li>
+                                        <li class="nav-item">
+                                        <a class="nav-link" id="analysis-tab" data-toggle="tab" href="#analysis" role="tab" aria-controls="contact" aria-selected="false">Analysis</a>
+                                      </li>
+                                    </ul>
+                                    <div class="tab-content" id="myTabContent">
+                                      <div class="tab-pane fade show active pt-5" id="home" role="tabpanel" aria-labelledby="home-tab">
+                                        <p>{{ company.summary }}</p>
+                                      </div>
+                                      <div class="tab-pane fade pt-5" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                                        <p>Financials Here</p>
+                                          {% for report in reports %}
+
+                                          <div class="card-body">
+                                                <div class="row">
+
+                                                    <div class="col-xl-3 col-md-4 mb-4">
+                                                        <div class="card border-left-primary shadow h-100 py-2">
+                                                            <div class="card-body">
+                                                                <div class="row no-gutters align-items-center">
+                                                                    <div class="col mr-2">
+                                                                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                                                            <p>Audited - {{ report.audited }}</p>
+                                                                        </div>
+                                                                        <img src="{% static 'img/pdf.png' %}" alt="" height="30">
+                                                                        <div class="text-white"><a class="text-blue" href="{{ report.file.url }}">{{ report }}</a></div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                          {% endfor %}
+                                      </div>
+                                      <div class="tab-pane fade pt-5" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+
+                                      </div>
+                                        <div class="tab-pane fade pt-5" id="technical" role="tabpanel" aria-labelledby="technical-tab">
+
+                                      </div>
+                                        <div class="tab-pane fade pt-5" id="analysis" role="tabpanel" aria-labelledby="analysis-tab">
+
+                                      </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Basic Card Example -->
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">Basic Card Example</h6>
+                                </div>
+                                <div class="card-body">
+                                    The styling for this basic card example is created by using default Bootstrap
+                                    utility classes. By using utility classes, the style of the card component can be
+                                    easily modified with no need for any custom CSS!
+                                </div>
+                            </div>
+
+                            <!-- Basic Card Example -->
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">Basic Card Example</h6>
+                                </div>
+                                <div class="card-body">
+                                    The styling for this basic card example is created by using default Bootstrap
+                                    utility classes. By using utility classes, the style of the card component can be
+                                    easily modified with no need for any custom CSS!
+                                </div>
+                            </div>
+
+                            <!-- Basic Card Example -->
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">Key People</h6>
+                                </div>
+                                <div class="card-body">
+                                    {% for people in key_people %}
+                                        {{ people.name }}
+                                        {{ people.position }}
+                                    {% empty %}
+                                        No person listed here
+                                    {% endfor %}
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="col-lg-4">
+
+                            <!-- Dropdown Card Example -->
+                            <div class="card shadow mb-4">
+                                <!-- Card Header - Dropdown -->
+                                <div
+                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                    <h6 class="m-0 font-weight-bold text-primary">Basic Info.</h6>
+                                    <div class="dropdown no-arrow">
+                                        <a class="dropdown-toggle" href="#" role="button" id="basicInfo"
+                                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                                        </a>
+                                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
+                                            aria-labelledby="basicInfo">
+                                            <div class="dropdown-header">Dropdown Header:</div>
+                                            <a class="dropdown-item" href="#">Action</a>
+                                            <a class="dropdown-item" href="#">Another action</a>
+                                            <div class="dropdown-divider"></div>
+                                            <a class="dropdown-item" href="#">Something else here</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Card Body -->
+                                <div class="card-body">
+                                    <p><strong>Industry:</strong> {% for industry in company.industry.all %}<a href="{{ industry.get_absolute_url }}">{{ industry }}</a>{% endfor %}</p>
+                                    <p><strong>Auditors:</strong> {% for auditor in auditor %}<a href="{{ auditor.get_absolute_url }}">{{ auditor.name }}</a>{% empty %}No Auditor{% endfor %}</p>
+                                    <p><strong>Secretary:</strong> {% for secretary in secretaries %}{{ secretary.name }}{% empty %}No Secretary{% endfor %}</p>
+                                    <p><strong>Registered Office:</strong> {{ company.registered_office }}</p>
+                                    <p><strong>Incorporate Date:</strong> {{ company.incorporated_date }}</p>
+                                </div>
+                            </div>
+
+
+                            <!-- Dropdown Card Example -->
+                            <div class="card shadow mb-4">
+                                <!-- Card Header - Dropdown -->
+                                <div
+                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                    <h6 class="m-0 font-weight-bold text-primary">Stock Price Summary</h6>
+                                    <div class="dropdown no-arrow">
+                                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+                                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                                        </a>
+                                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
+                                            aria-labelledby="dropdownMenuLink">
+                                            <div class="dropdown-header">Dropdown Header:</div>
+                                            <a class="dropdown-item" href="#">Action</a>
+                                            <a class="dropdown-item" href="#">Another action</a>
+                                            <div class="dropdown-divider"></div>
+                                            <a class="dropdown-item" href="#">Something else here</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Card Body -->
+                                <div class="card-body">
+                                    <p><strong>Previous Close:</strong></p>
+                                    <p><strong>Open:</strong></p>
+                                    <p><strong>Volume:</strong></p>
+                                    <p><strong>Market Cap:</strong></p>
+                                    <p><strong>EPS:</strong></p>
+                                    <p><strong>YTD(%):</strong></p>
+                                    <p><strong>1-Year Change:</strong></p>
+                                    <p><strong>Shares Outstanding:</strong></p>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+                <!-- /.container-fluid -->
+
+{% endblock %}
+{% block script %}
+<!-- Page level plugins -->
+    <script src="{% static 'vendor/datatables/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'vendor/datatables/dataTables.bootstrap4.min.js' %}"></script>
+
+    <!-- Page level custom scripts -->
+    <script src="{% static 'js/demo/datatables-demo.js' %}"></script>
+{% endblock %}
