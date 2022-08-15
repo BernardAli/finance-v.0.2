@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'international',
 
     'django_filters',
+    'mathfilters',
 ]
 
 MIDDLEWARE = [

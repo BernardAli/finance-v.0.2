@@ -170,7 +170,7 @@ class Report(models.Model):
     audited = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"{self.company}"
+        return f"{self.company} - {self.year}"
 
 
 class MarketReport(models.Model):
@@ -316,3 +316,28 @@ class Opinions(models.Model):
 
     def __str__(self):
         return f"{self.author}'s opinion"
+
+
+class FinancialStatement(models.Model):
+    company = models.ForeignKey(CompanyProfile, on_delete=models.CASCADE)
+    auditor = models.ForeignKey(Auditors, on_delete=models.PROTECT, null=True, blank=True)
+    financial_period = models.ForeignKey(FinancialPeriod, on_delete=models.PROTECT)
+    file = models.ForeignKey(Report, on_delete=models.PROTECT)
+    net_sales_revenue = models.BigIntegerField()
+    total_operating_revenue = models.BigIntegerField()
+    operating_profit_ebit = models.BigIntegerField()
+    gross_profit_ebitda = models.BigIntegerField()
+    net_profit_loss = models.BigIntegerField()
+    total_asset = models.BigIntegerField()
+    total_equity = models.BigIntegerField()
+    current_asset = models.BigIntegerField()
+    total_cash = models.BigIntegerField()
+    inventory = models.BigIntegerField()
+    current_liability = models.BigIntegerField()
+    total_liability = models.BigIntegerField()
+    operating_cash_flow = models.BigIntegerField()
+    investing_cash_flow = models.BigIntegerField()
+    financing_cash_flow = models.BigIntegerField()
+
+    def __str__(self):
+        return f'{self.company} - {self.financial_period} Financial Statement'

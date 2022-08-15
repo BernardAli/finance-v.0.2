@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load mathfilters %}
 {% load humanize %}
 {% load static %}
 
@@ -106,11 +107,11 @@
                                                         </tr>
                                                         <tr>
                                                             <td>Revenue</td>
-                                                            <td> </td>
+                                                            <td>{{statement.total_operating_revenue|intcomma}}</td>
                                                         </tr>
                                                         <tr>
                                                             <td>Revenue Per Share</td>
-                                                            <td></td>
+                                                            <td>{% for detail in share %}{{ statement.total_operating_revenue|div:detail.issued_shares|floatformat:4 }}{% endfor %}</td>
                                                         </tr>
                                                         <tr>
                                                             <td>Revenue Growth</td>
@@ -118,15 +119,15 @@
                                                         </tr>
                                                         <tr>
                                                             <td>Gross Profit</td>
-                                                            <td></td>
+                                                            <td>{{statement.gross_profit_ebitda|intcomma}}</td>
                                                         </tr>
                                                         <tr>
                                                             <td>Net Income</td>
-                                                            <td></td>
+                                                            <td>{{statement.net_profit_loss|intcomma}}</td>
                                                         </tr>
                                                         <tr>
                                                             <td>Diluted EPS</td>
-                                                            <td></td>
+                                                            <td>{% for detail in share %}{{ statement.net_profit_loss|div:detail.issued_shares|floatformat:4 }}{% endfor %}</td>
                                                         </tr>
                                                         <tr>
                                                             <td>Earning Growth</td>
@@ -142,27 +143,27 @@
                                                         </tr>
                                                         <tr>
                                                             <td>Total Cash</td>
-                                                            <td> </td>
+                                                            <td>{{statement.total_cash|intcomma}}</td>
                                                         </tr>
                                                         <tr>
                                                             <td>Total Cash Per Share</td>
-                                                            <td></td>
+                                                            <td>{% for detail in share %}{{ statement.total_cash|div:detail.issued_shares|floatformat:4 }}{% endfor %}</td>
                                                         </tr>
                                                         <tr>
                                                             <td>Total Debt</td>
-                                                            <td></td>
+                                                            <td>{{statement.total_liability|intcomma}}</td>
                                                         </tr>
                                                         <tr>
                                                             <td>Total Debt/ Equity</td>
-                                                            <td></td>
+                                                            <td>{{statement.total_liability|div:statement.total_equity|floatformat:4}}</td>
                                                         </tr>
                                                         <tr>
                                                             <td>Current Ratio</td>
-                                                            <td></td>
+                                                            <td>{{statement.current_asset|div:statement.current_liability|floatformat:4}}</td>
                                                         </tr>
                                                         <tr>
                                                             <td>Book Value Per Share</td>
-                                                            <td></td>
+                                                            <td>{% for detail in share %}{{ statement.total_equity|div:detail.issued_shares|floatformat:4 }}{% endfor %}</td>
                                                         </tr>
                                                     </table>
                                                 </div>
@@ -174,11 +175,11 @@
                                                         </tr>
                                                         <tr>
                                                             <td>Operating Cash Flow</td>
-                                                            <td> </td>
+                                                            <td>{{statement.operating_cash_flow|intcomma}}</td>
                                                         </tr>
                                                         <tr>
                                                             <td>Levered Free Cash Flow</td>
-                                                            <td></td>
+                                                            <td>{{statement.operating_cash_flow|add:statement.investing_cash_flow|intcomma}}</td>
                                                         </tr>
                                                     </table>
                                                 </div>
@@ -186,15 +187,15 @@
                                                     <table class="table-hover table-bordered">
                                                         <tr>
                                                             <th></th>
-                                                            <th>{{company.country.currency_code}}</th>
+                                                            <th>%</th>
                                                         </tr>
                                                         <tr>
                                                             <td>Profit Margin</td>
-                                                            <td> </td>
+                                                            <td>{{statement.net_profit_loss|div:statement.total_operating_revenue|floatformat:4}}</td>
                                                         </tr>
                                                         <tr>
                                                             <td>Operating Margin</td>
-                                                            <td></td>
+                                                            <td>{{statement.operating_profit_ebit|div:statement.total_operating_revenue|floatformat:4}}</td>
                                                         </tr>
                                                     </table>
                                                 </div>
@@ -206,31 +207,31 @@
                                                         </tr>
                                                         <tr>
                                                             <td>Market Cap</td>
-                                                            <td> </td>
+                                                            <td>{{ company.country.currency_code }}{% for detail in share %}{{ detail.issued_shares|mul:price.price|intcomma }}{% endfor %}</td>
                                                         </tr>
                                                         <tr>
                                                             <td>Enterprise Value</td>
-                                                            <td></td>
+                                                            <td>{{ company.country.currency_code }}{% for detail in share %}{{ detail.issued_shares|mul:price.price|sub:statement.total_cash|intcomma }}{% endfor %}</td>
                                                         </tr>
                                                         <tr>
                                                             <td>Trailing P/E </td>
-                                                            <td></td>
+                                                            <td>{% for detail in share %}{{ statement.net_profit_loss|div:detail.issued_shares|floatformat:4 }}{% endfor %}</td>
                                                         </tr>
                                                         <tr>
                                                             <td>Price/Sales</td>
-                                                            <td></td>
+                                                            <td>{% for detail in share %}{{ detail.issued_shares|mul:price.price|div:statement.total_operating_revenue|floatformat:4 }}{% endfor %}</td>
                                                         </tr>
                                                         <tr>
                                                             <td>Price/Book</td>
-                                                            <td></td>
+                                                            <td>{% for detail in share %}{{ detail.issued_shares|mul:price.price|div:statement.total_equity|floatformat:4 }}{% endfor %}</td>
                                                         </tr>
                                                         <tr>
                                                             <td>Enterprise Value/ Revenue</td>
-                                                            <td></td>
+                                                            <td>{% for detail in share %}{{ detail.issued_shares|mul:price.price|sub:statement.total_cash|div:statement.total_operating_revenue|floatformat:4 }}{% endfor %}</td>
                                                         </tr>
                                                         <tr>
                                                             <td>Enterprise Value/ EBITDA</td>
-                                                            <td></td>
+                                                            <td>{% for detail in share %}{{ detail.issued_shares|mul:price.price|sub:statement.total_cash|div:statement.gross_profit_ebitda|floatformat:4 }}{% endfor %}</td>
                                                         </tr>
                                                     </table>
                                                 </div>
@@ -399,8 +400,8 @@
                                     <p><strong>Previous Close: </strong>{{ company.country.currency_code }}</p>
                                     <p><strong>Open:</strong> {{ company.country.currency_code }} {{ price.price }}</p>
                                     <p><strong>Volume:</strong> {{ price.volume }}</p>
-                                    <p><strong>Market Cap:</strong>{{ company.country.currency_code }}</p>
-                                    <p><strong>EPS:</strong></p>
+                                    <p><strong>Market Cap:</strong>{{ company.country.currency_code }}{% for detail in share %}{{ detail.issued_shares|mul:price.price|intcomma }}{% endfor %}</p>
+                                    <p><strong>EPS:</strong> {% for detail in share %}{{ statement.net_profit_loss|div:detail.issued_shares|floatformat:4 }}{% endfor %}</p>
                                     <p><strong>YTD(%):</strong></p>
                                     <p><strong>1-Year Change:</strong></p>
                                     <p><strong>Shares Outstanding:</strong>{% for detail in share %} {{ detail.issued_shares|intcomma }}{% endfor %}</p>

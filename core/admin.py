@@ -1,7 +1,8 @@
 from django.contrib import admin
 from .models import Tag, Sector, CompanyProfile, Market, ShareDetail, SharePrice, \
     Indices, FinancialPeriod, Report, MarketReport, PressRelease, Subsidiaries, \
-    Auditors, Secretary, KeyPeople, IPO, Dividend, Registrar, Solicitor, Ownership, Opinions
+    Auditors, Secretary, KeyPeople, IPO, Dividend, Registrar, Solicitor, Ownership, Opinions, \
+    FinancialStatement
 
 # Register your models here.
 
@@ -49,6 +50,7 @@ class SharePriceAdmin(admin.ModelAdmin):
 
 admin.site.register(Indices)
 admin.site.register(FinancialPeriod)
+admin.site.register(FinancialStatement)
 admin.site.register(Report)
 
 

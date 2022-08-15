@@ -1,4 +1,5 @@
 from django.shortcuts import render, get_object_or_404
+from django.db.models import Sum
 from django.core.paginator import Paginator
 from django.db.models import Sum
 from django.views.generic import ListView
@@ -6,9 +7,12 @@ from django.db.models import Q
 
 from rates.models import Inflation, MPR, Security, T_BILL
 from .models import Sector, Tag, CompanyProfile, Market, ShareDetail, SharePrice, Indices, Report, \
-    MarketReport, PressRelease, Auditors, IPO, Dividend, Ownership, Registrar, Subsidiaries, Opinions
+    MarketReport, PressRelease, Auditors, IPO, Dividend, Ownership, Registrar, Subsidiaries, Opinions, \
+    FinancialStatement
 from news.models import News
 from international.models import Continent, Indice, Commodity_type, BankRate, GDP, UnemploymentRate
+
+
 # Create your views here.
 
 
@@ -20,8 +24,8 @@ class SearchResultsListView(ListView):
     def get_queryset(self):
         query = self.request.GET.get("q")
         return CompanyProfile.objects.filter(
-        Q(name__icontains=query) | Q(core_activities__icontains=query)
-    )
+            Q(name__icontains=query) | Q(core_activities__icontains=query)
+        )
 
 
 def index_view(request):
@@ -80,7 +84,7 @@ def listed_companies(request):
 def company_details(request, company_id):
     company = get_object_or_404(CompanyProfile, id=company_id)
     share = ShareDetail.objects.filter(company_id=company_id)
-    share_price = SharePrice.objects.filter(company_id=company_id)
+    share_price = SharePrice.objects.filter(company_id=company_id)[:10]
     ipos = IPO.objects.filter(company_id=company_id)
     auditor = Auditors.objects.filter(company=company_id)
     reports = Report.objects.filter(company_id=company_id)
@@ -90,7 +94,9 @@ def company_details(request, company_id):
     ownership = Ownership.objects.filter(company_id=company_id).filter(date__year=2020 | 2021)
     percent_sum = Ownership.objects.aggregate(Sum('percentage_holding'))
     subsidiaries = Subsidiaries.objects.filter(company_id=company_id)
+    statement = FinancialStatement.objects.filter(company_id=company_id).last()
     # market_cap = price.price * share.issued_shares
+
 
     context = {
         'company': company,
@@ -108,10 +114,10 @@ def company_details(request, company_id):
         # 'market_cap': market_cap,
         "percent_sum": percent_sum,
         'registrars': company.registrar.all(),
-        'subsidiaries': subsidiaries
+        'subsidiaries': subsidiaries,
+        'statement': statement,
     }
     return render(request, 'company_details.html', context)
-
 
 
 def company_dividend_details(request, company_id):
