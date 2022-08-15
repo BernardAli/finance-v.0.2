@@ -57,7 +57,7 @@ class T_BILL(models.Model):
     interest = models.DecimalField(max_digits=6, decimal_places=2)
 
     def __str__(self):
-        return f"{self.security} for {self.issue_date} is {self.interest}"
+        return f"{self.interest}"
 
 
 PAIR_CHOICE = (

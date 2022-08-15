@@ -54,12 +54,15 @@ class Market(models.Model):
     def __str__(self):
         return self.market
 
+
 SHARE_TYPE_CHOICE = (
     ('Private', 'Private'),
     ('Public', 'Public'),
     ('Preference', 'Preference'),
     ('Exchange Tradeable Funds', 'Exchange Tradeable Funds')
 )
+
+
 class CompanyProfile(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     company_id = models.CharField(max_length=10)
@@ -313,5 +316,3 @@ class Opinions(models.Model):
 
     def __str__(self):
         return f"{self.author}'s opinion"
-
-

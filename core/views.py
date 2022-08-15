@@ -1,12 +1,27 @@
 from django.shortcuts import render, get_object_or_404
 from django.core.paginator import Paginator
 from django.db.models import Sum
-from rates.models import Inflation, MPR
+from django.views.generic import ListView
+from django.db.models import Q
+
+from rates.models import Inflation, MPR, Security, T_BILL
 from .models import Sector, Tag, CompanyProfile, Market, ShareDetail, SharePrice, Indices, Report, \
     MarketReport, PressRelease, Auditors, IPO, Dividend, Ownership, Registrar, Subsidiaries, Opinions
 from news.models import News
 from international.models import Continent, Indice, Commodity_type, BankRate, GDP, UnemploymentRate
 # Create your views here.
+
+
+class SearchResultsListView(ListView):
+    model = CompanyProfile
+    context_object_name = "companies"
+    template_name = "companies.html"
+
+    def get_queryset(self):
+        query = self.request.GET.get("q")
+        return CompanyProfile.objects.filter(
+        Q(name__icontains=query) | Q(core_activities__icontains=query)
+    )
 
 
 def index_view(request):
@@ -26,6 +41,8 @@ def index_view(request):
     unemployment = UnemploymentRate.objects.all().order_by('-value')[:10]
     release = PressRelease.objects.all().order_by('-date')[:5]
     opinions = Opinions.objects.all().order_by('-date')[:3]
+    three_months = T_BILL.objects.filter(security=1).last()
+    nine_months = T_BILL.objects.filter(security=2).last()
 
     context = {
         'inflation': inflation,
@@ -44,13 +61,15 @@ def index_view(request):
         'unemployment': unemployment,
         'release': release,
         'opinions': opinions,
+        'three_months': three_months,
+        'nine_months': nine_months,
     }
 
     return render(request, 'index.html', context)
 
 
 def listed_companies(request):
-    companies = CompanyProfile.objects.all().order_by('company_id')
+    companies = CompanyProfile.objects.filter(country=1).order_by('company_id')
 
     context = {
         'companies': companies
@@ -121,10 +140,10 @@ def company_press_details(request, company_id):
 
 def sector(request, sector_slug):
     sector = get_object_or_404(Sector, slug=sector_slug)
-    companies = CompanyProfile.objects.filter(sector=sector).order_by('name')
+    companies = CompanyProfile.objects.filter(sector=sector, country=1).order_by('name')
     paginator = Paginator(companies, 50)
 
-    sector_count = CompanyProfile.objects.filter(sector=sector).count()
+    sector_count = companies.count()
 
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
@@ -180,7 +199,7 @@ def industry_view(request, tag_slug):
     industry = get_object_or_404(Tag, slug=tag_slug)
     companies = CompanyProfile.objects.filter(industry=industry).order_by('company_id')
 
-    paginator = Paginator(companies, 100)
+    paginator = Paginator(companies, 10)
 
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
