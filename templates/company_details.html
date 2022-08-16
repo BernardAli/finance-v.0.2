@@ -85,9 +85,10 @@
                                         <p>{{ company.summary }}</p>
                                       </div>
                                       <div class="tab-pane fade pt-5" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                                          <!-- <p>Financials Here</p> -->
+                                          {% if statement %}
                                           <p>Financial Statements for</p>
-                                        <!-- <p>Financials Here</p> -->
-                                        <div class="row">
+                                          <div class="row">
                                             <div class="col-3">
                                               <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
                                                 <a class="nav-link active" id="v-pills-home-tab" data-toggle="pill" href="#v-pills-home" role="tab" aria-controls="v-pills-home" aria-selected="true">Income Statement</a>
@@ -238,6 +239,9 @@
                                               </div>
                                             </div>
                                           </div>
+                                        {% else %}
+                                            <p>No statement added yet</p>
+                                        {% endif %}
                                           
                                       </div>
                                       <div class="tab-pane fade pt-5" id="contact" role="tabpanel" aria-labelledby="contact-tab">
@@ -286,7 +290,32 @@
                                         </div>
 
                                         <div class="tab-pane fade pt-5" id="ratings" role="tabpanel" aria-labelledby="ratings-tab">
-                                            <p>Ratings Here</p>
+                                            {% if not reviews %}
+                                                <h3>Be the first one to write a review.</h3>
+                                            {% else %}
+                                                <span>Overall Rating: </span><span>{{ company_rating }}</span>
+                                                <br>
+                                                <hr>
+                                                <h3>Review Comments</h3>
+                                                <ol>
+                                                {% for review in reviews %}
+                                                    <li class="ui list">
+                                                            <span>Review comment: </span> <span>{{ review.content }}</span>
+                                                            <br>
+                                                            <span>Created on: </span><span>{{ review.date_created }}</span>
+                                                            <br>
+                                                            <span>Modified on: </span><span>{{ review.date_edited }}</span>
+                                                            <br>
+                                                            <span>Rating: </span><span>{{ review.rating }}</span>
+                                                            <br>
+                                                            <span>Creator: </span><span>{{ review.creator.username }}</span>
+                                                            <br>
+                                                            <a href="{% url 'review_edit' company.pk review.pk %}">Edit Review</a>
+                                                    </li>
+                                                {% endfor %}
+                                                </ol>
+                                        {% endif %}
+                                        <a class="ui primary button" href="{% url 'review_create' company.pk %}" class="btn btn-primary">Add Review</a>
                                         </div>
                                         
                                         

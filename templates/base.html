@@ -50,18 +50,35 @@
                     </button>
 
                     <!-- Topbar Search -->
-                    <form action="{% url 'search_results' %}" method="get"
-                        class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
-                        <div class="input-group">
-                            <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..."
-                                aria-label="Search" aria-describedby="basic-addon2" name="q">
-                            <div class="input-group-append">
-                                <button class="btn btn-primary" type="button">
-                                    <i class="fas fa-search fa-sm"></i>
-                                </button>
+                    {% if  request.path != '/international/index/' %}
+                        <form action="{% url 'search_results' %}" method="get"
+                            class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
+                            <div class="input-group">
+                                <input type="text" class="form-control bg-light border-0 small" placeholder="Search for company..."
+                                    aria-label="Search" aria-describedby="basic-addon2" name="q">
+                                <div class="input-group-append">
+                                    <button class="btn btn-primary" type="button">
+                                        <i class="fas fa-search fa-sm"></i>
+                                    </button>
+                                </div>
                             </div>
-                        </div>
-                    </form>
+                        </form>
+                    {% else %}
+                        <form action="{% url 'search_index' %}" method="get"
+                            class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
+                            <div class="input-group">
+                                <input type="text" class="form-control bg-light border-0 small" placeholder="Search for index..."
+                                    aria-label="Search" aria-describedby="basic-addon2" name="q">
+                                <div class="input-group-append">
+                                    <button class="btn btn-primary" type="button">
+                                        <i class="fas fa-search fa-sm"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    {% endif %}
+
+                    <!-- {{request.path}} -->
 
                     <!-- Topbar Navbar -->
                     <ul class="navbar-nav ml-auto">

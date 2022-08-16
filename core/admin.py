@@ -2,7 +2,7 @@ from django.contrib import admin
 from .models import Tag, Sector, CompanyProfile, Market, ShareDetail, SharePrice, \
     Indices, FinancialPeriod, Report, MarketReport, PressRelease, Subsidiaries, \
     Auditors, Secretary, KeyPeople, IPO, Dividend, Registrar, Solicitor, Ownership, Opinions, \
-    FinancialStatement
+    FinancialStatement, Review
 
 # Register your models here.
 
@@ -34,6 +34,7 @@ class PressReleaseAdmin(admin.ModelAdmin):
 
 admin.site.register(Tag)
 admin.site.register(Market)
+admin.site.register(Review)
 
 
 @admin.register(ShareDetail)

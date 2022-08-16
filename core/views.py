@@ -1,4 +1,7 @@
-from django.shortcuts import render, get_object_or_404
+from django.utils import timezone
+
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib import messages
 from django.db.models import Sum
 from django.core.paginator import Paginator
 from django.db.models import Sum
@@ -8,10 +11,11 @@ from django.db.models import Q
 from rates.models import Inflation, MPR, Security, T_BILL
 from .models import Sector, Tag, CompanyProfile, Market, ShareDetail, SharePrice, Indices, Report, \
     MarketReport, PressRelease, Auditors, IPO, Dividend, Ownership, Registrar, Subsidiaries, Opinions, \
-    FinancialStatement
+    FinancialStatement, Review
 from news.models import News
 from international.models import Continent, Indice, Commodity_type, BankRate, GDP, UnemploymentRate
-
+from .utils import average_rating
+from .forms import ReviewForm
 
 # Create your views here.
 
@@ -95,27 +99,30 @@ def company_details(request, company_id):
     percent_sum = Ownership.objects.aggregate(Sum('percentage_holding'))
     subsidiaries = Subsidiaries.objects.filter(company_id=company_id)
     statement = FinancialStatement.objects.filter(company_id=company_id).last()
+    reviews = company.review_set.all()
     # market_cap = price.price * share.issued_shares
-
-
+    print(reviews.count())
+    company_rating = average_rating([review.rating for review in reviews])
     context = {
-        'company': company,
-        'share': share,
-        'share_price': share_price,
-        'reports': reports,
-        'release': release,
-        'auditor': auditor,
-        'secretaries': company.secretary.all(),
-        'key_people': company.key_people.all(),
-        'price': price,
-        'ipos': ipos,
-        'dividends': dividends,
-        'ownership': ownership,
-        # 'market_cap': market_cap,
-        "percent_sum": percent_sum,
-        'registrars': company.registrar.all(),
-        'subsidiaries': subsidiaries,
-        'statement': statement,
+            "company_rating": company_rating,
+            "reviews": reviews,
+            'company': company,
+            'share': share,
+            'share_price': share_price,
+            'reports': reports,
+            'release': release,
+            'auditor': auditor,
+            'secretaries': company.secretary.all(),
+            'key_people': company.key_people.all(),
+            'price': price,
+            'ipos': ipos,
+            'dividends': dividends,
+            'ownership': ownership,
+            # 'market_cap': market_cap,
+            "percent_sum": percent_sum,
+            'registrars': company.registrar.all(),
+            'subsidiaries': subsidiaries,
+            'statement': statement, 
     }
     return render(request, 'company_details.html', context)
 
@@ -264,3 +271,39 @@ def auditor_detail(request, auditor_id):
     }
 
     return render(request, 'auditor_details.html', context)
+
+
+
+def review_edit(request, company_pk, review_pk=None):
+    company = get_object_or_404(CompanyProfile, id=company_pk)
+
+    if review_pk is not None:
+        review = get_object_or_404(Review, company_id=company_pk, pk=review_pk)
+    else:
+        review = None
+
+    if request.method == "POST":
+        form = ReviewForm(request.POST, instance=review)
+
+        if form.is_valid():
+            updated_review = form.save(False)
+            updated_review.company = company
+
+            if review is None:
+                messages.success(request, "Review for \"{}\" created.".format(company))
+            else:
+                updated_review.date_edited = timezone.now()
+                messages.success(request, "Review for \"{}\" updated.".format(company))
+
+            updated_review.save()
+            return redirect("company_details", company.pk)
+    else:
+        form = ReviewForm(instance=review)
+
+    return render(request, "publisher_edit.html",
+                  {"form": form,
+                   "instance": review,
+                   "model_type": "Review",
+                   "related_instance": company,
+                   "related_model_type": "CompanyProfile"
+                   })

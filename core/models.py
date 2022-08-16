@@ -1,3 +1,4 @@
+from django.contrib import auth
 from django.db import models
 from django.contrib.auth.models import User
 import uuid
@@ -341,3 +342,21 @@ class FinancialStatement(models.Model):
 
     def __str__(self):
         return f'{self.company} - {self.financial_period} Financial Statement'
+
+
+class Review(models.Model):
+    content = models.TextField(help_text="The Review text.")
+    rating = models.IntegerField(help_text="The rating the reviewer has given.")
+    date_created = models.DateTimeField(auto_now_add=True,
+                                        help_text="The date and time the review was created.")
+    date_edited = models.DateTimeField(auto_now=True,
+                                       help_text="The date and time the review was last edited.")
+    creator = models.ForeignKey(auth.get_user_model(), on_delete=models.CASCADE)
+    company = models.ForeignKey(CompanyProfile, on_delete=models.CASCADE,
+                             help_text="The Company that this review is for.")
+
+    def __str__(self):
+        return f'{self.creator.username} - {self.company.name}'
+
+
+

@@ -1,9 +1,24 @@
 from django.shortcuts import render, get_object_or_404
 from django.core.paginator import Paginator
+from django.views.generic import ListView
+from django.db.models import Q
 from .models import Continent, Country, Indice, Commodity_type, Commodity_profile, President, CentralBank, Bourse, \
     BankRate, MajorExports, UnemploymentRate, GDP
 from core.models import CompanyProfile, Indices
-# Create your views here.
+
+
+class SearchIndexListView(ListView):
+    model = Indice
+    context_object_name = "indices"
+    template_name = "indices_list.html"
+
+    def get_queryset(self):
+        query = self.request.GET.get("q")
+        return Indice.objects.filter(
+            Q(name__icontains=query) | Q(details__icontains=query)
+        )
+    def index_count(self):
+        return Indice.objects.all().count()
 
 def continent(request, continent_slug):
     continent = get_object_or_404(Continent, slug=continent_slug)
