@@ -250,8 +250,31 @@
                                         <div class="tab-pane fade pt-5" id="technical" role="tabpanel" aria-labelledby="technical-tab">
 
                                       </div>
-                                        <div class="tab-pane fade pt-5" id="analysis" role="tabpanel" aria-labelledby="analysis-tab">
-
+                                        <div class="tab-pane fade pt-5" id="analysis" role="tabpanel" aria-labelledby="analysis-tab">                                           
+                                           <div class="card-body">
+                                                <div class="row pb-2">
+                                                    {% for opinion in analysis %}
+                                                    <div class="col-lg-6 mb-12">
+                                                        <div class="card shadow">
+                                                            <div class="card-body">
+                                                                <div class="row no-gutters align-items-center">
+                                                                    <div class="col mr-2">
+                                                                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                                                            {{ opinion.author}} </div>
+                                                                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ new.title}}</div>
+                                                                        <p>{{ opinion.opinion|truncatewords:20|linebreaks }}</p>
+                                                                        <a href="{{ opinion.get_absolute_url }}" class="btn btn-primary">Read More</a>
+                                                                        <p><i class="fas fa-calendar-day"></i> {{ opinion.date|naturaltime }} </p>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    {% empty %}
+                                                        <p>No Analysis Available</p>
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
                                       </div>
                                       <div class="tab-pane fade pt-5" id="ownership" role="tabpanel" aria-labelledby="ownership-tab">
                                           <p><strong></strong></p>

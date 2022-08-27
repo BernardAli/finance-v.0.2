@@ -305,18 +305,26 @@ class Ownership(models.Model):
         return f"{self.company}'s ownership"
 
 
+TYPE_CHOICE = (
+    ('Opinion', 'Opinion'),
+    ('Analysis', 'Analysis'),
+)
+
 class Opinions(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
-    company = models.CharField(max_length=255)
+    commentary_type = models.CharField(max_length=10, choices=TYPE_CHOICE, default='Analysis')
+    title = models.CharField(max_length=255)
+    company = models.ForeignKey(CompanyProfile, on_delete=models.CASCADE)
     docs = models.FileField(upload_to='opinion')
     opinion = models.TextField()
     date = models.DateTimeField(auto_now_add=True)
 
     def get_absolute_url(self):
-        return reverse('opinion', args=[str(self.id)])
+        return reverse('opinions_details', args=[str(self.id)])
 
     def __str__(self):
         return f"{self.author}'s opinion"
+
 
 
 class FinancialStatement(models.Model):

@@ -48,7 +48,8 @@ def index_view(request):
     gdp = GDP.objects.all().order_by('-value')[:10]
     unemployment = UnemploymentRate.objects.all().order_by('-value')[:10]
     release = PressRelease.objects.all().order_by('-date')[:5]
-    opinions = Opinions.objects.all().order_by('-date')[:3]
+    opinions = Opinions.objects.filter(commentary_type='Opinion').order_by('-date')[:3]
+    analysis = Opinions.objects.filter(commentary_type='Analysis').order_by('-date')[:3]
     three_months = T_BILL.objects.filter(security=1).last()
     nine_months = T_BILL.objects.filter(security=2).last()
 
@@ -69,6 +70,7 @@ def index_view(request):
         'unemployment': unemployment,
         'release': release,
         'opinions': opinions,
+        'analysis': analysis,
         'three_months': three_months,
         'nine_months': nine_months,
     }
@@ -100,6 +102,7 @@ def company_details(request, company_id):
     subsidiaries = Subsidiaries.objects.filter(company_id=company_id)
     statement = FinancialStatement.objects.filter(company_id=company_id).last()
     reviews = company.review_set.all()
+    analysis = Opinions.objects.filter(commentary_type='Analysis', company=company).order_by('-date')[:3]
     # market_cap = price.price * share.issued_shares
     print(reviews.count())
     company_rating = average_rating([review.rating for review in reviews])
@@ -123,6 +126,7 @@ def company_details(request, company_id):
             'registrars': company.registrar.all(),
             'subsidiaries': subsidiaries,
             'statement': statement, 
+            'analysis': analysis
     }
     return render(request, 'company_details.html', context)
 
@@ -149,6 +153,16 @@ def company_press_details(request, company_id):
     }
 
     return render(request, 'company_press_details.html', context)
+
+
+def opinions_details(request, opinions_id):
+    opinions = get_object_or_404(Opinions, id=opinions_id)
+
+    context = {
+        'opinions': opinions,
+    }
+
+    return render(request, 'opinions_details.html', context)
 
 
 def sector(request, sector_slug):
