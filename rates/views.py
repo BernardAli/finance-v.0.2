@@ -5,10 +5,12 @@ from .models import Inflation, MPR, InterbankFX, T_BILL
 
 
 def inflation_view(request):
-    inflation = Inflation.objects.all().order_by('month')
+    inflation = Inflation.objects.all().order_by('-month')
+    inflation_chart = Inflation.objects.all().order_by('-month')[:12]
 
     context = {
         'inflation': inflation,
+        'inflation_chart': inflation_chart
     }
     return render(request, 'inflation.html', context)
 

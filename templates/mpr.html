@@ -23,7 +23,7 @@
                                 <!-- Card Header - Dropdown -->
                                 <div
                                     class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 font-weight-bold text-primary">MPR Overview</h6>
+                                    <h6 class="m-0 font-weight-bold text-primary">MPR Overview (%)</h6>
                                     <div class="dropdown no-arrow">
                                         <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
                                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -41,39 +41,63 @@
                                 </div>
                                 <!-- Card Body -->
                                 <div class="card-body">
-                                    <div class="chart-area">
-                                        <canvas id="gse-indices" width="400" height="85"></canvas>
-                                    </div>
                                     <div>
-                                    <script>
-                                        var ctx = document.getElementById('gse-indices').getContext('2d');
-                                        var myChart = new Chart(ctx, {
-                                            type: 'line',
-                                            data: {
-                                                labels: [{% for mpr in mprs %} '{{mpr.effective_date|date:"M, Y" }}', {% endfor %}],
-                                                datasets: [{
-                                                    label: 'MPR',
-                                                    data: [{% for mpr in mprs %} {{mpr.rate}}, {% endfor %}],
-                                                    backgroundColor: [
-                                                        'rgba(255, 99, 132, 0.2)',
-                                                        'rgba(54, 162, 235, 0.2)',
-                                                    ],
-                                                    borderColor: [
-                                                        'rgba(255, 99, 132, 1)',
-                                                        'rgba(54, 162, 235, 1)',
-                                                    ],
-                                                    borderWidth: 1
-                                                }]
-                                            },
-                                            options: {
-                                                scales: {
-                                                    y: {
-                                                        beginAtZero: true
-                                                    }
+                                    <div id="areaChart"></div>
+
+                                          <script>
+                                            document.addEventListener("DOMContentLoaded", () => {
+                                              const series = {
+                                                "dataSeries": {
+                                                  "prices": [{% for mpr in mprs %} {{mpr.rate}}, {% endfor %}],
+                                                  "dates": [{% for mpr in mprs %} '{{mpr.effective_date|date:"D M, Y" }}', {% endfor %}]
                                                 }
-                                            }
-                                        });
-                                        </script>
+                                              }
+                                              new ApexCharts(document.querySelector("#areaChart"), {
+                                                series: [{
+                                                  name: "Rate",
+                                                  data: series.dataSeries.prices
+                                                }],
+                                                chart: {
+                                                  type: 'area',
+                                                  height: 350,
+                                                  zoom: {
+                                                    enabled: true
+                                                  }
+                                                },
+                                                dataLabels: {
+                                                  enabled: false
+                                                },
+                                                stroke: {
+                                                  curve: 'straight'
+                                                },
+                                                subtitle: {
+                                                  text: 'MPR Trends',
+                                                  align: 'right'
+                                                },
+                                                labels: series.dataSeries.dates,
+                                                xaxis: {
+                                                  type: 'datetime',
+                                                  labels: {
+                                                    format: 'MMM/yy',
+                                                  }
+                                                },
+                                                tooltip: {
+                                                    x: {
+                                                      show: true,
+                                                      format: 'MMM yy',
+                                                      formatter: undefined,
+                                                  },
+                                                },
+                                                yaxis: {
+                                                  opposite: false
+                                                },
+                                                legend: {
+                                                  horizontalAlign: 'left'
+                                                }
+                                              }).render();
+                                            });
+                                          </script>
+                                          <!-- End Area Chart -->
                                     </div>
                                 </div>
                             </div>

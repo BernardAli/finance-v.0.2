@@ -5,7 +5,25 @@ from .models import Inflation, MPR, T_BILL, Security, CurrencyPair, InterbankFX
 
 admin.site.register(Inflation)
 admin.site.register(MPR)
-admin.site.register(T_BILL)
-admin.site.register(Security)
-admin.site.register(CurrencyPair)
-admin.site.register(InterbankFX)
+
+
+@admin.register(T_BILL)
+class T_BILLAdmin(admin.ModelAdmin):
+    list_display = ('issue_date', 'tender', 'security', 'discount', 'interest')
+    list_filter = ('tender', 'issue_date')
+
+
+@admin.register(Security)
+class SecurityAdmin(admin.ModelAdmin):
+    list_display = ('id', 'security', 'slug')
+
+
+@admin.register(InterbankFX)
+class InterbankFXAdmin(admin.ModelAdmin):
+    list_display = ('id', 'date', 'pair', 'buying', 'selling')
+    list_filter = ('pair',)
+
+
+@admin.register(CurrencyPair)
+class CurrencyPairAdmin(admin.ModelAdmin):
+    list_display = ('id', 'pair', 'currency')

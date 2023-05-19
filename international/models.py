@@ -8,10 +8,12 @@ from django.urls import reverse
 CONTINENT_CHOICE = (
     ('Africa', 'Africa'),
     ('Europe', 'Europe'),
+    ('Middle East', 'Middle East'),
     ('Asia', 'Asia'),
     ('Americas', 'Americas'),
     ('Oceania', 'Oceania')
 )
+
 
 class Continent(models.Model):
     continent = models.CharField(choices=CONTINENT_CHOICE, max_length=50)
@@ -28,19 +30,18 @@ class Continent(models.Model):
 class Country(models.Model):
     name = models.CharField(max_length=255)
     code = models.CharField(max_length=2)
-    slug = models.SlugField(unique=True)
+    slug = models.SlugField(unique=True, blank=True, null=True)
     continent = models.ForeignKey(Continent, on_delete=models.CASCADE)
     flag = models.ImageField(upload_to='country', default='globe.svg')
     currency = models.CharField(max_length=255)
     currency_code = models.CharField(max_length=3)
-    dialing_code = models.CharField(max_length=5, default='+233')
-    population = models.DecimalField(max_digits=8, decimal_places=2, default=30)
+    dialing_code = models.CharField(max_length=25, default='+233')
     area_size = models.PositiveIntegerField(default=30)
-    time_zone = models.CharField(max_length=15, default='GMT+0')
+    time_zone = models.CharField(max_length=25, default='GMT+0')
     capital = models.CharField(max_length=255, default='Accra')
 
     class Meta:
-        ordering = ('name', )
+        ordering = ('name',)
 
     def get_absolute_url(self):
         return reverse('country', arg=[self.slug])
@@ -54,13 +55,14 @@ active_choices = (
     ('Former', 'Former'),
 )
 
+
 class President(models.Model):
     name = models.CharField(max_length=250)
     picture = models.ImageField(upload_to='presidents', default='sector.png')
     country = models.ForeignKey(Country, on_delete=models.CASCADE, related_name='country')
     url = models.CharField(max_length=255)
     elected_date = models.DateField()
-    active =  models.CharField(max_length=10, default='Active', choices=active_choices)
+    active = models.CharField(max_length=10, default='Active', choices=active_choices)
 
     def get_absolute_url(self):
         return reverse('president', args=[str(self.id)])
@@ -89,7 +91,6 @@ class Indice(models.Model):
     symbol = models.CharField(max_length=255)
     slug = models.SlugField(unique=True)
     country = models.ForeignKey(Country, on_delete=models.CASCADE)
-    component = models.PositiveIntegerField()
     details = models.TextField(blank=True, null=True)
     summary = models.TextField(blank=True, null=True)
     main_exchange = models.ForeignKey(Bourse, on_delete=models.CASCADE, null=True, blank=True)
@@ -107,6 +108,7 @@ COMMODITY_TYPE_CHOICE = (
     ('Energies', 'Energies'),
     ('Soft Commodities', 'Soft Commodities'),
 )
+
 
 class Commodity_type(models.Model):
     commodity_type = models.CharField(choices=COMMODITY_TYPE_CHOICE, max_length=255)
@@ -142,8 +144,6 @@ class CentralBank(models.Model):
     logo = models.ImageField(upload_to='central_banks', default='sector.png')
     country = models.ManyToManyField(Country, related_name='central_bank')
     url = models.CharField(max_length=255)
-    governor = models.CharField(max_length=255)
-    dep_governor = models.CharField(max_length=255)
 
     def get_absolute_url(self):
         return reverse('central_bank', args=[str(self.id)])
@@ -167,16 +167,19 @@ class BankRate(models.Model):
 
 
 export_choices = (
-    ('Gold', 'Gold'),
+    ('Base Metals', 'Base Metals'),
     ('Crude', 'Crude'),
     ('Cocoa', 'Cocoa'),
     ('Coal', 'Coal'),
+    ('Banana', 'Banana'),
+    ('Machinery', 'Machinery'),
     ('Machinery', 'Machinery'),
 )
 
+
 class MajorExports(models.Model):
-    country = models.ManyToManyField(Country)
-    export = models.CharField(max_length=255, choices=export_choices)
+    country = models.ForeignKey(Country, on_delete=models.CASCADE)
+    export = models.ManyToManyField(Commodity_profile)
 
     def get_absolute_url(self):
         return reverse('export', args=[str(self.id)])
@@ -203,11 +206,10 @@ class GDP(models.Model):
     value = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
 
     class Meta:
-        ordering = '-value', 
+        ordering = '-value',
 
     def get_absolute_url(self):
         return reverse('gdp', args=[str(self.id)])
 
     def __str__(self):
         return f"{self.country} {self.value}"
-

@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
-{% load static %}
+{% load mathfilters %}
 {% load humanize %}
+{% load static %}
 {% block title %} Home {% endblock %}
 
 
@@ -45,8 +46,8 @@
                                     <div class="row no-gutters align-items-center">
                                         <div class="col mr-2">
                                             <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                                GSE-CI</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">2648.50</div>
+                                                GSE-CI ({{ci.date}})</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800 value">{{ci.value}} <small class="value">{{ci.value|sub:ci_previous.value}}</small> (<small class="value">{{ci.value|sub:ci_previous.value|div:ci_previous.value|mul:100|floatformat:2}}%</small>)</div>
                                         </div>
                                         <div class="col-auto">
                                             <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
@@ -63,8 +64,8 @@
                                     <div class="row no-gutters align-items-center">
                                         <div class="col mr-2">
                                             <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                                GSE-FSI</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">2648.50</div>
+                                                GSE-FSI ({{fsi.date}})</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{fsi.value}} <small class="value">{{fsi.value|sub:fsi_previous.value}}</small> (<small class="value">{{fsi.value|sub:fsi_previous.value|div:fsi_previous.value|mul:100|floatformat:2}}%</small>)</div>
                                         </div>
                                         <div class="col-auto">
                                             <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
@@ -215,14 +216,14 @@
                                 <!-- Card Header - Dropdown -->
                                 <div
                                     class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 font-weight-bold text-primary">GSE Indices</h6>
+                                    <h6 class="m-0 font-weight-bold text-primary">GSE-CI Movement</h6>
                                     <div class="dropdown no-arrow">
-                                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+                                        <a class="dropdown-toggle" href="#" role="button" id="dropMenuLink"
                                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                             <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
                                         </a>
                                         <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-                                            aria-labelledby="dropdownMenuLink">
+                                            aria-labelledby="dropMenuLink">
                                             <div class="dropdown-header">Dropdown Header:</div>
                                             <a class="dropdown-item" href="#">Action</a>
                                             <a class="dropdown-item" href="#">Another action</a>
@@ -233,11 +234,406 @@
                                 </div>
                                 <!-- Card Body -->
                                 <div class="card-body">
-                                    <h4  class="text text-center">Trading Summary Here</h4>
+                                        <div class="tab-pane fade show active" id="v-chart" role="tabpanel" aria-labelledby="v-chart-tab">
+                                                        <button id="one_month" type="button">1M</button>
+                                                        <button id="six_months" type="button">6M</button>
+                                                        <button id="one_year" type="button">1Y</button>
+                                                        <button id="three_year" type="button">3Y</button>
+                                                        <button id="five_year" type="button">5Y</button>
+                                                        <button id="ytd" type="button">YTD</button>
+                                                        <button id="all" type="button">ALL</button>
+                                                        <div id="ci_chart"></div>
+
+
+                                                      <script>
+                                                        const latest_trading_day = '{{share_price_latest.date}}';
+
+
+                                                        const one_month = '{{one_month}}';
+
+
+                                                        const six_month = '{{six_month}}';
+
+
+                                                        const one_year = '{{one_year}}';
+
+                                                        const three_year = '{{three_year}}';
+
+                                                        const five_year = '{{five_year}}';
+
+                                                        const share_price_first = '{{share_price_first}}';
+
+                                                        const ci_dates = [{% for price in indices %} Date.parse('{{price.date}}'),{% endfor %}]
+
+                                                        const ci_values = [{% for price in indices %} {{price.value}}, {% endfor %}]
+
+                                                        var data = ci_dates.map(function(e, i){
+                                                            return [e, ci_values[i]];
+                                                        });
+
+                                                        const series = {
+                                                            "dataSeries": {
+                                                              "dates": [{% for price in share_price %} '{{price.date|date:"D M, Y" }}', {% endfor %}],
+                                                              "prices": [{% for price in share_price %} {{price.price}}, {% endfor %}]
+                                                            }
+                                                          }
+
+                                                          var options = {
+                                                          series: [{
+                                                          name: "Share Price",
+                                                          data: data
+                                                        }],
+                                                          chart: {
+                                                          id: 'area-datetime',
+                                                          type: 'area',
+                                                          height: 350,
+                                                          zoom: {
+                                                            autoScaleYaxis: true
+                                                          }
+                                                        },
+                                                        annotations: {
+                                                          yaxis: [{
+                                                            y: 30,
+                                                            borderColor: '#999',
+                                                            label: {
+                                                              show: true,
+                                                              style: {
+                                                                color: "#fff",
+                                                                background: '#00E396'
+                                                              }
+                                                            }
+                                                          }],
+                                                          xaxis: [{
+                                                            x: new Date('{{share_price_first}}').getTime(),
+                                                            borderColor: '#999',
+                                                            yAxisIndex: 0,
+                                                            label: {
+                                                              show: true,
+                                                              style: {
+                                                                color: "#fff",
+                                                                background: '#775DD0'
+                                                              }
+                                                            }
+                                                          }]
+                                                        },
+                                                        dataLabels: {
+                                                          enabled: false
+                                                        },
+                                                        markers: {
+                                                          size: 0,
+                                                          style: 'hollow',
+                                                        },
+                                                        xaxis: {
+                                                          type: 'datetime',
+                                                          min: new Date('{{share_price_first}}').getTime(),
+                                                          tickAmount: 6,
+                                                        },
+                                                        tooltip: {
+                                                          x: {
+                                                            format: 'dd MMM yyyy',
+                                                          }
+                                                        },
+                                                        fill: {
+                                                          type: 'gradient',
+                                                          gradient: {
+                                                            shadeIntensity: 1,
+                                                            opacityFrom: 0.7,
+                                                            opacityTo: 0.9,
+                                                            stops: [0, 100]
+                                                          }
+                                                        },
+                                                        };
+
+                                                        var chart = new ApexCharts(document.querySelector("#ci_chart"), options);
+                                                        chart.render();
+
+                                                        var resetCssClasses = function(activeEl) {
+                                                            var els = document.querySelectorAll('button')
+                                                            Array.prototype.forEach.call(els, function(el) {
+                                                              el.classList.remove('active')
+                                                            })
+
+                                                            activeEl.target.classList.add('active')
+                                                          }
+
+                                                          document.querySelector('#one_month').addEventListener('click', function(e) {
+                                                              resetCssClasses(e)
+
+                                                              chart.zoomX(
+                                                                new Date(one_month).getTime(),
+                                                                new Date(latest_trading_day).getTime()
+                                                              )
+                                                            })
+
+                                                          document.querySelector('#six_months').addEventListener('click', function(e) {
+                                                              resetCssClasses(e)
+
+                                                              chart.zoomX(
+                                                                new Date(six_month).getTime(),
+                                                                new Date(latest_trading_day).getTime()
+                                                              )
+                                                            })
+
+                                                          document.querySelector('#one_year').addEventListener('click', function(e) {
+                                                              resetCssClasses(e)
+                                                              chart.zoomX(
+                                                                new Date(one_year).getTime(),
+                                                                new Date(latest_trading_day).getTime()
+                                                              )
+                                                            })
+
+                                                            document.querySelector('#three_year').addEventListener('click', function(e) {
+                                                              resetCssClasses(e)
+                                                              chart.zoomX(
+                                                                new Date(three_year).getTime(),
+                                                                new Date(latest_trading_day).getTime()
+                                                              )
+                                                            })
+
+                                                            document.querySelector('#five_year').addEventListener('click', function(e) {
+                                                              resetCssClasses(e)
+                                                              chart.zoomX(
+                                                                new Date(five_year).getTime(),
+                                                                new Date(latest_trading_day).getTime()
+                                                              )
+                                                            })
+
+                                                          document.querySelector('#ytd').addEventListener('click', function(e) {
+                                                            resetCssClasses(e)
+
+                                                            chart.zoomX(
+                                                              new Date('2023-01-01').getTime(),
+                                                              new Date(latest_trading_day).getTime()
+                                                            )
+                                                          })
+
+                                                          document.querySelector('#all').addEventListener('click', function(e) {
+                                                            resetCssClasses(e)
+
+                                                            chart.zoomX(
+                                                              new Date(share_price_first).getTime(),
+                                                              new Date().getTime(),
+                                                            )
+                                                          });
+                                                      </script>
+                                                        <!-- End Area Chart -->
+                                                  </div>
                                     <div class="mt-4 text-center small">
                                     </div>
                                 </div>
                             </div>
+
+                            <div class="card shadow mb-4">
+                                <!-- Card Header - Dropdown -->
+                                <div
+                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                    <h6 class="m-0 font-weight-bold text-primary">GSE-FSI Movement</h6>
+                                    <div class="dropdown no-arrow">
+                                        <a class="dropdown-toggle" href="#" role="button" id="dropdownLink"
+                                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                                        </a>
+                                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
+                                            aria-labelledby="dropdownLink">
+                                            <div class="dropdown-header">Dropdown Header:</div>
+                                            <a class="dropdown-item" href="#">Action</a>
+                                            <a class="dropdown-item" href="#">Another action</a>
+                                            <div class="dropdown-divider"></div>
+                                            <a class="dropdown-item" href="#">Something else here</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Card Body -->
+                                <div class="card-body">
+                                        <div class="tab-pane fade show active" id="f-chart" role="tabpanel" aria-labelledby="f-chart-tab">
+                                                        <button id="fsi_one_month" type="button">1M</button>
+                                                        <button id="fsi_six_months" type="button">6M</button>
+                                                        <button id="fsi_one_year" type="button">1Y</button>
+                                                        <button id="fsi_three_year" type="button">3Y</button>
+                                                        <button id="fsi_five_year" type="button">5Y</button>
+                                                        <button id="fsi_ytd" type="button">YTD</button>
+                                                        <button id="fsi_all" type="button">ALL</button>
+                                                        <div id="fsi_chart"></div>
+
+
+                                                      <script>
+                                                        const fsi_latest_trading_day = '{{fsi_share_price_latest.date}}';
+
+
+                                                        const fsi_one_month = '{{fsi_one_month}}';
+
+
+                                                        const fsi_six_month = '{{fsi_six_month}}';
+
+
+                                                        const fsi_one_year = '{{fsi_one_year}}';
+
+                                                        const fsi_three_year = '{{fsi_three_year}}';
+
+                                                        const fsi_five_year = '{{fsi_five_year}}';
+
+                                                        const fsi_share_price_first = '{{fsi_share_price_first}}';
+
+                                                        const fsi_dates = [{% for price in fsi_indices %} Date.parse('{{price.date}}'),{% endfor %}]
+
+                                                        const fsi_values = [{% for price in fsi_indices %} {{price.value}}, {% endfor %}]
+
+                                                        var data = fsi_dates.map(function(e, i){
+                                                            return [e, fsi_values[i]];
+                                                        });
+
+                                                        const series1 = {
+                                                            "dataSeries": {
+                                                              "dates": [{% for price in share_price %} '{{price.date|date:"D M, Y" }}', {% endfor %}],
+                                                              "prices": [{% for price in share_price %} {{price.price}}, {% endfor %}]
+                                                            }
+                                                          }
+
+                                                          var options = {
+                                                          series: [{
+                                                          name: "Share Price",
+                                                          data: data
+                                                        }],
+                                                          chart: {
+                                                          id: 'area-datetime',
+                                                          type: 'area',
+                                                          height: 350,
+                                                          zoom: {
+                                                            autoScaleYaxis: true
+                                                          }
+                                                        },
+                                                        annotations: {
+                                                          yaxis: [{
+                                                            y: 30,
+                                                            borderColor: '#999',
+                                                            label: {
+                                                              show: true,
+                                                              style: {
+                                                                color: "#fff",
+                                                                background: '#00E396'
+                                                              }
+                                                            }
+                                                          }],
+                                                          xaxis: [{
+                                                            x: new Date('{{fsi_share_price_first}}').getTime(),
+                                                            borderColor: '#999',
+                                                            yAxisIndex: 0,
+                                                            label: {
+                                                              show: true,
+                                                              style: {
+                                                                color: "#fff",
+                                                                background: '#775DD0'
+                                                              }
+                                                            }
+                                                          }]
+                                                        },
+                                                        dataLabels: {
+                                                          enabled: false
+                                                        },
+                                                        markers: {
+                                                          size: 0,
+                                                          style: 'hollow',
+                                                        },
+                                                        xaxis: {
+                                                          type: 'datetime',
+                                                          min: new Date('{{fsi_share_price_first}}').getTime(),
+                                                          tickAmount: 6,
+                                                        },
+                                                        tooltip: {
+                                                          x: {
+                                                            format: 'dd MMM yyyy',
+                                                          }
+                                                        },
+                                                        fill: {
+                                                          type: 'gradient',
+                                                          gradient: {
+                                                            shadeIntensity: 1,
+                                                            opacityFrom: 0.7,
+                                                            opacityTo: 0.9,
+                                                            stops: [0, 100]
+                                                          }
+                                                        },
+                                                        };
+
+                                                        var fsi_chart = new ApexCharts(document.querySelector("#fsi_chart"), options);
+                                                        fsi_chart.render();
+
+                                                        var resetCssClasses = function(activeEl) {
+                                                            var els = document.querySelectorAll('button')
+                                                            Array.prototype.forEach.call(els, function(el) {
+                                                              el.classList.remove('active')
+                                                            })
+
+                                                            activeEl.target.classList.add('active')
+                                                          }
+
+                                                          document.querySelector('#fsi_one_month').addEventListener('click', function(e) {
+                                                              resetCssClasses(e)
+
+                                                              fsi_chart.zoomX(
+                                                                new Date(fsi_one_month).getTime(),
+                                                                new Date(latest_trading_day).getTime()
+                                                              )
+                                                            })
+
+                                                          document.querySelector('#fsi_six_months').addEventListener('click', function(e) {
+                                                              resetCssClasses(e)
+
+                                                              fsi_chart.zoomX(
+                                                                new Date(fsi_six_month).getTime(),
+                                                                new Date(latest_trading_day).getTime()
+                                                              )
+                                                            })
+
+                                                          document.querySelector('#fsi_one_year').addEventListener('click', function(e) {
+                                                              resetCssClasses(e)
+                                                              fsi_chart.zoomX(
+                                                                new Date(fsi_one_year).getTime(),
+                                                                new Date(latest_trading_day).getTime()
+                                                              )
+                                                            })
+
+                                                            document.querySelector('#fsi_three_year').addEventListener('click', function(e) {
+                                                              resetCssClasses(e)
+                                                              fsi_chart.zoomX(
+                                                                new Date(fsi_three_year).getTime(),
+                                                                new Date(latest_trading_day).getTime()
+                                                              )
+                                                            })
+
+                                                            document.querySelector('#fsi_five_year').addEventListener('click', function(e) {
+                                                              resetCssClasses(e)
+                                                              fsi_chart.zoomX(
+                                                                new Date(fsi_five_year).getTime(),
+                                                                new Date(latest_trading_day).getTime()
+                                                              )
+                                                            })
+
+                                                          document.querySelector('#fsi_ytd').addEventListener('click', function(e) {
+                                                            resetCssClasses(e)
+
+                                                            fsi_chart.zoomX(
+                                                              new Date('2023-01-01').getTime(),
+                                                              new Date(latest_trading_day).getTime()
+                                                            )
+                                                          })
+
+                                                          document.querySelector('#fsi_all').addEventListener('click', function(e) {
+                                                            resetCssClasses(e)
+
+                                                            fsi_chart.zoomX(
+                                                              new Date(fsi_share_price_first).getTime(),
+                                                              new Date().getTime(),
+                                                            )
+                                                          });
+                                                      </script>
+                                                        <!-- End Area Chart -->
+                                                  </div>
+                                    <div class="mt-4 text-center small">
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="card shadow mb-4">
                                 <!-- Card Header - Dropdown -->
                                 <div

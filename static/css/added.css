@@ -1,0 +1,15 @@
+.change-up{
+    color: green;
+}
+
+.change-down{
+    color: red;
+}
+
+.change-none{
+    color: #777;
+}
+
+button .active {
+    background-color: red;
+}

@@ -53,8 +53,8 @@ class T_BILL(models.Model):
     issue_date = models.DateField()
     tender = models.PositiveIntegerField()
     security = models.ForeignKey(Security, on_delete=models.PROTECT)
-    discount = models.DecimalField(max_digits=6, decimal_places=2)
-    interest = models.DecimalField(max_digits=6, decimal_places=2)
+    discount = models.DecimalField(max_digits=10, decimal_places=4)
+    interest = models.DecimalField(max_digits=10, decimal_places=4)
 
     def __str__(self):
         return f"{self.interest}"

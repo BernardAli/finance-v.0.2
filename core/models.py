@@ -132,7 +132,7 @@ class SharePrice(models.Model):
         ordering = ('date',)
 
     def __str__(self):
-        return f"{self.company}"
+        return f"{self.company}, {self.price}"
 
 
 class Indices(models.Model):
@@ -165,7 +165,7 @@ class FinancialPeriod(models.Model):
 
 class Report(models.Model):
     year = models.DateField()
-    period = models.ManyToManyField(FinancialPeriod)
+    period = models.ForeignKey(FinancialPeriod, on_delete=models.CASCADE)
     file = models.FileField(upload_to='reports')
     company = models.ForeignKey(CompanyProfile, on_delete=models.CASCADE)
     audited = models.BooleanField(default=False)
@@ -244,6 +244,8 @@ class Solicitor(models.Model):
 POSITION_CHOICE = (
     ('CEO', 'CEO'),
     ('Chairman', 'Chairman'),
+    ('Director', 'Director'),
+    ('C.F.O', 'C.F.O'),
 )
 
 
@@ -254,6 +256,7 @@ class KeyPeople(models.Model):
     birth_date = models.DateField()
     highest_education = models.CharField(max_length=250)
     position = models.CharField(max_length=50, choices=POSITION_CHOICE)
+    appointment_date = models.DateField(null=True, blank=True)
     company = models.ManyToManyField(CompanyProfile, blank=True, related_name='key_people')
 
     def get_absolute_url(self):
@@ -310,6 +313,7 @@ TYPE_CHOICE = (
     ('Analysis', 'Analysis'),
 )
 
+
 class Opinions(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     commentary_type = models.CharField(max_length=10, choices=TYPE_CHOICE, default='Analysis')
@@ -324,7 +328,6 @@ class Opinions(models.Model):
 
     def __str__(self):
         return f"{self.author}'s opinion"
-
 
 
 class FinancialStatement(models.Model):
@@ -361,10 +364,7 @@ class Review(models.Model):
                                        help_text="The date and time the review was last edited.")
     creator = models.ForeignKey(auth.get_user_model(), on_delete=models.CASCADE)
     company = models.ForeignKey(CompanyProfile, on_delete=models.CASCADE,
-                             help_text="The Company that this review is for.")
+                                help_text="The Company that this review is for.")
 
     def __str__(self):
         return f'{self.creator.username} - {self.company.name}'
-
-
-

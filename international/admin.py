@@ -7,16 +7,18 @@ from .models import Continent, Country, Indice, Commodity_type, Commodity_profil
 admin.site.register(Continent)
 admin.site.register(President)
 
+
 @admin.register(Country)
 class CountryAdmin(admin.ModelAdmin):
     list_display = ('name', 'capital', 'continent')
     list_filter = ('continent', 'time_zone', 'currency')
-    ordering = ('name', )
+    ordering = ('name',)
     search_fields = ('name', 'capital', 'continent')
+
 
 @admin.register(Indice)
 class IndiceAdmin(admin.ModelAdmin):
-    list_display = ('name', 'country', 'component')
+    list_display = ('id', 'name', 'symbol', 'country')
     list_filter = ('country',)
     ordering = ('country', 'name')
 
@@ -31,10 +33,17 @@ class BourseAdmin(admin.ModelAdmin):
 
 admin.site.register(Commodity_type)
 admin.site.register(Commodity_profile)
-admin.site.register(CentralBank)
+
+
+@admin.register(CentralBank)
+class CentralBankAdmin(admin.ModelAdmin):
+    list_display = ('name', 'url')
+
+
 admin.site.register(BankRate)
 admin.site.register(MajorExports)
 admin.site.register(UnemploymentRate)
+
 
 @admin.register(GDP)
 class GDPAdmin(admin.ModelAdmin):

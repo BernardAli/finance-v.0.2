@@ -1,7 +1,11 @@
 from django.utils import timezone
+from datetime import datetime, timedelta
+
+import pandas as pd
 
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
+from django.db.models import Avg, Max, Min
 from django.db.models import Sum
 from django.core.paginator import Paginator
 from django.db.models import Sum
@@ -11,7 +15,7 @@ from django.db.models import Q
 from rates.models import Inflation, MPR, Security, T_BILL
 from .models import Sector, Tag, CompanyProfile, Market, ShareDetail, SharePrice, Indices, Report, \
     MarketReport, PressRelease, Auditors, IPO, Dividend, Ownership, Registrar, Subsidiaries, Opinions, \
-    FinancialStatement, Review
+    FinancialStatement, Review, FinancialPeriod
 from news.models import News
 from international.models import Continent, Indice, Commodity_type, BankRate, GDP, UnemploymentRate
 from .utils import average_rating
@@ -90,22 +94,33 @@ def listed_companies(request):
 def company_details(request, company_id):
     company = get_object_or_404(CompanyProfile, id=company_id)
     share = ShareDetail.objects.filter(company_id=company_id)
-    share_price = SharePrice.objects.filter(company_id=company_id)[:10]
+    share_price = SharePrice.objects.filter(company_id=company_id).order_by('date')
+    open_price = SharePrice.objects.filter(company_id=company_id).order_by('date')
+    share_price_latest = SharePrice.objects.filter(company_id=company_id).order_by('date').last()
+    share_price_first = SharePrice.objects.filter(company_id=company_id).order_by('date').first()
     ipos = IPO.objects.filter(company_id=company_id)
     auditor = Auditors.objects.filter(company=company_id)
     reports = Report.objects.filter(company_id=company_id)
     dividends = Dividend.objects.filter(company_id=company_id).order_by('-register_closure')[:1]
     release = PressRelease.objects.filter(company_id=company_id).order_by('-date')[:5]
+    price_year_start = SharePrice.objects.filter(company_id=company_id, date__year=2022).order_by('-date').first()
     price = SharePrice.objects.filter(company_id=company_id).last()
+    previous_close = SharePrice.objects.filter(company_id=company_id).order_by('-id')[1]
     ownership = Ownership.objects.filter(company_id=company_id).filter(date__year=2020 | 2021)
     percent_sum = Ownership.objects.aggregate(Sum('percentage_holding'))
-    subsidiaries = Subsidiaries.objects.filter(company_id=company_id)
-    statement = FinancialStatement.objects.filter(company_id=company_id).last()
+    subsidiaries = Subsidiaries.objects.filter(company_id=company_id).all()
+    statement = FinancialStatement.objects.filter(company_id=company_id).order_by('file__year').last()
+    previous_revenue = FinancialStatement.objects.filter(company_id=company_id).order_by('-file__year')[1]
     reviews = company.review_set.all()
     analysis = Opinions.objects.filter(commentary_type='Analysis', company=company).order_by('-date')[:3]
+    periods = FinancialPeriod.objects.all()
     # market_cap = price.price * share.issued_shares
     print(reviews.count())
     company_rating = average_rating([review.rating for review in reviews])
+    # df = pd.DataFrame(share_price)
+
+    statements = FinancialStatement.objects.filter(company_id=company_id).order_by('file__year')
+
     context = {
             "company_rating": company_rating,
             "reviews": reviews,
@@ -126,7 +141,27 @@ def company_details(request, company_id):
             'registrars': company.registrar.all(),
             'subsidiaries': subsidiaries,
             'statement': statement, 
-            'analysis': analysis
+            'analysis': analysis,
+            'previous_close': previous_close,
+            'price_year_start': price_year_start,
+            'periods': periods,
+            'previous_revenue': previous_revenue,
+            'share_price_latest': share_price_latest,
+            'one_month': share_price_latest.date - timedelta(weeks=4),
+            'six_month': share_price_latest.date - timedelta(weeks=26),
+            'one_year': share_price_latest.date - timedelta(weeks=52),
+            'share_price_first': share_price_first.date,
+            'open_price': open_price,
+            # 'price_book': df.to_html(),
+            'ma5': SharePrice.objects.filter(company_id=company_id).order_by('-date')[:5].aggregate(Avg("price")),
+            'ma10': SharePrice.objects.filter(company_id=company_id).order_by('-date')[:10].aggregate(Avg("price")),
+            'ma20': SharePrice.objects.filter(company_id=company_id).order_by('-date')[:20].aggregate(Avg("price")),
+            'ma50': SharePrice.objects.filter(company_id=company_id).order_by('-date')[:50].aggregate(Avg("price")),
+            'ma100': SharePrice.objects.filter(company_id=company_id).order_by('-date')[:100].aggregate(Avg("price")),
+            'low_14': SharePrice.objects.filter(company_id=company_id).order_by('-date')[:14].aggregate(Min("price")),
+            'high_14': SharePrice.objects.filter(company_id=company_id).order_by('-date')[:14].aggregate(Max("price")),
+
+            'statements': statements,
     }
     return render(request, 'company_details.html', context)
 
@@ -204,19 +239,46 @@ def market(request, market_slug):
 def stock_market_view(request):
     sectors = Sector.objects.all()
     markets = Market.objects.exclude(market='None')
-    indices = Indices.objects.all()[:5]
+    indices = Indices.objects.filter(index__symbol='GSE-CI')
+    fsi_indices = Indices.objects.filter(index__symbol='GSE-FSI')
     auditors = Auditors.objects.all()[:8]
     market_reports = MarketReport.objects.all().order_by('-session_number')[:5]
 
     companies_counts = CompanyProfile.objects.filter(country=1).count()
+    ci_price_first = Indices.objects.filter(index__symbol='GSE-CI').order_by('date').first()
+    ci_price_latest = Indices.objects.filter(index__symbol='GSE-CI').order_by('date').last()
+
+    fsi_price_first = Indices.objects.filter(index__symbol='GSE-CI').order_by('date').first()
+    fsi_price_latest = Indices.objects.filter(index__symbol='GSE-CI').order_by('date').last()
 
     context = {
         'sectors': sectors,
         'markets': markets,
         'indices': indices,
+        'fsi_indices': fsi_indices,
         'market_reports': market_reports,
         'auditors': auditors,
         'companies_counts': companies_counts,
+        'ci': Indices.objects.filter(index__symbol='GSE-CI').last(),
+        'ci_previous': Indices.objects.filter(index__symbol='GSE-CI').order_by('-date')[1],
+        'ci_chart': Indices.objects.filter(index__symbol='GSE-CI').order_by('-date')[:5],
+        'fsi': Indices.objects.filter(index__symbol='GSE-FSI').last(),
+        'fsi_previous': Indices.objects.filter(index__symbol='GSE-FSI').order_by('-date')[1],
+        'share_price_first': ci_price_first.date,
+        'share_price_latest': ci_price_latest,
+        'one_month': ci_price_latest.date - timedelta(weeks=4),
+        'six_month': ci_price_latest.date - timedelta(weeks=26),
+        'one_year': ci_price_latest.date - timedelta(weeks=52),
+        'three_year': ci_price_latest.date - timedelta(weeks=156),
+        'five_year': ci_price_latest.date - timedelta(weeks=260),
+
+        'fsi_share_price_first': ci_price_first.date,
+        'fsi_share_price_latest': ci_price_latest,
+        'fsi_one_month': ci_price_latest.date - timedelta(weeks=4),
+        'fsi_six_month': ci_price_latest.date - timedelta(weeks=26),
+        'fsi_one_year': ci_price_latest.date - timedelta(weeks=52),
+        'fsi_three_year': ci_price_latest.date - timedelta(weeks=156),
+        'fsi_five_year': ci_price_latest.date - timedelta(weeks=260),
     }
 
     return render(request, 'stock_market.html', context)

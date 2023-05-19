@@ -41,39 +41,60 @@
                                 </div>
                                 <!-- Card Body -->
                                 <div class="card-body">
-                                    <div class="chart-area">
-                                        <canvas id="gse-indices" width="400" height="85"></canvas>
-                                    </div>
                                     <div>
-                                    <script>
-                                        var ctx = document.getElementById('gse-indices').getContext('2d');
-                                        var myChart = new Chart(ctx, {
-                                            type: 'line',
-                                            data: {
-                                                labels: [{% for index in inflation %} '{{index.month|date:"M, Y" }}', {% endfor %}],
-                                                datasets: [{
-                                                    label: 'Inflation Rate',
-                                                    data: [{% for index in inflation %} {{index.rate}}, {% endfor %}],
-                                                    backgroundColor: [
-                                                        'rgba(0, 0, 255, 0.6)',
-                                                        'rgba(54, 162, 235, 0.2)',
-                                                    ],
-                                                    borderColor: [
-                                                        'rgba(0, 0, 255, 1)',
-                                                        'rgba(54, 162, 235, 1)',
-                                                    ],
-                                                    borderWidth: 2
-                                                }]
-                                            },
-                                            options: {
-                                                scales: {
-                                                    y: {
-                                                        beginAtZero: true
-                                                    }
+                                    <div id="areaChart"></div>
+
+                                          <script>
+                                            document.addEventListener("DOMContentLoaded", () => {
+                                              const series = {
+                                                "monthDataSeries1": {
+                                                  "prices": [{% for rate in inflation_chart %} {{rate.rate}}, {% endfor %}],
+                                                  "dates": [{% for rate in inflation_chart %} '{{rate.month|date:"M, Y" }}', {% endfor %}]
                                                 }
-                                            }
-                                        });
-                                        </script>
+                                              }
+                                              new ApexCharts(document.querySelector("#areaChart"), {
+                                                series: [{
+                                                  name: "Inflation",
+                                                  data: series.monthDataSeries1.prices
+                                                }],
+                                                chart: {
+                                                  type: 'bar',
+                                                  height: 350,
+                                                  zoom: {
+                                                    enabled: true
+                                                  }
+                                                },
+                                                dataLabels: {
+                                                  enabled: false
+                                                },
+                                                stroke: {
+                                                  curve: 'straight'
+                                                },
+                                                subtitle: {
+                                                  text: 'Inflation Movements',
+                                                  align: 'left'
+                                                },
+                                                labels: series.monthDataSeries1.dates,
+                                                xaxis: {
+                                                  type: 'datetime',
+                                                },
+                                                yaxis: {
+                                                  opposite: true
+                                                },
+                                                 tooltip: {
+                                                    x: {
+                                                      show: true,
+                                                      format: 'MMM yy',
+                                                      formatter: undefined,
+                                                  },
+                                                },
+                                                legend: {
+                                                  horizontalAlign: 'left'
+                                                }
+                                              }).render();
+                                            });
+                                          </script>
+                                          <!-- End Area Chart -->
                                     </div>
                                 </div>
                             </div>
