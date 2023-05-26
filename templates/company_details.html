@@ -12,9 +12,20 @@
 
                     <!-- Page Heading -->
                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                        <h1 class="h3 mb-0 text-gray-800">{{ company.name }} ({{ company.company_id }})</h1>
-                        <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
-                                class="fas fa-download fa-sm text-white-50"></i> Latest Report</a>
+                        <h1 class="h3 mb-0 text-gray-800">{{ company.name }} ({{ company.country.code }}-{{ company.company_id }})</h1>
+                        <p>
+                            <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-danger shadow-sm pl-3 pr-3">Sell</a>
+                            <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm pl-3 pr-3">Buy</a>
+                        </p>
+                        <p>
+                            <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
+                                class="fas fa-download fa-sm text-white-50"></i> Latest Report
+                            </a>
+                            <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
+                                class="fas fa-star fa-sm text-white-50"></i> Add to WatchList
+                            </a>
+                        </p>
+
                     </div>
 
                    <div class="row">
@@ -91,12 +102,15 @@
                                         <li class="nav-item">
                                             <a class="nav-link" id="ratings-tab" data-toggle="tab" href="#ratings" role="tab" aria-controls="contact" aria-selected="false">Ratings</a>
                                         </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" id="split-tab" data-toggle="tab" href="#split" role="tab" aria-controls="contact" aria-selected="false">Dividends / Share Splits</a>
+                                        </li>
                                     </ul>
                                     <div class="tab-content" id="myTabContent">
-                                      <div class="tab-pane fade show active pt-5" id="home" role="tabpanel" aria-labelledby="home-tab">
+                                      <div class="tab-pane fade show active pt-3" id="home" role="tabpanel" aria-labelledby="home-tab">
                                         <p>{{ company.summary }}</p>
                                       </div>
-                                      <div class="tab-pane fade pt-5" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                                      <div class="tab-pane fade pt-3" id="profile" role="tabpanel" aria-labelledby="profile-tab">
                                           <!-- <p>Financials Here</p> -->
                                           {% if statement %}
                                           <p>Financial Statements for {{statement.file.year}}</p>
@@ -113,34 +127,34 @@
                                             <div class="col-9">
                                               <div class="tab-content" id="v-pills-tabContent">
                                                 <div class="tab-pane fade show active" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab">
-                                                    <table class="table table-striped table-bordered">
+                                                    <table class="table table-striped table-bordered table-hover">
                                                         <tr>
                                                             <th></th>
                                                             <th>{{company.country.currency_code}}</th>
                                                         </tr>
                                                         <tr>
-                                                            <td>Revenue (m)</td>
-                                                            <td class="value">{{statement.total_operating_revenue|div:1000000|intcomma}}</td>
+                                                            <td>Revenue (million)</td>
+                                                            <td class="value">{{statement.total_operating_revenue|div:1000000|floatformat:2|intcomma}}</td>
                                                         </tr>
                                                         <tr>
                                                             <td>Revenue Per Share</td>
-                                                            <td class="value">{% for detail in share %}{{ statement.total_operating_revenue|div:detail.issued_shares|floatformat:4 }}{% endfor %}</td>
+                                                            <td class="value">{% for detail in share %}{{ statement.total_operating_revenue|div:detail.issued_shares|floatformat:2 }}{% endfor %}</td>
                                                         </tr>
                                                         <tr>
                                                             <td>Revenue Growth (%)</td>
                                                             <td class="value">{{statement.total_operating_revenue|sub:previous_revenue.total_operating_revenue|div:previous_revenue.total_operating_revenue|mul:100|floatformat:2}}</td>
                                                         </tr>
                                                         <tr>
-                                                            <td>Gross Profit (m)</td>
-                                                            <td class="value">{{statement.gross_profit_ebitda|div:1000000|intcomma}}</td>
+                                                            <td>Gross Profit (million)</td>
+                                                            <td class="value">{{statement.gross_profit_ebitda|div:1000000|floatformat:2|intcomma}}</td>
                                                         </tr>
                                                         <tr>
-                                                            <td>Net Income (m)</td>
-                                                            <td class="value">{{statement.net_profit_loss|div:1000000|intcomma}}</td>
+                                                            <td>Net Income (million)</td>
+                                                            <td class="value">{{statement.net_profit_loss|div:1000000|floatformat:2|intcomma}}</td>
                                                         </tr>
                                                         <tr>
                                                             <td>Diluted EPS</td>
-                                                            <td class="value">{% for detail in share %}{{ statement.net_profit_loss|div:detail.issued_shares|floatformat:4 }}{% endfor %}</td>
+                                                            <td class="value">{% for detail in share %}{{ statement.net_profit_loss|div:detail.issued_shares|floatformat:2 }}{% endfor %}</td>
                                                         </tr>
                                                         <tr>
                                                             <td>Earning Growth  (%)</td>
@@ -149,102 +163,102 @@
                                                     </table>
                                                 </div>
                                                 <div class="tab-pane fade" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
-                                                    <table class="table table-striped table-bordered">
+                                                    <table class="table table-striped table-bordered table-hover">
                                                         <tr>
                                                             <th></th>
                                                             <th>{{company.country.currency_code}}</th>
                                                         </tr>
                                                         <tr>
-                                                            <td>Total Cash (m)</td>
-                                                            <td class="value">{{statement.total_cash|div:1000000|intcomma}}</td>
+                                                            <td>Total Cash (million)</td>
+                                                            <td class="value">{{statement.total_cash|div:1000000|floatformat:2|intcomma}}</td>
                                                         </tr>
                                                         <tr>
                                                             <td>Total Cash Per Share</td>
-                                                            <td class="value">{% for detail in share %}{{ statement.total_cash|div:detail.issued_shares|floatformat:4 }}{% endfor %}</td>
+                                                            <td class="value">{% for detail in share %}{{ statement.total_cash|div:detail.issued_shares|floatformat:2 }}{% endfor %}</td>
                                                         </tr>
                                                         <tr>
-                                                            <td>Total Debt (m)</td>
-                                                            <td class="value">{{statement.total_liability|div:1000000|intcomma}}</td>
+                                                            <td>Total Debt (million)</td>
+                                                            <td class="value">{{statement.total_liability|div:1000000|floatformat:2|intcomma}}</td>
                                                         </tr>
                                                         <tr>
                                                             <td>Total Debt/ Equity</td>
-                                                            <td class="value">{{statement.total_liability|div:statement.total_equity|floatformat:4}}</td>
+                                                            <td class="value">{{statement.total_liability|div:statement.total_equity|floatformat:2}}</td>
                                                         </tr>
                                                         <tr>
                                                             <td>Current Ratio</td>
-                                                            <td class="value">{{statement.current_asset|div:statement.current_liability|floatformat:4}}</td>
+                                                            <td class="value">{{statement.current_asset|div:statement.current_liability|floatformat:2}}</td>
                                                         </tr>
                                                         <tr>
                                                             <td>Book Value Per Share</td>
-                                                            <td class="value">{% for detail in share %}{{ statement.total_equity|div:detail.issued_shares|floatformat:4 }}{% endfor %}</td>
+                                                            <td class="value">{% for detail in share %}{{ statement.total_equity|div:detail.issued_shares|floatformat:2 }}{% endfor %}</td>
                                                         </tr>
                                                     </table>
                                                 </div>
                                                 <div class="tab-pane fade" id="v-pills-messages" role="tabpanel" aria-labelledby="v-pills-messages-tab">
-                                                    <table class="table table-striped table-bordered">
+                                                    <table class="table table-striped table-bordered table-hover">
                                                         <tr>
                                                             <th></th>
                                                             <th>{{company.country.currency_code}}</th>
                                                         </tr>
                                                         <tr>
-                                                            <td>Operating Cash Flow (m)</td>
-                                                            <td class="value">{{statement.operating_cash_flow|div:1000000|intcomma}}</td>
+                                                            <td>Operating Cash Flow (million)</td>
+                                                            <td class="value">{{statement.operating_cash_flow|div:1000000|floatformat:2|intcomma}}</td>
                                                         </tr>
                                                         <tr>
-                                                            <td>Levered Free Cash Flow (m)</td>
-                                                            <td class="value">{{statement.operating_cash_flow|add:statement.investing_cash_flow|div:1000000|intcomma}}</td>
+                                                            <td>Levered Free Cash Flow (million)</td>
+                                                            <td class="value">{{statement.operating_cash_flow|add:statement.investing_cash_flow|div:1000000|floatformat:2|intcomma}}</td>
                                                         </tr>
                                                     </table>
                                                 </div>
                                                 <div class="tab-pane fade" id="v-pills-settings" role="tabpanel" aria-labelledby="v-pills-settings-tab">
-                                                    <table class="table table-striped table-bordered">
+                                                    <table class="table table-striped table-bordered table-hover">
                                                         <tr>
                                                             <th></th>
                                                             <th>%</th>
                                                         </tr>
                                                         <tr>
                                                             <td>Profit Margin</td>
-                                                            <td class="value">{{statement.net_profit_loss|div:statement.total_operating_revenue|floatformat:4}}</td>
+                                                            <td class="value">{{statement.net_profit_loss|div:statement.total_operating_revenue|floatformat:2}}</td>
                                                         </tr>
                                                         <tr>
                                                             <td>Operating Margin</td>
-                                                            <td class="value">{{statement.operating_profit_ebit|div:statement.total_operating_revenue|floatformat:4}}</td>
+                                                            <td class="value">{{statement.operating_profit_ebit|div:statement.total_operating_revenue|floatformat:2}}</td>
                                                         </tr>
                                                     </table>
                                                 </div>
                                                 <div class="tab-pane fade" id="v-pills-valuation" role="tabpanel" aria-labelledby="v-pills-valuation-tab">
-                                                    <table class="table table-striped table-bordered">
+                                                    <table class="table table-striped table-bordered table-hover">
                                                         <tr>
                                                             <th></th>
                                                             <th>{{company.country.currency_code}}</th>
                                                         </tr>
                                                         <tr>
-                                                            <td>Market Cap (m)</td>
-                                                            <td>{{ company.country.currency_code }} {% for detail in share %}{{ detail.issued_shares|mul:price.price|div:1000000|intcomma|floatformat:2 }}{% endfor %}</td>
+                                                            <td>Market Cap (million)</td>
+                                                            <td>{{ company.country.currency_code }} {% for detail in share %}{{ detail.issued_shares|mul:price.price|div:1000000|floatformat:2|intcomma }}{% endfor %}</td>
                                                         </tr>
                                                         <tr>
-                                                            <td>Enterprise Value (m)</td>
+                                                            <td>Enterprise Value (million)</td>
                                                             <td class="value">{{ company.country.currency_code }} {% for detail in share %}{{ detail.issued_shares|mul:price.price|sub:statement.total_cash|div:1000000|floatformat:2|intcomma  }}{% endfor %}</td>
                                                         </tr>
                                                         <tr>
                                                             <td>Trailing P/E </td>
-                                                            <td class="value">{% for detail in share %} {{ statement.net_profit_loss|div:detail.issued_shares|floatformat:4 }}{% endfor %}</td>
+                                                            <td class="value">{% for detail in share %} {{ statement.net_profit_loss|div:detail.issued_shares|floatformat:2 }}{% endfor %}</td>
                                                         </tr>
                                                         <tr>
                                                             <td>Price/Sales</td>
-                                                            <td class="value">{% for detail in share %}{{ detail.issued_shares|mul:price.price|div:statement.total_operating_revenue|floatformat:4 }}{% endfor %}</td>
+                                                            <td class="value">{% for detail in share %}{{ detail.issued_shares|mul:price.price|div:statement.total_operating_revenue|floatformat:2 }}{% endfor %}</td>
                                                         </tr>
                                                         <tr>
                                                             <td>Price/Book</td>
-                                                            <td class="value">{% for detail in share %}{{ detail.issued_shares|mul:price.price|div:statement.total_equity|floatformat:4 }}{% endfor %}</td>
+                                                            <td class="value">{% for detail in share %}{{ detail.issued_shares|mul:price.price|div:statement.total_equity|floatformat:2 }}{% endfor %}</td>
                                                         </tr>
                                                         <tr>
                                                             <td>Enterprise Value/ Revenue</td>
-                                                            <td class="value">{% for detail in share %}{{ detail.issued_shares|mul:price.price|sub:statement.total_cash|div:statement.total_operating_revenue|floatformat:4 }}{% endfor %}</td>
+                                                            <td class="value">{% for detail in share %}{{ detail.issued_shares|mul:price.price|sub:statement.total_cash|div:statement.total_operating_revenue|floatformat:2 }}{% endfor %}</td>
                                                         </tr>
                                                         <tr>
                                                             <td>Enterprise Value/ EBITDA</td>
-                                                            <td class="value">{% for detail in share %}{{ detail.issued_shares|mul:price.price|sub:statement.total_cash|div:statement.gross_profit_ebitda|floatformat:4 }}{% endfor %}</td>
+                                                            <td class="value">{% for detail in share %}{{ detail.issued_shares|mul:price.price|sub:statement.total_cash|div:statement.gross_profit_ebitda|floatformat:2 }}{% endfor %}</td>
                                                         </tr>
                                                     </table>
                                                 </div>
@@ -256,7 +270,7 @@
                                         {% endif %}
                                           
                                       </div>
-                                      <div class="tab-pane fade pt-5" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+                                      <div class="tab-pane fade pt-3" id="contact" role="tabpanel" aria-labelledby="contact-tab">
                                         <div class="row">
                                               <div class="col-2">
                                                 <div class="nav flex-column nav-pills" id="v-charts" role="tablist" aria-orientation="vertical">
@@ -265,6 +279,8 @@
                                                   <button class="nav-link" id="v-candle-tab" data-toggle="pill" data-target="#v-candle" type="button" role="tab" aria-controls="v-candle" aria-selected="false">Candle Sticks</button>
                                                     <br>
                                                   <button class="nav-link" id="v-profit-tab" data-toggle="pill" data-target="#v-profit" type="button" role="tab" aria-controls="v-profit" aria-selected="false">Fin. Statement</button>
+                                                    <br>
+                                                  <button class="nav-link" id="v-radar-tab" data-toggle="pill" data-target="#v-radar" type="button" role="tab" aria-controls="v-radar" aria-selected="false">Stmt Radar</button>
                                                 </div>
                                               </div>
                                               <div class="col-10">
@@ -275,7 +291,7 @@
                                                         <button id="one_year" type="button">1Y</button>
                                                         <button id="ytd" type="button">YTD</button>
                                                         <button id="all" type="button">ALL</button>
-                                                        <div id="chart"></div>
+                                                        <div id="price_chart"></div>
 
 
                                                       <script>
@@ -374,8 +390,8 @@
                                                         },
                                                         };
 
-                                                        var chart = new ApexCharts(document.querySelector("#chart"), options);
-                                                        chart.render();
+                                                        var price_chart = new ApexCharts(document.querySelector("#price_chart"), options);
+                                                        price_chart.render();
 
                                                         var resetCssClasses = function(activeEl) {
                                                             var els = document.querySelectorAll('button')
@@ -389,7 +405,7 @@
                                                           document.querySelector('#one_month').addEventListener('click', function(e) {
                                                               resetCssClasses(e)
 
-                                                              chart.zoomX(
+                                                              price_chart.zoomX(
                                                                 new Date(one_month).getTime(),
                                                                 new Date(latest_trading_day).getTime()
                                                               )
@@ -398,7 +414,7 @@
                                                           document.querySelector('#six_months').addEventListener('click', function(e) {
                                                               resetCssClasses(e)
 
-                                                              chart.zoomX(
+                                                              price_chart.zoomX(
                                                                 new Date(six_month).getTime(),
                                                                 new Date(latest_trading_day).getTime()
                                                               )
@@ -406,7 +422,7 @@
 
                                                           document.querySelector('#one_year').addEventListener('click', function(e) {
                                                               resetCssClasses(e)
-                                                              chart.zoomX(
+                                                              price_chart.zoomX(
                                                                 new Date(one_year).getTime(),
                                                                 new Date(latest_trading_day).getTime()
                                                               )
@@ -415,7 +431,7 @@
                                                           document.querySelector('#ytd').addEventListener('click', function(e) {
                                                             resetCssClasses(e)
 
-                                                            chart.zoomX(
+                                                            price_chart.zoomX(
                                                               new Date('2023-01-01').getTime(),
                                                               new Date(latest_trading_day).getTime()
                                                             )
@@ -424,7 +440,7 @@
                                                           document.querySelector('#all').addEventListener('click', function(e) {
                                                             resetCssClasses(e)
 
-                                                            chart.zoomX(
+                                                            price_chart.zoomX(
                                                               new Date(share_price_first).getTime(),
                                                               new Date().getTime(),
                                                             )
@@ -756,16 +772,62 @@
                                                             chart.render();
                                                         </script>
                                                   </div>
+                                                    <div class="tab-pane fade" id="v-radar" role="tabpanel" aria-labelledby="v-radar-tab">
+                                                      <div id="radar"></div>
+                                                        <script>
+                                                            var options = {
+                                                                  series: [{
+                                                                  name: 'Net Income (Loss)',
+                                                                  data: [{% for report in statements %} {{report.net_profit_loss|div:1000000}}, {% endfor %}],
+                                                                }, {
+                                                                  name: 'Operating Cash Flow',
+                                                                  data: [{% for report in statements %} {{report.operating_cash_flow|div:1000000}}, {% endfor %}],
+                                                                }, {
+                                                                  name: 'Revenue',
+                                                                  data: [{% for report in statements %} {{report.total_operating_revenue|div:1000000}}, {% endfor %}],
+                                                                }],
+                                                                  chart: {
+                                                                  height: 350,
+                                                                  type: 'radar',
+                                                                  dropShadow: {
+                                                                    enabled: true,
+                                                                    blur: 1,
+                                                                    left: 1,
+                                                                    top: 1
+                                                                  }
+                                                                },
+                                                                title: {
+                                                                  text: 'Radar Chart - Financial Statement Summary'
+                                                                },
+                                                                stroke: {
+                                                                  width: 2
+                                                                },
+                                                                fill: {
+                                                                  opacity: 0.1
+                                                                },
+                                                                markers: {
+                                                                  size: 0
+                                                                },
+                                                                xaxis: {
+                                                                  categories: [{% for report in statements %} {{report.file.year|date:"Y"}}, {% endfor %}]
+                                                                }
+                                                                };
+
+                                                                var chart = new ApexCharts(document.querySelector("#radar"), options);
+                                                                chart.render();
+                                                        </script>
+                                                  </div>
                                                 </div>
                                               </div>
                                             </div>
                                       </div>
-                                        <div class="tab-pane fade pt-5" id="technical" role="tabpanel" aria-labelledby="technical-tab">
-                                            <p>Technical Analysis</p>
+                                        <div class="tab-pane fade pt-3" id="technical" role="tabpanel" aria-labelledby="technical-tab">
+
                                             <div class="row">
                                               <div class="col-3">
                                                 <div class="nav flex-column nav-pills" id="v-technical" role="tablist" aria-orientation="vertical">
                                                   <button class="nav-link active" id="v-ma-tab" data-toggle="pill" data-target="#v-ma" type="button" role="tab" aria-controls="v-ma" aria-selected="true">Moving Averages (Days)</button>
+                                                    <br>
                                                   <button class="nav-link" id="v-tech-tab" data-toggle="pill" data-target="#v-tech" type="button" role="tab" aria-controls="v-tech" aria-selected="false">Technical Indicators (Days)</button>
                                                 </div>
                                               </div>
@@ -851,7 +913,7 @@
                                               </div>
                                             </div>
                                       </div>
-                                        <div class="tab-pane fade pt-5" id="analysis" role="tabpanel" aria-labelledby="analysis-tab">                                           
+                                        <div class="tab-pane fade pt-3" id="analysis" role="tabpanel" aria-labelledby="analysis-tab">                                           
                                            <div class="card-body">
                                                 <div class="row pb-2">
                                                     {% for opinion in analysis %}
@@ -877,12 +939,12 @@
                                                 </div>
                                             </div>
                                       </div>
-                                      <div class="tab-pane fade pt-5" id="ownership" role="tabpanel" aria-labelledby="ownership-tab">
+                                      <div class="tab-pane fade pt-3" id="ownership" role="tabpanel" aria-labelledby="ownership-tab">
                                           <p><strong></strong></p>
                                           <div class="table-responsive">
                                               {% if ownership %}
-                                              <h5>Largest Shareholders as at {{ ownership.date }}</h5>
-                                            <table class="table table-bordered" width="50%" cellspacing="0">
+                                              <h5>20 Largest Shareholders</h5>
+                                            <table class="table table-bordered table-hover table-striped" width="40%" cellspacing="0">
                                                 <thead>
                                                     <tr>
                                                         <th>Shareholders</th>
@@ -892,16 +954,16 @@
                                                 </thead>
                                                 <tfoot>
                                                     <tr>
-                                                        <th>Shareholders</th>
-                                                        <th>Number of Shares</th>
-                                                        <th>{{percent_sum__sum}} (%)</th>
+                                                        <th>Total</th>
+                                                        <th>{% for detail in share %} {{ detail.issued_shares|intcomma }}{% endfor %}</th>
+                                                        <th>100 (%)</th>
                                                     </tr>
                                                 </tfoot>
                                                 <tbody>
                                                 {% for shareholder in ownership %}
                                                     <tr>
                                                         <td>{{ shareholder.shareholder_name }}</td>
-                                                        <td>{{ shareholder.shares_owned }}</td>
+                                                        <td>{{ shareholder.shares_owned|intcomma }}</td>
                                                         <td>{{ shareholder.percentage_holding }}</td>
                                                     </tr>
                                                 {% endfor %}
@@ -913,7 +975,7 @@
                                         </div>
                                         </div>
 
-                                        <div class="tab-pane fade pt-5" id="ratings" role="tabpanel" aria-labelledby="ratings-tab">
+                                        <div class="tab-pane fade pt-3" id="ratings" role="tabpanel" aria-labelledby="ratings-tab">
                                             {% if not reviews %}
                                                 <h3>Be the first one to write a review.</h3>
                                             {% else %}
@@ -941,7 +1003,36 @@
                                         {% endif %}
                                         <a class="ui primary button" href="{% url 'review_create' company.pk %}" class="btn btn-primary">Add Review</a>
                                         </div>
-                                        
+                                        <div class="tab-pane fade pt-3" id="split" role="tabpanel" aria-labelledby="split-tab">
+                                            <div class="row">
+                                              <div class="col-3">
+                                                <div class="nav flex-column nav-pills" id="v-splits" role="tablist" aria-orientation="vertical">
+                                                  <button class="nav-link active" id="v-dividend-tab" data-toggle="pill" data-target="#v-dividend" type="button" role="tab" aria-controls="v-dividend" aria-selected="true">Dividend</button>
+                                                    <br>
+                                                  <button class="nav-link" id="v-split-tab" data-toggle="pill" data-target="#v-split" type="button" role="tab" aria-controls="v-split" aria-selected="false">Share Splits</button>
+                                                </div>
+                                              </div>
+                                              <div class="col-9">
+                                                <div class="tab-content" id="v-splitsContent">
+                                                  <div class="tab-pane fade show active" id="v-dividend" role="tabpanel" aria-labelledby="v-dividend-tab">
+                                                      {% for split in share_splits %}
+                                                        <p><strong>{{split}}</strong></p>
+                                                     {% empty %}
+                                                        <p>{{ company.company_id }} has never paid dividend</p>
+                                                     {% endfor %}
+                                                  </div>
+                                                  <div class="tab-pane fade" id="v-split" role="tabpanel" aria-labelledby="v-split-tab">
+                                                      {% for split in share_splits %}
+                                                        <p><strong>{{split}}</strong></p>
+                                                     {% empty %}
+                                                        <p>{{ company.company_id }} has no share spilts</p>
+                                                     {% endfor %}
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </div>
+                                        </div>
+
                                         
                                     </div>
                                 </div>
@@ -953,19 +1044,86 @@
                                     <h6 class="m-0 font-weight-bold text-primary">Financial Statements</h6>
                                 </div>
                                 <div class="card-body text text-center">
-                                    {% for report in reports %}
-                                            <div class="col-lg-3 mb-2">
-                                                <div class="card shadow">
-                                                    <div class="card-body text-center">
-                                                        <a href="{{report.file.url}}">{{report.year}}</a>
-                                                    </div>
+                                    <div class="row">
+                                              <div class="col-3">
+                                                <div class="nav flex-column nav-pills" id="v-statements" role="tablist" aria-orientation="vertical">
+                                                  <button class="nav-link active" id="v-qtr-tab" data-toggle="pill" data-target="#v-qtr" type="button" role="tab" aria-controls="v-qtr" aria-selected="true">1 Qtr</button>
+                                                    <br>
+                                                  <button class="nav-link" id="v-half-tab" data-toggle="pill" data-target="#v-half" type="button" role="tab" aria-controls="v-half" aria-selected="false">Half Year</button>
+                                                    <br>
+                                                  <button class="nav-link" id="v-nine-tab" data-toggle="pill" data-target="#v-nine" type="button" role="tab" aria-controls="v-nine" aria-selected="false">Nine Months</button>
+                                                    <br>
+                                                  <button class="nav-link" id="v-full-tab" data-toggle="pill" data-target="#v-full" type="button" role="tab" aria-controls="v-full" aria-selected="false">Full Year</button>
                                                 </div>
+                                              </div>
+                                              <div class="col-9">
+                                                <div class="tab-content" id="v-statementsContent">
+                                                  <div class="tab-pane fade show active" id="v-qtr" role="tabpanel" aria-labelledby="v-qtr-tab">
+                                                      {% for report in reports_qtr %}
+                                                            <div class="col-lg-3 mb-2">
+                                                                <div class="card shadow">
+                                                                    <div class="card-body text-center">
+                                                                        <a href="{{report.file.url}}">{{report.year}}</a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                      {% endfor %}
+                                                  </div>
+                                                  <div class="tab-pane fade" id="v-half" role="tabpanel" aria-labelledby="v-half-tab">
+                                                        {% for report in reports_half %}
+                                                            <div class="col-lg-3 mb-2">
+                                                                <div class="card shadow">
+                                                                    <div class="card-body text-center">
+                                                                        <a href="{{report.file.url}}">{{report.year}}</a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                      {% endfor %}
+                                                  </div>
+                                                    <div class="tab-pane fade" id="v-nine" role="tabpanel" aria-labelledby="v-nine-tab">
+                                                        {% for report in reports_nine %}
+                                                            <div class="col-lg-3 mb-2">
+                                                                <div class="card shadow">
+                                                                    <div class="card-body text-center">
+                                                                        <a href="{{report.file.url}}">{{report.year}}</a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                      {% endfor %}
+                                                  </div>
+
+                                                    <div class="tab-pane fade" id="v-full" role="tabpanel" aria-labelledby="v-full-tab">
+                                                        {% for report in reports_full %}
+                                                            <div class="col-lg-3 mb-2">
+                                                                <div class="card shadow">
+                                                                    <div class="card-body text-center">
+                                                                        <a href="{{report.file.url}}">{{report.year}}</a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                      {% endfor %}
+                                                  </div>
+                                                </div>
+                                              </div>
                                             </div>
-                                    {% endfor %}
                                 </div>
                             </div>
 
                             <!-- Basic Card Example -->
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">Major Products</h6>
+                                </div>
+                                <div class="card-body">
+                                     {% for service in products %}
+                                        <p><strong>{{service}}</strong></p>
+                                     {% empty %}
+                                        <p>No service/product added yet</p>
+                                     {% endfor %}
+                                </div>
+                            </div>
+
+                             <!-- Basic Card Example -->
                             <div class="card shadow mb-4">
                                 <div class="card-header py-3">
                                     <h6 class="m-0 font-weight-bold text-primary">Subsidiaries</h6>
@@ -992,6 +1150,45 @@
                                     {% empty %}
                                         No person listed here
                                     {% endfor %}
+                                </div>
+                            </div>
+
+
+                            <!-- Default Card Example -->
+                            <div class="card mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">Pro</h6>
+                                </div>
+                                <div class="card-body text text-center">
+                                    <ul class="nav nav-tabs" id="myPro" role="tablist">
+                                      <li class="nav-item">
+                                        <a class="nav-link active" id="fairvalue-tab" data-toggle="tab" href="#fairvalue" role="tab" aria-controls="contact" aria-selected="false">Fair value</a>
+                                      </li>
+                                        <li class="nav-item">
+                                        <a class="nav-link" id="score-tab" data-toggle="tab" href="#score" role="tab" aria-controls="score" aria-selected="false">Company Score</a>
+                                      </li>
+                                        <li class="nav-item">
+                                        <a class="nav-link" id="health-tab" data-toggle="tab" href="#health" role="tab" aria-controls="health" aria-selected="false">Financial Health</a>
+                                      </li>
+                                        <li class="nav-item">
+                                        <a class="nav-link" id="Advisory-tab" data-toggle="tab" href="#Advisory" role="tab" aria-controls="Advisory" aria-selected="false">Stock Advisory</a>
+                                      </li>
+                                    </ul>
+                                    <div class="tab-content" id="myProContent">
+                                      <div class="tab-pane fade show active pt-3" id="fairvalue" role="tabpanel" aria-labelledby="fairvalue-tab">
+                                        <p>Company Fair Value Here</p>
+                                      </div>
+                                      <div class="tab-pane fade show pt-3" id="score" role="tabpanel" aria-labelledby="score-tab">
+                                        <p>Company Score Here</p>
+                                      </div>
+                                        <div class="tab-pane fade show pt-3" id="health" role="tabpanel" aria-labelledby="health-tab">
+                                        <p>Company Health Here</p>
+                                      </div>
+                                        <div class="tab-pane fade show pt-3" id="Advisory" role="tabpanel" aria-labelledby="Advisory-tab">
+                                        <p>Company Advisory Here</p>
+                                      </div>
+
+                                    </div>
                                 </div>
                             </div>
 
@@ -1029,6 +1226,7 @@
                                     <p><strong>Registrar:</strong> {% for registrar in registrars %}{{ registrar.name }}{% empty %}No Registrar{% endfor %}</p>
                                     <p><strong>Registered Office:</strong> {{ company.registered_office }}</p>
                                     <p><strong>Incorporate Date:</strong> {{ company.incorporated_date }}</p>
+                                    <p><strong>Employees:</strong> 1234</p>
                                 </div>
                             </div>
 
@@ -1056,44 +1254,56 @@
                                 </div>
                                 <!-- Card Body -->
                                 <div class="card-body">
-                                    <p><strong>Previous Close: </strong>{{ company.country.currency_code }} {{ previous_close.price }}</p>
-                                    <p><strong>Open:</strong> {{ company.country.currency_code }} {{ price.price }}</p>
-                                    <p><strong>Volume:</strong> {{ price.volume }}</p>
-                                    <p><strong>Total Traded Value:</strong> {{ company.country.currency_code }} {{ price.volume|mul:price.price }}</p>
-                                    <p><strong>Market Cap:</strong> {{ company.country.currency_code }} {% for detail in share %}{{ detail.issued_shares|mul:price.price|div:1000000|floatformat:2|intcomma }}{% endfor %} million</p>
-                                    <p><strong>EPS:</strong>
-                                        {% if statement.net_profit_loss|div:detail.issued_shares >= 0 %}
-                                            {% for detail in share %}
-                                                <span class="change-up">{{ statement.net_profit_loss|div:detail.issued_shares|floatformat:4 }}</span>
-                                            {% endfor %}
-                                        {% else %}
-                                            {% for detail in share %}
-                                                <span class="change-down">{{ statement.net_profit_loss|div:detail.issued_shares|floatformat:4 }}</span>
-                                            {% endfor %}
-                                        {% endif %}
-                                    </p>
-                                    <p><strong>YTD(%):</strong>
-                                        {% if price.price|sub:price_year_start.price|mul:100|div:price_year_start.price >= 0 %}
-                                            {% if price.price|sub:price_year_start.price|mul:100|div:price_year_start.price > 0 %}
-                                                <span class="change-up">{{ price.price|sub:price_year_start.price|mul:100|div:price_year_start.price|floatformat:2}}</span>
-                                            {% else %}
-                                                <span class="change-none">{{ price.price|sub:price_year_start.price|mul:100|div:price_year_start.price|floatformat:2}}</span>
-                                            {% endif %}
-                                        {% else %}
-                                            <span class="change-down">{{ price.price|sub:price_year_start.price|mul:100|div:price_year_start.price|floatformat:2}}</span>
-                                        {% endif %}
-                                    </p>
-                                    <p><strong>1-Year Change:</strong>
-                                        {% if price.price|sub:price_year_start.price >= 0 %}
-                                            <span class="change-up">{{ company.country.currency_code }} {{ price.price|sub:price_year_start.price|floatformat:2}}</span>
-                                        {% else %}
-                                            <span class="change-down">{{ company.country.currency_code }} {{ price.price|sub:price_year_start.price|floatformat:2}}</span>
-                                        {% endif %}
-                                    </p>
-                                    <p><strong>Shares Outstanding:</strong> {% for detail in share %} {{ detail.issued_shares|intcomma }}{% endfor %}</p>
+                                    <div class="row">
+                                        <div class="col-7">
+                                            <p><strong>Previous Close: </strong>{{ company.country.currency_code }} {{ previous_close.price }}</p>
+
+                                            <p><strong>Volume:</strong> {{ price.volume }}</p>
+                                            <p><strong>Traded Value:</strong> {{ company.country.currency_code }} {{ price.volume|mul:price.price }}</p>
+                                            <p><strong>Year Range:</strong> {{ company.country.currency_code }} {{ high_52.price__max }} - {{ company.country.currency_code }} {{ low_52.price__min }}</p>
+                                            <p><strong>Market Cap:</strong> {{ company.country.currency_code }} {% for detail in share %}{{ detail.issued_shares|mul:price.price|div:1000000|floatformat:2|intcomma }}{% endfor %} million</p
+
+                                            <p><strong>1-Year Change:</strong>
+                                                {% if price.price|sub:price_year_start.price >= 0 %}
+                                                    <span class="change-up">{{ company.country.currency_code }} {{ price.price|sub:price_year_start.price|floatformat:2}}</span>
+                                                {% else %}
+                                                    <span class="change-down">{{ company.country.currency_code }} {{ price.price|sub:price_year_start.price|floatformat:2}}</span>
+                                                {% endif %}
+                                            </p>
+                                            <p><strong>Shares Outstanding:</strong> {% for detail in share %} {{ detail.issued_shares|intcomma }}{% endfor %}</p>
+                                        </div>
+                                        <div class="col-5">
+                                            <p><strong>Open:</strong> {{ company.country.currency_code }} {{ price.price }}</p>
+                                            <p><strong>YTD(%):</strong>
+                                                {% if price.price|sub:price_year_start.price|mul:100|div:price_year_start.price >= 0 %}
+                                                    {% if price.price|sub:price_year_start.price|mul:100|div:price_year_start.price > 0 %}
+                                                        <span class="change-up">{{ price.price|sub:price_year_start.price|mul:100|div:price_year_start.price|floatformat:2}}</span>
+                                                    {% else %}
+                                                        <span class="change-none">{{ price.price|sub:price_year_start.price|mul:100|div:price_year_start.price|floatformat:2}}</span>
+                                                    {% endif %}
+                                                {% else %}
+                                                    <span class="change-down">{{ price.price|sub:price_year_start.price|mul:100|div:price_year_start.price|floatformat:2}}</span>
+                                                {% endif %}
+                                            </p>
+                                            <p><strong>EPS:</strong>
+                                                {% if statement.net_profit_loss|div:detail.issued_shares >= 0 %}
+                                                    {% for detail in share %}
+                                                        <span class="change-up">{{ statement.net_profit_loss|div:detail.issued_shares|floatformat:4 }}</span>
+                                                    {% endfor %}
+                                                {% else %}
+                                                    {% for detail in share %}
+                                                        <span class="change-down">{{ statement.net_profit_loss|div:detail.issued_shares|floatformat:4 }}</span>
+                                                    {% endfor %}
+                                                {% endif %}
+                                            </p>
+                                            <p><strong>Beta: {{corr|div:indices.value__variance|floatformat:2}}</strong>
+                                            <p><strong>Div (Yield)(%): {{ dividend_latest.final_dividend|div:price.price|mul:100|floatformat:2 }}</strong>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
+                            <!-- Dropdown Card Example -->
                             <!-- Dropdown Card Example -->
                             <div class="card shadow mb-4">
                                 <!-- Card Header - Dropdown -->
@@ -1101,12 +1311,12 @@
                                     class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                                     <h6 class="m-0 font-weight-bold text-primary">Latest Press Releases</h6>
                                     <div class="dropdown no-arrow">
-                                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+                                        <a class="dropdown-toggle" href="#" role="button" id="Releases"
                                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                             <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
                                         </a>
                                         <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-                                            aria-labelledby="dropdownMenuLink">
+                                            aria-labelledby="Releases">
                                             <div class="dropdown-header">Press Releases:</div>
                                             <a class="dropdown-item" href="{% url 'company_press_details' company.id %}">All Press Releases</a>
                                         </div>
@@ -1207,7 +1417,7 @@
                                             <p><strong>Payment Date:</strong> {{ dividend.payment_date }}</p>
                                             <p><strong>AGM Date:</strong> {{ dividend.agm }}</p>
 
-                                            <h6></h6><a href="{% url 'company_dividend_details' company.id %}">Dividends & Splits Page</a></h6>
+<!--                                            <h6></h6><a href="{% url 'company_dividend_details' company.id %}"></a></h6>-->
                                         {% empty %}
                                             <p><strong>{{ company.company_id }} is yet to pay dividend</strong></p>
                                         {% endfor %}
@@ -1230,6 +1440,22 @@
                                         <p><strong>Prospectus:</strong><a href="{{ ipo.prospectus.url }}" target="_blank"> Prospectus  </a><i class="fas fa-download"></i></p>
                                         <p><strong>First Trading Date:</strong> {{ ipo.ipo_date }} </p>
                                         <p><strong>IPO Share Price:</strong> GHS {{ ipo.ipo_price }}</p>
+                                    {% endfor %}
+                                </div>
+                            </div>
+
+                            <div class="card shadow mb-4">
+                                <!-- Card Header - Dropdown -->
+                                <div
+                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                    <h6 class="m-0 font-weight-bold text-primary">Similar Companies</h6>
+                                </div>
+                                <!-- Card Body -->
+                                <div class="card-body">
+                                    {% for company in similar_company %}
+                                        <p><strong><a href="{{ company.get_absolute_url }}" title="{{company.summary}}">{{company.name}}</a></strong>
+                                    {% empty %}
+                                        <p><strong>No Similar Company</strong></p>
                                     {% endfor %}
                                 </div>
                             </div>

@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %} {{ company.company_id }}  {% endblock %}
+{% block title %} {{ auditor.name }}  {% endblock %}
 
 {% block content %}
 
@@ -48,7 +48,7 @@
                             <!-- Basic Card Example -->
                             <div class="card shadow mb-4">
                                 <div class="card-header py-3">
-                                    <h6 class="m-0 font-weight-bold text-primary">Basic Card Example</h6>
+                                    <h6 class="m-0 font-weight-bold text-primary">Value Proposition</h6>
                                 </div>
                                 <div class="card-body">
                                     The styling for this basic card example is created by using default Bootstrap
@@ -56,18 +56,51 @@
                                     easily modified with no need for any custom CSS!
                                 </div>
                             </div>
+
                             <!-- Basic Card Example -->
                             <div class="card shadow mb-4">
                                 <div class="card-header py-3">
-                                    <h6 class="m-0 font-weight-bold text-primary">Key People</h6>
+                                    <h6 class="m-0 font-weight-bold text-primary">Partners</h6>
                                 </div>
                                 <div class="card-body">
                                     {% for people in key_people %}
                                         {{ people.name }}
                                         {{ people.position }}
                                     {% empty %}
-                                        No person listed here
+                                        No partner listed here
                                     {% endfor %}
+                                </div>
+                            </div>
+
+                            <!-- Basic Card Example -->
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">Companies</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        {% for company in companies %}
+                                            <div class="col-xl-4 col-md-6 mb-4">
+                                                <div class="card border-left-primary shadow h-100 py-2">
+                                                    <div class="card-body">
+                                                        <div class="row no-gutters align-items-center">
+                                                            <div class="col mr-2">
+                                                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                                                    <a href="{{ company.get_absolute_url }}">{{ company.company_id }} - ISIN {{ company.isin }}</a>
+                                                                </div>
+                                                                <div class="h5 mb-0 font-weight-bold text-gray-800">{{ company.name }}</div>
+                                                            </div>
+                                                            <div class="col-auto">
+                                                                <img src="{{ company.logo.url }}" alt="" height="60">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {% empty %}
+                                            No company listed here
+                                        {% endfor %}
+                                    </div>
                                 </div>
                             </div>
 
@@ -98,11 +131,10 @@
                                 </div>
                                 <!-- Card Body -->
                                 <div class="card-body">
-                                    <p><strong>Industry:</strong> {% for industry in company.industry.all %}<a href="{{ industry.get_absolute_url }}">{{ industry }}</a>{% endfor %}</p>
-                                    <p><strong>Auditors:</strong> {% for auditor in auditors %}{{ auditor.name }}{% empty %}No Auditor{% endfor %}</p>
-                                    <p><strong>Secretary:</strong> {% for secretary in secretaries %}{{ secretary.name }}{% empty %}No Secretary{% endfor %}</p>
-                                    <p><strong>Registered Office:</strong> {{ company.registered_office }}</p>
-                                    <p><strong>Incorporate Date:</strong> {{ company.incorporated_date }}</p>
+                                    <p><strong>Country:</strong> {{ auditor.country.name }}</p>
+                                    <p><strong>Secretary:</strong> {{ auditor.incorporated_date }}</p>
+                                    <p><strong>Registered Office:</strong> {{ auditor.address }}</p>
+                                    <p><strong>Incorporate Date:</strong> {{ auditor.incorporated_date }}</p>
                                 </div>
                             </div>
 
@@ -111,14 +143,16 @@
                                 <!-- Card Header - Accordion -->
                                 <a href="#collapse2" class="d-block card-header py-3" data-toggle="collapse"
                                     role="button" aria-expanded="true" aria-controls="collapseCardExample">
-                                    <h6 class="m-0 font-weight-bold text-primary">Share Statistics</h6>
+                                    <h6 class="m-0 font-weight-bold text-primary">Services</h6>
                                 </a>
                                 <!-- Card Content - Collapse -->
                                 <div class="collapse show" id="collapse2">
                                     <div class="card-body">
-                                        This is a collapsable card example using Bootstrap's built in collapse
-                                        functionality. <strong>Click on the card header</strong> to see the card body
-                                        collapse and expand!
+                                        {% for service in services %}
+                                            <p><strong>{{service}}</strong></p>
+                                        {% empty %}
+                                            <p>No service added yet</p>
+                                        {% endfor %}
                                     </div>
                                 </div>
                             </div>
@@ -146,8 +180,9 @@
                                 </div>
                                 <!-- Card Body -->
                                 <div class="card-body">
-                                    <p><strong>Email:</strong> {{ company.email }}</p>
-                                    <p><strong>Website:</strong> {{ company.email }}</p>
+                                    <p><strong>Email:</strong> {{ auditor.email }}</p>
+                                    <p><strong>Website:</strong> {{ auditor.website }}</p>
+                                    <p><strong>Telephone:</strong> {{ auditor.telephone }}</p>
                                 </div>
                             </div>
 

@@ -1,21 +1,21 @@
+import pandas as pd
 from django.utils import timezone
 from datetime import datetime, timedelta
 
-import pandas as pd
-
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
-from django.db.models import Avg, Max, Min
+from django.db.models import Avg, Max, Min, Count
+from django.db.models.aggregates import Variance
 from django.db.models import Sum
 from django.core.paginator import Paginator
 from django.db.models import Sum
 from django.views.generic import ListView
 from django.db.models import Q
 
-from rates.models import Inflation, MPR, Security, T_BILL
+from rates.models import Inflation, MPR, Security, T_BILL, InterbankFX
 from .models import Sector, Tag, CompanyProfile, Market, ShareDetail, SharePrice, Indices, Report, \
     MarketReport, PressRelease, Auditors, IPO, Dividend, Ownership, Registrar, Subsidiaries, Opinions, \
-    FinancialStatement, Review, FinancialPeriod
+    FinancialStatement, Review, FinancialPeriod, ShareSplit
 from news.models import News
 from international.models import Continent, Indice, Commodity_type, BankRate, GDP, UnemploymentRate
 from .utils import average_rating
@@ -39,7 +39,8 @@ class SearchResultsListView(ListView):
 def index_view(request):
     inflation = Inflation.objects.last()
     mpr = MPR.objects.last()
-    sectors = Sector.objects.filter()
+    # sectors = CompanyProfile.objects.filter(market__id=1).values('sector__sector').annotate(count=Count('sector')).order_by('-count')
+    sectors = CompanyProfile.objects.values('sector__sector').annotate(count=Count('sector')).order_by('-count')
     markets = Market.objects.exclude(market='None')
     indices = Indices.objects.all()[:10]
     market_reports = MarketReport.objects.all().order_by('-session_number')[:5]
@@ -55,7 +56,11 @@ def index_view(request):
     opinions = Opinions.objects.filter(commentary_type='Opinion').order_by('-date')[:3]
     analysis = Opinions.objects.filter(commentary_type='Analysis').order_by('-date')[:3]
     three_months = T_BILL.objects.filter(security=1).last()
-    nine_months = T_BILL.objects.filter(security=2).last()
+    inflation_previous = Inflation.objects.all().order_by('-month')[1]
+    mpr_previous = MPR.objects.all().order_by('-effective_date')[1]
+    three_months_previous = T_BILL.objects.filter(security=1).order_by('-issue_date')[1]
+    dollar_rate = InterbankFX.objects.filter(pair__pair='USDGHS').last()
+    dollar_rate_previous = InterbankFX.objects.filter(pair__pair='USDGHS').order_by('-date')[1]
 
     context = {
         'inflation': inflation,
@@ -76,7 +81,11 @@ def index_view(request):
         'opinions': opinions,
         'analysis': analysis,
         'three_months': three_months,
-        'nine_months': nine_months,
+        'inflation_previous': inflation_previous,
+        'mpr_previous': mpr_previous,
+        'three_months_previous': three_months_previous,
+        'dollar_rate': dollar_rate,
+        'dollar_rate_previous': dollar_rate_previous,
     }
 
     return render(request, 'index.html', context)
@@ -93,20 +102,31 @@ def listed_companies(request):
 
 def company_details(request, company_id):
     company = get_object_or_404(CompanyProfile, id=company_id)
+    industry = company.industry.first().id
+    market = company.market.first().id
+    similar_company = CompanyProfile.objects.filter(country=company.country).filter(industry__id=industry)\
+        .filter(market__id=market).exclude(company_id=company.company_id).order_by('company_id')
     share = ShareDetail.objects.filter(company_id=company_id)
+    products = company.products.all().order_by('products')
+    issued_shares = ShareDetail.objects.filter(company_id=company_id).first()
     share_price = SharePrice.objects.filter(company_id=company_id).order_by('date')
     open_price = SharePrice.objects.filter(company_id=company_id).order_by('date')
     share_price_latest = SharePrice.objects.filter(company_id=company_id).order_by('date').last()
     share_price_first = SharePrice.objects.filter(company_id=company_id).order_by('date').first()
     ipos = IPO.objects.filter(company_id=company_id)
+    share_splits = ShareSplit.objects.filter(company_id=company_id)
     auditor = Auditors.objects.filter(company=company_id)
     reports = Report.objects.filter(company_id=company_id)
+    reports_qtr = Report.objects.filter(company_id=company_id).filter(period__period='Q1')
+    reports_half = Report.objects.filter(company_id=company_id).filter(period__period='H1')
+    reports_nine = Report.objects.filter(company_id=company_id).filter(period__period='9M')
+    reports_full = Report.objects.filter(company_id=company_id).filter(period__period='FY')
     dividends = Dividend.objects.filter(company_id=company_id).order_by('-register_closure')[:1]
     release = PressRelease.objects.filter(company_id=company_id).order_by('-date')[:5]
     price_year_start = SharePrice.objects.filter(company_id=company_id, date__year=2022).order_by('-date').first()
     price = SharePrice.objects.filter(company_id=company_id).last()
     previous_close = SharePrice.objects.filter(company_id=company_id).order_by('-id')[1]
-    ownership = Ownership.objects.filter(company_id=company_id).filter(date__year=2020 | 2021)
+    ownership = Ownership.objects.filter(company_id=company_id)
     percent_sum = Ownership.objects.aggregate(Sum('percentage_holding'))
     subsidiaries = Subsidiaries.objects.filter(company_id=company_id).all()
     statement = FinancialStatement.objects.filter(company_id=company_id).order_by('file__year').last()
@@ -118,8 +138,19 @@ def company_details(request, company_id):
     print(reviews.count())
     company_rating = average_rating([review.rating for review in reviews])
     # df = pd.DataFrame(share_price)
+    high_52 = SharePrice.objects.filter(company_id=company_id, date__gt=share_price_latest.date - timedelta(weeks=52)).order_by('date').aggregate(Max("price"))
+    low_52 = SharePrice.objects.filter(company_id=company_id, date__gt=share_price_latest.date - timedelta(weeks=52)).order_by('date').aggregate(Min("price"))
 
     statements = FinancialStatement.objects.filter(company_id=company_id).order_by('file__year')
+
+    cap = price.price
+
+    # beta
+    indices = Indices.objects.filter(index=1)[:30].aggregate(Variance("value"))
+    asset = SharePrice.objects.filter(company_id=company_id).order_by('-date')[:30]
+    market = Indices.objects.filter(index=1).order_by('-date')[:30]
+    corr = 30
+    dividend_latest = Dividend.objects.filter(company_id=company_id).order_by('-register_closure').last()
 
     context = {
             "company_rating": company_rating,
@@ -128,6 +159,10 @@ def company_details(request, company_id):
             'share': share,
             'share_price': share_price,
             'reports': reports,
+            'reports_qtr': reports_qtr,
+            'reports_half': reports_half,
+            'reports_nine': reports_nine,
+            'reports_full': reports_full,
             'release': release,
             'auditor': auditor,
             'secretaries': company.secretary.all(),
@@ -136,6 +171,7 @@ def company_details(request, company_id):
             'ipos': ipos,
             'dividends': dividends,
             'ownership': ownership,
+            'similar_company': similar_company,
             # 'market_cap': market_cap,
             "percent_sum": percent_sum,
             'registrars': company.registrar.all(),
@@ -147,6 +183,8 @@ def company_details(request, company_id):
             'periods': periods,
             'previous_revenue': previous_revenue,
             'share_price_latest': share_price_latest,
+            'high_52': high_52,
+            'low_52': low_52,
             'one_month': share_price_latest.date - timedelta(weeks=4),
             'six_month': share_price_latest.date - timedelta(weeks=26),
             'one_year': share_price_latest.date - timedelta(weeks=52),
@@ -162,6 +200,13 @@ def company_details(request, company_id):
             'high_14': SharePrice.objects.filter(company_id=company_id).order_by('-date')[:14].aggregate(Max("price")),
 
             'statements': statements,
+            'cap': cap * issued_shares.issued_shares,
+
+            'indices': indices,
+            'corr': corr,
+            'dividend_latest': dividend_latest,
+            'products': products,
+            'share_splits': share_splits
     }
     return render(request, 'company_details.html', context)
 
@@ -228,10 +273,12 @@ def market(request, market_slug):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
+
     context = {
         'page_obj': page_obj,
         'market': market,
         'market_count': market_count,
+
     }
     return render(request, 'market.html', context)
 
@@ -241,7 +288,8 @@ def stock_market_view(request):
     markets = Market.objects.exclude(market='None')
     indices = Indices.objects.filter(index__symbol='GSE-CI')
     fsi_indices = Indices.objects.filter(index__symbol='GSE-FSI')
-    auditors = Auditors.objects.all()[:8]
+    auditors = Auditors.objects.all().order_by('name')[:8]
+    registrars = Registrar.objects.all().order_by('name')[:8]
     market_reports = MarketReport.objects.all().order_by('-session_number')[:5]
 
     companies_counts = CompanyProfile.objects.filter(country=1).count()
@@ -258,6 +306,7 @@ def stock_market_view(request):
         'fsi_indices': fsi_indices,
         'market_reports': market_reports,
         'auditors': auditors,
+        'registrars': registrars,
         'companies_counts': companies_counts,
         'ci': Indices.objects.filter(index__symbol='GSE-CI').last(),
         'ci_previous': Indices.objects.filter(index__symbol='GSE-CI').order_by('-date')[1],
@@ -341,13 +390,28 @@ def company_summary(request):
 
 def auditor_detail(request, auditor_id):
     auditor = get_object_or_404(Auditors, id=auditor_id)
+    companies = auditor.company.all().order_by('name')
+    services = auditor.services.all().order_by('services')
 
     context = {
-        'auditor': auditor
+        'auditor': auditor,
+        'companies': companies,
+        'services': services
     }
 
     return render(request, 'auditor_details.html', context)
 
+
+def registrar_detail(request, registrar_id):
+    registrar = get_object_or_404(Registrar, id=registrar_id)
+    companies = registrar.company.all().order_by('name')
+
+    context = {
+        'registrar': registrar,
+        'companies': companies
+    }
+
+    return render(request, 'registrar_details.html', context)
 
 
 def review_edit(request, company_pk, review_pk=None):

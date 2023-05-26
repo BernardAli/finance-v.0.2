@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load mathfilters %}
 {% load humanize %}
 {% load static %}
 
@@ -30,6 +31,7 @@
                                             </div>
                                             <div class="h6 mb-0 font-weight-light text-gray-800">
                                                 <strong> {{ point.value }}</strong>
+                                                 <small class="value">{{ci.value|sub:ci_previous.value}}</small> (<small class="value">{{ci.value|sub:ci_previous.value|div:ci_previous.value|mul:100|floatformat:2}}%</small>)
                                             </div>
                                         </div>
                                         <div class="col-auto">
@@ -70,16 +72,16 @@
                                       </li>
                                     </ul>
                                     <div class="tab-content" id="myTabContent">
-                                      <div class="tab-pane fade show active pt-5" id="home" role="tabpanel" aria-labelledby="home-tab">
+                                      <div class="tab-pane fade show active pt-2" id="home" role="tabpanel" aria-labelledby="home-tab">
                                         <p>{{ company.summary }}</p>
                                       </div>
-                                      <div class="tab-pane fade pt-5" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+                                      <div class="tab-pane fade pt-2" id="contact" role="tabpanel" aria-labelledby="contact-tab">
 
                                       </div>
-                                        <div class="tab-pane fade pt-5" id="technical" role="tabpanel" aria-labelledby="technical-tab">
+                                        <div class="tab-pane fade pt-2" id="technical" role="tabpanel" aria-labelledby="technical-tab">
 
                                       </div>
-                                        <div class="tab-pane fade pt-5" id="analysis" role="tabpanel" aria-labelledby="analysis-tab">
+                                        <div class="tab-pane fade pt-2" id="analysis" role="tabpanel" aria-labelledby="analysis-tab">
 
                                       </div>
                                     </div>
@@ -102,14 +104,137 @@
                             <!-- Basic Card Example -->
                             <div class="card shadow mb-4">
                                 <div class="card-header py-3">
-                                    <h6 class="m-0 font-weight-bold text-primary">Key Companies</h6>
+                                    <h6 class="m-0 font-weight-bold text-primary">Components</h6>
                                 </div>
                                 <div class="card-body">
-                                    {% for company in companies %}
-                                        <p><a href="{{ company.get_absolute_url }}">{{ company.name }}</a></p>
-                                    {% empty %}
-                                        No Company added yet
-                                    {% endfor %}
+                                    <ul class="nav nav-tabs" id="myComponents" role="tablist">
+                                      <li class="nav-item">
+                                        <a class="nav-link active" id="price-tab" data-toggle="tab" href="#price" role="tab" aria-controls="price" aria-selected="true">Price</a>
+                                      </li>
+                                      <li class="nav-item">
+                                        <a class="nav-link" id="Performance-tab" data-toggle="tab" href="#Performance" role="tab" aria-controls="Performance" aria-selected="false">Performance</a>
+                                      </li>
+                                        <li class="nav-item">
+                                        <a class="nav-link" id="technicals-tab" data-toggle="tab" href="#technicals" role="tab" aria-controls="technicals" aria-selected="false">Technical</a>
+                                      </li>
+                                        </li>
+                                        <li class="nav-item">
+                                        <a class="nav-link" id="fundamentals-tab" data-toggle="tab" href="#fundamentals" role="tab" aria-controls="fundamentals" aria-selected="false">Fundamental</a>
+                                      </li>
+                                    </ul>
+                                    <div class="tab-content" id="myComponentsContent">
+                                      <div class="tab-pane fade show active pt-2" id="price" role="tabpanel" aria-labelledby="price-tab">
+                                          <table class="table table-striped table-bordered">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Name</th>
+                                                                <th>Last</th>
+                                                                <th>Open</th>
+                                                                <th>Change</th>
+                                                                <th>Change (%)</th>
+                                                            </tr>
+                                                        </thead>
+                                                          <tbody>
+                                                            {% for company in companies %}
+                                                            <tr>
+                                                                <td><a href="{{ company.get_absolute_url }}">{{ company.name }}</a></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                            </tr>
+                                                            {% empty %}
+                                                                No Company added yet
+                                                            {% endfor %}
+                                                        </tbody>
+                                                      </table>
+                                      </div>
+                                      <div class="tab-pane fade pt-2" id="Performance" role="tabpanel" aria-labelledby="Performance-tab">
+                                          <table class="table table-striped table-bordered">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Name</th>
+                                                                <th>Daily</th>
+                                                                <th>Weekly</th>
+                                                                <th>1 Month (%)</th>
+                                                                <th>YTD (%)</th>
+                                                                <th>1 Year (%)</th>
+                                                                <th>3 Years (%)</th>
+                                                            </tr>
+                                                        </thead>
+                                                          <tbody>
+                                                            {% for company in companies %}
+                                                            <tr>
+                                                                <td><a href="{{ company.get_absolute_url }}">{{ company.name }}</a></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                            </tr>
+                                                            {% empty %}
+                                                                No Company added yet
+                                                            {% endfor %}
+                                                        </tbody>
+                                                      </table>
+                                      </div>
+                                        <div class="tab-pane fade pt-2" id="technicals" role="tabpanel" aria-labelledby="technicals-tab">
+                                            <table class="table table-striped table-bordered">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Name</th>
+                                                                <th>MA 20</th>
+                                                                <th>MA 50</th>
+                                                                <th>MA 100</th>
+                                                                <th>MA 200</th>
+                                                            </tr>
+                                                        </thead>
+                                                          <tbody>
+                                                            {% for company in companies %}
+                                                            <tr>
+                                                                <td><a href="{{ company.get_absolute_url }}">{{ company.name }}</a></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                            </tr>
+                                                            {% empty %}
+                                                                No Company added yet
+                                                            {% endfor %}
+                                                        </tbody>
+                                                      </table>
+                                      </div>
+                                        <div class="tab-pane fade pt-2" id="fundamentals" role="tabpanel" aria-labelledby="fundamentals-tab">
+                                            <table class="table table-striped table-bordered">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Name</th>
+                                                                <th>Avg. Vol. (3m)</th>
+                                                                <th>Market Cap</th>
+                                                                <th>Revenue</th>
+                                                                <th>P/E</th>
+                                                                <th>Beta</th>
+                                                            </tr>
+                                                        </thead>
+                                                          <tbody>
+                                                            {% for company in companies %}
+                                                            <tr>
+                                                                <td><a href="{{ company.get_absolute_url }}">{{ company.name }}</a></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                            </tr>
+                                                            {% empty %}
+                                                                No Company added yet
+                                                            {% endfor %}
+                                                        </tbody>
+                                                      </table>
+                                      </div>
+                                    </div>
+
                                 </div>
                             </div>
 
@@ -147,6 +272,35 @@
                                 </div>
                             </div>
 
+                            <div class="card shadow mb-4">
+                                <!-- Card Header - Dropdown -->
+                                <div
+                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                    <h6 class="m-0 font-weight-bold text-primary">Value Summary</h6>
+                                    <div class="dropdown no-arrow">
+                                        <a class="dropdown-toggle" href="#" role="button" id="Value"
+                                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                                        </a>
+                                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
+                                            aria-labelledby="Value">
+                                            <div class="dropdown-header">Dropdown Header:</div>
+                                            <a class="dropdown-item" href="#">Action</a>
+                                            <a class="dropdown-item" href="#">Another action</a>
+                                            <div class="dropdown-divider"></div>
+                                            <a class="dropdown-item" href="#">Something else here</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Card Body -->
+                                <div class="card-body">
+                                    <p><strong>Prev. Close:  {{ point.value }}</strong></p>
+                                        <p><strong>Open:  {{ point.value }}</strong></p>
+                                        <p><strong>Days Range:  {{ point.value }} -  {{ point.value }}</strong></p>
+                                        <p><strong>52 wk Range Range: {{ low_52.value__min }} -  {{ high_52.value__max }}</strong></p>
+                                </div>
+                            </div>
+
 
                             <!-- Dropdown Card Example -->
                             <div class="card shadow mb-4">
@@ -155,12 +309,12 @@
                                     class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                                     <h6 class="m-0 font-weight-bold text-primary">{{ indices.name }}'s Summary</h6>
                                     <div class="dropdown no-arrow">
-                                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+                                        <a class="dropdown-toggle" href="#" role="button" id="Summary"
                                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                             <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
                                         </a>
                                         <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-                                            aria-labelledby="dropdownMenuLink">
+                                            aria-labelledby="Summary">
                                             <div class="dropdown-header">Dropdown Header:</div>
                                             <a class="dropdown-item" href="#">Action</a>
                                             <a class="dropdown-item" href="#">Another action</a>
@@ -281,7 +435,11 @@
                                 </div>
                                 <!-- Card Body -->
                                 <div class="card-body">
-                                    
+                                    {% for similar in similar_index %}
+                                        <p><a href="{% url 'index_detail' similar.id %}">{{similar.name}} ({{similar}})</a></p>
+                                    {% empty %}
+                                        <p><strong>No similar index available</strong></p>
+                                    {% endfor %}
                                 </div>
                             </div>
 

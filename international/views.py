@@ -1,7 +1,9 @@
+from datetime import timedelta
+
 from django.shortcuts import render, get_object_or_404
 from django.core.paginator import Paginator
 from django.views.generic import ListView
-from django.db.models import Q
+from django.db.models import Q, Max, Min
 from .models import Continent, Country, Indice, Commodity_type, Commodity_profile, President, CentralBank, Bourse, \
     BankRate, MajorExports, UnemploymentRate, GDP
 from core.models import CompanyProfile, Indices
@@ -17,8 +19,10 @@ class SearchIndexListView(ListView):
         return Indice.objects.filter(
             Q(name__icontains=query) | Q(details__icontains=query)
         )
+
     def index_count(self):
         return Indice.objects.all().count()
+
 
 def continent(request, continent_slug):
     continent = get_object_or_404(Continent, slug=continent_slug)
@@ -90,7 +94,8 @@ def index_detail(request, index_id):
     indices = get_object_or_404(Indice, id=index_id)
     companies = CompanyProfile.objects.filter(index=index_id).order_by('name')
     points = Indices.objects.filter(index=index_id)
-    # point = Indices.objects.filter(index=index_id).last()
+    point = Indices.objects.filter(index=index_id).last()
+    similar_index = Indice.objects.filter(country=1).exclude(name=indices.name).order_by('name')
 
     index_components = companies.count()
 
@@ -99,7 +104,12 @@ def index_detail(request, index_id):
         "companies": companies,
         'index_components': index_components,
         'points': points,
-        'point': Indices.objects.filter(index=index_id).last()
+        'point': point,
+        'ci': Indices.objects.filter(index=index_id).last(),
+        'ci_previous': Indices.objects.filter(index=index_id).order_by('-date')[1],
+        'similar_index': similar_index,
+        'low_52': Indices.objects.filter(index=index_id, date__gt=point.date - timedelta(weeks=52)).order_by('-date')[:14].aggregate(Min("value")),
+        'high_52': Indices.objects.filter(index=index_id, date__gt=point.date - timedelta(weeks=52)).order_by('-date')[:14].aggregate(Max("value")),
     }
 
     return render(request, 'indices_details.html', context)
@@ -142,5 +152,3 @@ def commodity_detail(request, commodity_id):
     }
 
     return render(request, 'commodities_details.html', context)
-
-    

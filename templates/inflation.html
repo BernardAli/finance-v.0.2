@@ -103,8 +103,8 @@
                         <div class="col-xl-12 col-lg-7">
                             <div class="card shadow mb-4">
                                 <div class="card-body">
-                                    <div class="table-responsive">
-                                        <table class="table table-bordered" id="dataTable" width="50%" cellspacing="0">
+                                    <div class="table-responsive" style="width:80%; margin: 0 auto;">
+                                        <table class="table table-striped table-bordered table-hover" id="dataTable" width="50%" cellspacing="0">
                                             <thead>
                                                 <tr>
                                                     <th>Month</th>
@@ -120,7 +120,7 @@
                                             <tbody>
                                             {% for rate in inflation %}
                                                 <tr>
-                                                    <th>{{ rate.month }}</th>
+                                                    <th>{{ rate.month|date:"N, Y" }}</th>
                                                     <th>{{ rate.rate }}</th>
                                                 </tr>
                                             {% endfor %}

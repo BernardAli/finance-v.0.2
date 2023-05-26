@@ -2,7 +2,7 @@ from django.contrib import admin
 from .models import Tag, Sector, CompanyProfile, Market, ShareDetail, SharePrice, \
     Indices, FinancialPeriod, Report, MarketReport, PressRelease, Subsidiaries, \
     Auditors, Secretary, KeyPeople, IPO, Dividend, Registrar, Solicitor, Ownership, Opinions, \
-    FinancialStatement, Review
+    FinancialStatement, Review, AuditingServices, Products, ShareSplit
 
 
 # Register your models here.
@@ -42,12 +42,16 @@ class TagAdmin(admin.ModelAdmin):
 
 admin.site.register(Market)
 admin.site.register(Review)
+admin.site.register(AuditingServices)
+admin.site.register(Products)
+admin.site.register(ShareSplit)
 
 
 @admin.register(ShareDetail)
 class ShareDetailAdmin(admin.ModelAdmin):
     list_display = ('company', 'issued_shares', 'listed_date', 'financial_period_ends')
-    list_filter = ('financial_period_ends',)
+    list_filter = ('financial_period_ends', 'company__market')
+    search_fields = ('company__market', )
 
 
 @admin.register(SharePrice)
@@ -73,7 +77,11 @@ class MarketReportAdmin(admin.ModelAdmin):
     list_filter = ('date',)
 
 
-admin.site.register(Auditors)
+@admin.register(Auditors)
+class AuditorsAdmin(admin.ModelAdmin):
+    list_display = ('name', 'telephone', 'incorporated_date')
+
+
 admin.site.register(Secretary)
 
 

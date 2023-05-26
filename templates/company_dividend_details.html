@@ -90,10 +90,6 @@
                                                                     <div class="col mr-2">
                                                                         <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
                                                                             <p>Audited - {{ report.audited }}</p>
-                                                                        </div>
-                                                                        <img src="{% static 'img/pdf.png' %}" alt="" height="30">
-                                                                        <div class="text-white"><a class="text-blue" href="{{ report.file.url }}">{{ report }}</a></div>
-                                                                    </div>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -165,63 +161,10 @@
                                 <div
                                     class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                                     <h6 class="m-0 font-weight-bold text-primary">Basic Info.</h6>
-                                    <div class="dropdown no-arrow">
-                                        <a class="dropdown-toggle" href="#" role="button" id="basicInfo"
-                                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                                        </a>
-                                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-                                            aria-labelledby="basicInfo">
-                                            <div class="dropdown-header">Dropdown Header:</div>
-                                            <a class="dropdown-item" href="#">Action</a>
-                                            <a class="dropdown-item" href="#">Another action</a>
-                                            <div class="dropdown-divider"></div>
-                                            <a class="dropdown-item" href="#">Something else here</a>
-                                        </div>
-                                    </div>
                                 </div>
                                 <!-- Card Body -->
                                 <div class="card-body">
-                                    <p><strong>Industry:</strong> {% for industry in company.industry.all %}<a href="{{ industry.get_absolute_url }}">{{ industry }}</a>{% endfor %}</p>
-                                    <p><strong>Auditors:</strong> {% for auditor in auditor %}<a href="{{ auditor.get_absolute_url }}">{{ auditor.name }}</a>{% empty %}No Auditor{% endfor %}</p>
-                                    <p><strong>Secretary:</strong> {% for secretary in secretaries %}{{ secretary.name }}{% empty %}No Secretary{% endfor %}</p>
-                                    <p><strong>Registered Office:</strong> {{ company.registered_office }}</p>
-                                    <p><strong>Incorporate Date:</strong> {{ company.incorporated_date }}</p>
-                                </div>
-                            </div>
 
-
-                            <!-- Dropdown Card Example -->
-                            <div class="card shadow mb-4">
-                                <!-- Card Header - Dropdown -->
-                                <div
-                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 font-weight-bold text-primary">Stock Price Summary</h6>
-                                    <div class="dropdown no-arrow">
-                                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-                                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                                        </a>
-                                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-                                            aria-labelledby="dropdownMenuLink">
-                                            <div class="dropdown-header">Dropdown Header:</div>
-                                            <a class="dropdown-item" href="#">Action</a>
-                                            <a class="dropdown-item" href="#">Another action</a>
-                                            <div class="dropdown-divider"></div>
-                                            <a class="dropdown-item" href="#">Something else here</a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- Card Body -->
-                                <div class="card-body">
-                                    <p><strong>Previous Close:</strong></p>
-                                    <p><strong>Open:</strong></p>
-                                    <p><strong>Volume:</strong></p>
-                                    <p><strong>Market Cap:</strong></p>
-                                    <p><strong>EPS:</strong></p>
-                                    <p><strong>YTD(%):</strong></p>
-                                    <p><strong>1-Year Change:</strong></p>
-                                    <p><strong>Shares Outstanding:</strong></p>
                                 </div>
                             </div>
 

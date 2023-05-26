@@ -56,6 +56,16 @@ class Market(models.Model):
         return self.market
 
 
+class Products(models.Model):
+    products = models.CharField(max_length=255)
+
+    def get_absolute_url(self):
+        return reverse('products', args=[str(self.id)])
+
+    def __str__(self):
+        return f"{self.products}"
+
+
 SHARE_TYPE_CHOICE = (
     ('Private', 'Private'),
     ('Public', 'Public'),
@@ -81,6 +91,7 @@ class CompanyProfile(models.Model):
     website = models.CharField(max_length=255, blank=True, null=True)
     email = models.CharField(max_length=255, blank=True, null=True)
     core_activities = models.TextField()
+    products = models.ManyToManyField(Products, blank=True)
     market = models.ManyToManyField(Market, related_name='tags', default='None')
     summary = models.TextField(max_length=2500, blank=True, null=True)
     index = models.ManyToManyField(Indice, blank=True)
@@ -109,6 +120,16 @@ class Subsidiaries(models.Model):
 
     def __str__(self):
         return f"{self.subsidiary_name}"
+
+
+class ShareSplit(models.Model):
+    company = models.ForeignKey(CompanyProfile, on_delete=models.CASCADE)
+    old_fv = models.DecimalField(max_digits=5, decimal_places=2)
+    new_fv = models.DecimalField(max_digits=5, decimal_places=2)
+    split_date = models.DateField()
+
+    def __str__(self):
+        return f"{self.company}"
 
 
 class ShareDetail(models.Model):
@@ -193,11 +214,27 @@ class PressRelease(models.Model):
         return f"{self.company}"
 
 
+class AuditingServices(models.Model):
+    services = models.CharField(max_length=255)
+
+    def get_absolute_url(self):
+        return reverse('auditing_services', args=[str(self.id)])
+
+    def __str__(self):
+        return f"{self.services}"
+
+
 class Auditors(models.Model):
     name = models.CharField(max_length=250)
     logo = models.ImageField(upload_to='auditors', default='sector.png')
     company = models.ManyToManyField(CompanyProfile, blank=True, related_name='auditors')
     address = models.CharField(max_length=255)
+    country = models.ForeignKey(Country, on_delete=models.CASCADE)
+    email = models.CharField(max_length=255, blank=True, null=True)
+    website = models.CharField(max_length=255, blank=True, null=True)
+    telephone = models.CharField(max_length=15, blank=True, null=True)
+    incorporated_date = models.DateField(blank=True, null=True)
+    services = models.ManyToManyField(AuditingServices, blank=True)
 
     def get_absolute_url(self):
         return reverse('auditor', args=[str(self.id)])
