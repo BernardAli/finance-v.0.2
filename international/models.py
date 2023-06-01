@@ -50,6 +50,18 @@ class Country(models.Model):
         return self.name
 
 
+class Population(models.Model):
+    year = models.IntegerField()
+    country = models.ForeignKey(Country, on_delete=models.CASCADE, related_name='population')
+    population = models.IntegerField()
+
+    def get_absolute_url(self):
+        return reverse('president', args=[str(self.id)])
+
+    def __str__(self):
+        return f"{self.country.name}"
+
+
 active_choices = (
     ('Active', 'Active'),
     ('Former', 'Former'),

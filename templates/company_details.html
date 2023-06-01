@@ -18,7 +18,10 @@
                             <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm pl-3 pr-3">Buy</a>
                         </p>
                         <p>
-                            <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
+                            <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-info shadow-sm"><i
+                                class="fas fa-bell fa-sm text-white-50"></i>
+                            </a>
+                            <a href="{% url 'company_file' company.id %}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
                                 class="fas fa-download fa-sm text-white-50"></i> Latest Report
                             </a>
                             <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
@@ -268,7 +271,7 @@
                                         {% else %}
                                             <p>No statement added yet</p>
                                         {% endif %}
-                                          
+
                                       </div>
                                       <div class="tab-pane fade pt-3" id="contact" role="tabpanel" aria-labelledby="contact-tab">
                                         <div class="row">
@@ -849,12 +852,12 @@
                                                                 <td></td>
                                                             </tr>
                                                           <tr>
-                                                                <th>ma10</th>
+                                                                <th>10</th>
                                                                 <td>{{ma5.price__avg|floatformat:2}}</td>
                                                                 <td></td>
                                                             </tr>
                                                           <tr>
-                                                                <th>ma20</th>
+                                                                <th>20</th>
                                                                 <td>{{ma5.price__avg|floatformat:2}}</td>
                                                                 <td></td>
                                                             </tr>
@@ -913,7 +916,7 @@
                                               </div>
                                             </div>
                                       </div>
-                                        <div class="tab-pane fade pt-3" id="analysis" role="tabpanel" aria-labelledby="analysis-tab">                                           
+                                        <div class="tab-pane fade pt-3" id="analysis" role="tabpanel" aria-labelledby="analysis-tab">
                                            <div class="card-body">
                                                 <div class="row pb-2">
                                                     {% for opinion in analysis %}
@@ -1033,7 +1036,7 @@
                                             </div>
                                         </div>
 
-                                        
+
                                     </div>
                                 </div>
                             </div>
@@ -1058,8 +1061,10 @@
                                               </div>
                                               <div class="col-9">
                                                 <div class="tab-content" id="v-statementsContent">
+                                                    <p>Click to download</p>
                                                   <div class="tab-pane fade show active" id="v-qtr" role="tabpanel" aria-labelledby="v-qtr-tab">
-                                                      {% for report in reports_qtr %}
+                                                      <div class="row">
+                                                          {% for report in reports_qtr %}
                                                             <div class="col-lg-3 mb-2">
                                                                 <div class="card shadow">
                                                                     <div class="card-body text-center">
@@ -1068,40 +1073,47 @@
                                                                 </div>
                                                             </div>
                                                       {% endfor %}
+                                                      </div>
                                                   </div>
                                                   <div class="tab-pane fade" id="v-half" role="tabpanel" aria-labelledby="v-half-tab">
-                                                        {% for report in reports_half %}
-                                                            <div class="col-lg-3 mb-2">
-                                                                <div class="card shadow">
-                                                                    <div class="card-body text-center">
-                                                                        <a href="{{report.file.url}}">{{report.year}}</a>
+                                                        <div class="row">
+                                                            {% for report in reports_half %}
+                                                                <div class="col-lg-3 mb-2">
+                                                                    <div class="card shadow">
+                                                                        <div class="card-body text-center">
+                                                                            <a href="{{report.file.url}}">{{report.year}}</a>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
-                                                            </div>
-                                                      {% endfor %}
+                                                          {% endfor %}
+                                                        </div>
                                                   </div>
                                                     <div class="tab-pane fade" id="v-nine" role="tabpanel" aria-labelledby="v-nine-tab">
-                                                        {% for report in reports_nine %}
-                                                            <div class="col-lg-3 mb-2">
-                                                                <div class="card shadow">
-                                                                    <div class="card-body text-center">
-                                                                        <a href="{{report.file.url}}">{{report.year}}</a>
+                                                        <div class="row">
+                                                            {% for report in reports_nine %}
+                                                                <div class="col-lg-3 mb-2">
+                                                                    <div class="card shadow">
+                                                                        <div class="card-body text-center">
+                                                                            <a href="{{report.file.url}}">{{report.year}}</a>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
-                                                            </div>
-                                                      {% endfor %}
+                                                          {% endfor %}
+                                                        </div>
                                                   </div>
 
                                                     <div class="tab-pane fade" id="v-full" role="tabpanel" aria-labelledby="v-full-tab">
-                                                        {% for report in reports_full %}
-                                                            <div class="col-lg-3 mb-2">
-                                                                <div class="card shadow">
-                                                                    <div class="card-body text-center">
-                                                                        <a href="{{report.file.url}}">{{report.year}}</a>
+                                                        <div class="row">
+                                                            {% for report in reports_full %}
+                                                                <div class="col-lg-3 mb-2">
+                                                                    <div class="card shadow">
+                                                                        <div class="card-body text-center">
+                                                                            <a href="{{report.file.url}}">{{report.year}}</a>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
-                                                            </div>
-                                                      {% endfor %}
+                                                        {% endfor %}
+                                                        </div>
                                                   </div>
                                                 </div>
                                               </div>
@@ -1116,7 +1128,7 @@
                                 </div>
                                 <div class="card-body">
                                      {% for service in products %}
-                                        <p><strong>{{service}}</strong></p>
+                                        <p title="{{service.detail}}"><strong>{{service}}</strong></p>
                                      {% empty %}
                                         <p>No service/product added yet</p>
                                      {% endfor %}
@@ -1144,9 +1156,9 @@
                                 </div>
                                 <div class="card-body">
                                     {% for people in key_people %}
-                                        <li>{{ people.position }} -
-                                            {{ people.name }}  
-                                        </li>
+                                        <p>{{ people.position }} -
+                                            {{ people.name }}
+                                        </p>
                                     {% empty %}
                                         No person listed here
                                     {% endfor %}
@@ -1226,7 +1238,7 @@
                                     <p><strong>Registrar:</strong> {% for registrar in registrars %}{{ registrar.name }}{% empty %}No Registrar{% endfor %}</p>
                                     <p><strong>Registered Office:</strong> {{ company.registered_office }}</p>
                                     <p><strong>Incorporate Date:</strong> {{ company.incorporated_date }}</p>
-                                    <p><strong>Employees:</strong> 1234</p>
+                                    <p><strong>Employees:</strong> {{ company.employees }}</p>
                                 </div>
                             </div>
 
@@ -1262,18 +1274,17 @@
                                             <p><strong>Traded Value:</strong> {{ company.country.currency_code }} {{ price.volume|mul:price.price }}</p>
                                             <p><strong>Year Range:</strong> {{ company.country.currency_code }} {{ high_52.price__max }} - {{ company.country.currency_code }} {{ low_52.price__min }}</p>
                                             <p><strong>Market Cap:</strong> {{ company.country.currency_code }} {% for detail in share %}{{ detail.issued_shares|mul:price.price|div:1000000|floatformat:2|intcomma }}{% endfor %} million</p
-
-                                            <p><strong>1-Year Change:</strong>
+                                            <p><strong>Shares Outstanding:</strong> {% for detail in share %} {{ detail.issued_shares|intcomma }}{% endfor %}</p>
+                                        </div>
+                                        <div class="col-5">
+                                            <p><strong>Open:</strong> {{ company.country.currency_code }} {{ price.price }}</p>
+                                            <p><strong>1-Yr Change:</strong>
                                                 {% if price.price|sub:price_year_start.price >= 0 %}
                                                     <span class="change-up">{{ company.country.currency_code }} {{ price.price|sub:price_year_start.price|floatformat:2}}</span>
                                                 {% else %}
                                                     <span class="change-down">{{ company.country.currency_code }} {{ price.price|sub:price_year_start.price|floatformat:2}}</span>
                                                 {% endif %}
                                             </p>
-                                            <p><strong>Shares Outstanding:</strong> {% for detail in share %} {{ detail.issued_shares|intcomma }}{% endfor %}</p>
-                                        </div>
-                                        <div class="col-5">
-                                            <p><strong>Open:</strong> {{ company.country.currency_code }} {{ price.price }}</p>
                                             <p><strong>YTD(%):</strong>
                                                 {% if price.price|sub:price_year_start.price|mul:100|div:price_year_start.price >= 0 %}
                                                     {% if price.price|sub:price_year_start.price|mul:100|div:price_year_start.price > 0 %}
@@ -1351,12 +1362,13 @@
 
                                     <div class="card-body">
                                         <div class="table-responsive">
-                                            <table class="table table-bordered table-striped table-hover" id="dataTable" width="70%" cellspacing="0">
+                                            <table class="table table-bordered table-striped table-hover" id="dataTable" width="80%" cellspacing="0">
                                             <thead>
                                                 <tr>
                                                     <th>Date</th>
                                                     <th>Close</th>
                                                     <th>Volume</th>
+                                                    <th>Traded Value</th>
                                                 </tr>
                                             </thead>
 <!--                                            <tfoot>-->
@@ -1372,6 +1384,7 @@
                                                     <td>{{ price.date|date:"Y/m/d" }}</td>
                                                     <td>{{ price.price }}</td>
                                                     <td>{{ price.volume }}</td>
+                                                    <td>{{ price.volume|mul:price.price }}</td>
                                                 </tr>
                                             {% endfor %}
                                             </tbody>
@@ -1421,9 +1434,9 @@
                                         {% empty %}
                                             <p><strong>{{ company.company_id }} is yet to pay dividend</strong></p>
                                         {% endfor %}
-                                        
 
-                                        
+
+
                                     </div>
                                 </div>
                             </div>
@@ -1456,6 +1469,22 @@
                                         <p><strong><a href="{{ company.get_absolute_url }}" title="{{company.summary}}">{{company.name}}</a></strong>
                                     {% empty %}
                                         <p><strong>No Similar Company</strong></p>
+                                    {% endfor %}
+                                </div>
+                            </div>
+
+                            <div class="card shadow mb-4">
+                                <!-- Card Header - Dropdown -->
+                                <div
+                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                    <h6 class="m-0 font-weight-bold text-primary">Indices</h6>
+                                </div>
+                                <!-- Card Body -->
+                                <div class="card-body">
+                                    {% for index in country_indices %}
+                                        <p><strong><a href="{% url 'index_detail' index.id %}">{{index.name}}</a></strong>
+                                    {% empty %}
+                                        <p><strong>No Indices</strong></p>
                                     {% endfor %}
                                 </div>
                             </div>

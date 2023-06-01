@@ -1,0 +1,135 @@
+<div class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">Components</h6>
+                                </div>
+                                <div class="card-body">
+                                    <ul class="nav nav-tabs" id="myComponents" role="tablist">
+                                      <li class="nav-item">
+                                        <a class="nav-link active" id="price-tab" data-toggle="tab" href="#price" role="tab" aria-controls="price" aria-selected="true">Price</a>
+                                      </li>
+                                      <li class="nav-item">
+                                        <a class="nav-link" id="Performance-tab" data-toggle="tab" href="#Performance" role="tab" aria-controls="Performance" aria-selected="false">Performance</a>
+                                      </li>
+                                        <li class="nav-item">
+                                        <a class="nav-link" id="technicals-tab" data-toggle="tab" href="#technicals" role="tab" aria-controls="technicals" aria-selected="false">Technical</a>
+                                      </li>
+                                        </li>
+                                        <li class="nav-item">
+                                        <a class="nav-link" id="fundamentals-tab" data-toggle="tab" href="#fundamentals" role="tab" aria-controls="fundamentals" aria-selected="false">Fundamental</a>
+                                      </li>
+                                    </ul>
+                                    <div class="tab-content" id="myComponentsContent">
+                                      <div class="tab-pane fade show active pt-2" id="price" role="tabpanel" aria-labelledby="price-tab">
+                                          <table class="table table-striped table-bordered">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Name</th>
+                                                                <th>Last</th>
+                                                                <th>Open</th>
+                                                                <th>Change</th>
+                                                                <th>Change (%)</th>
+                                                            </tr>
+                                                        </thead>
+                                                          <tbody>
+                                                            {% for company in companies %}
+                                                            <tr>
+                                                                <td><a href="{{ company.get_absolute_url }}">{{ company.name }}</a></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                            </tr>
+                                                            {% empty %}
+                                                                No Company added yet
+                                                            {% endfor %}
+                                                        </tbody>
+                                                      </table>
+                                      </div>
+                                      <div class="tab-pane fade pt-2" id="Performance" role="tabpanel" aria-labelledby="Performance-tab">
+                                          <table class="table table-striped table-bordered">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Name</th>
+                                                                <th>Daily</th>
+                                                                <th>Weekly</th>
+                                                                <th>1 Month (%)</th>
+                                                                <th>YTD (%)</th>
+                                                                <th>1 Year (%)</th>
+                                                                <th>3 Years (%)</th>
+                                                            </tr>
+                                                        </thead>
+                                                          <tbody>
+                                                            {% for company in companies %}
+                                                            <tr>
+                                                                <td><a href="{{ company.get_absolute_url }}">{{ company.name }}</a></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                            </tr>
+                                                            {% empty %}
+                                                                No Company added yet
+                                                            {% endfor %}
+                                                        </tbody>
+                                                      </table>
+                                      </div>
+                                        <div class="tab-pane fade pt-2" id="technicals" role="tabpanel" aria-labelledby="technicals-tab">
+                                            <table class="table table-striped table-bordered">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Name</th>
+                                                                <th>MA 20</th>
+                                                                <th>MA 50</th>
+                                                                <th>MA 100</th>
+                                                                <th>MA 200</th>
+                                                            </tr>
+                                                        </thead>
+                                                          <tbody>
+                                                            {% for company in companies %}
+                                                            <tr>
+                                                                <td><a href="{{ company.get_absolute_url }}">{{ company.name }}</a></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                            </tr>
+                                                            {% empty %}
+                                                                No Company added yet
+                                                            {% endfor %}
+                                                        </tbody>
+                                                      </table>
+                                      </div>
+                                        <div class="tab-pane fade pt-2" id="fundamentals" role="tabpanel" aria-labelledby="fundamentals-tab">
+                                            <table class="table table-striped table-bordered">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Name</th>
+                                                                <th>Avg. Vol. (3m)</th>
+                                                                <th>Market Cap</th>
+                                                                <th>Revenue</th>
+                                                                <th>P/E</th>
+                                                                <th>Beta</th>
+                                                            </tr>
+                                                        </thead>
+                                                          <tbody>
+                                                            {% for company in companies %}
+                                                            <tr>
+                                                                <td><a href="{{ company.get_absolute_url }}">{{ company.name }}</a></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                            </tr>
+                                                            {% empty %}
+                                                                No Company added yet
+                                                            {% endfor %}
+                                                        </tbody>
+                                                      </table>
+                                      </div>
+                                    </div>
+
+                                </div>
+                            </div>

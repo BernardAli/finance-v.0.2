@@ -40,12 +40,16 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.humanize',
 
+    # apps
     'core',
     'rates',
     'news',
     'comment',
     'international',
+    'bonds',
+    'fixedincome',
 
+    # third parties
     'django_filters',
     'mathfilters',
     "bootstrap4",

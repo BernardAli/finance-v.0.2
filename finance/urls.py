@@ -24,6 +24,8 @@ urlpatterns = [
     path('rates/', include('rates.urls')),
     path('news/', include('news.urls')),
     path('international/', include('international.urls')),
+    path('fixedincome/', include('fixedincome.urls')),
+    path('bonds/', include('bonds.urls')),
 ]
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

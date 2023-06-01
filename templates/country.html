@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load mathfilters %}
 {% load humanize %}
 {% load static %}
 
@@ -77,8 +78,9 @@
                                         <p>{{ country.summary }}</p>
                                       </div>
                                       <div class="tab-pane fade pt-5" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-                                        {% for index in page_obj %}
-                                        <div class="col-xl-12 col-md-6 mb-4">
+                                        <div class="row">
+                                          {% for index in page_obj %}
+                                            <div class="col-xl-3 col-md-6 mb-4">
                                             <div class="card border-left-primary shadow h-100 py-2">
                                                 <div class="card-body">
                                                     <div class="row no-gutters align-items-center">
@@ -92,15 +94,34 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        {% endfor %}
+                                            {% endfor %}
+                                        </div>
                                       </div>
                                       <div class="tab-pane fade pt-5" id="contact" role="tabpanel" aria-labelledby="contact-tab">
                                         {% if companies %}
-                                            {% for company in companies %}
-                                                <ul>
-                                                    <li><a href="{{ company.get_absolute_url }}">{{ company.name }}</a></li>
-                                                </ul>
-                                            {% endfor %}
+                                            <div class="row">
+                                                {% for company in companies %}
+                                                    <div class="col-xl-4 col-md-6 mb-4">
+                                                        <div class="card border-left-primary shadow h-100 py-2">
+                                                            <div class="card-body">
+                                                                <div class="row no-gutters align-items-center">
+                                                                    <div class="col mr-2">
+                                                                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                                                            <a href="{{ company.get_absolute_url }}">{{ company.company_id }} - ISIN {{ company.isin }}</a>
+                                                                        </div>
+                                                                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ company.company_id }}</div>
+                                                                    </div>
+                                                                    <div class="col-auto">
+                                                                        <img src="{{ company.logo.url }}" alt="" height="60">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                {% empty %}
+                                                    No company listed here
+                                                {% endfor %}
+                                            </div>
                                         {% else %}
                                             No company added fro this country
                                         {% endif %}
@@ -110,11 +131,27 @@
                                       </div>
                                         <div class="tab-pane fade pt-5" id="analysis" role="tabpanel" aria-labelledby="analysis-tab">
                                             {% if banks %}
-                                            {% for company in banks %}
-                                                <ul>
-                                                    <li><a href="{{ company.get_absolute_url }}">{{ company.name }}</a></li>
-                                                </ul>
-                                            {% endfor %}
+                                            <div class="row">
+                                                {% for company in banks %}
+                                                    <div class="col-xl-4 col-md-6 mb-4">
+                                                            <div class="card border-left-primary shadow h-100 py-2">
+                                                                <div class="card-body">
+                                                                    <div class="row no-gutters align-items-center">
+                                                                        <div class="col mr-2">
+                                                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                                                                <a href="{{ company.get_absolute_url }}">{{ company.company_id }} - ISIN {{ company.isin }}</a>
+                                                                            </div>
+                                                                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ company.company_id }}</div>
+                                                                        </div>
+                                                                        <div class="col-auto">
+                                                                            <img src="{{ company.logo.url }}" alt="" height="60">
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                {% endfor %}
+                                            </div>
                                         {% else %}
                                             No company added fro this country
                                         {% endif %}
@@ -141,8 +178,8 @@
                                     <h6 class="m-0 font-weight-bold text-primary">Major Exports</h6>
                                 </div>
                                 <div class="card-body">
-                                    {% for export in exports %}
-                                        <li>{{ export.export }}</li>
+                                    {% for export in exports.export.name.all %}
+                                        <li>{{ export }}</li>
                                     {% empty %}
                                         No exports added yet
                                     {% endfor %}
@@ -192,8 +229,8 @@
                                 </div>
                                 <!-- Card Body -->
                                 <div class="card-body">
-                                    <p><strong>Area Size:</strong>{{ country.area_size }} km²</p>
-                                    <p><strong>Population:</strong> {{ country.population }} million</p>
+                                    <p><strong>Area Size (km²):</strong> {{ country.area_size|intcomma }}</p>
+                                    <p><strong>Population ({{population.year}}):</strong> {{ population.population|div:1000000|floatformat:2 }}million</p>
                                     <p><strong>Continent:</strong> {{ country.continent }}</p>
                                     <p><strong>Currency:</strong> {{ country.currency }} ({{ country.currency_code }})</p>
                                     <p><strong>Dialing Code:</strong> {{ country.dialing_code }}</p>

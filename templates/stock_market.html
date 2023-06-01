@@ -17,7 +17,7 @@
                         <p>
                             <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
                                 class="fas fa-download fa-sm text-white-50"></i> General Report</a>
-                            <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
+                            <a href="{% url 'summary' %}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
                                 class="fas fa-download fa-sm text-white-50"></i> Day's Report</a>
                         </p>
                     </div>
@@ -261,7 +261,7 @@
                                                     chart.render();
                                         </script>
                                     </div>
-                                        </div>
+                                  </div>
 
                                 </div>
                             </div>
@@ -270,56 +270,79 @@
                                 <!-- Card Header - Dropdown -->
                                 <div
                                     class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 font-weight-bold text-primary"><a href="{% url 'news_list' %}">Latest News</a></h6>
+                                    <h6 class="m-0 font-weight-bold text-primary">Share Types</h6>
                                 </div>
                                 <!-- Card Body -->
                                 <div class="card-body">
-                                    <div class="row pb-2">
-                                        {% for new in news %}
-                                        <div class="col-lg-6 mb-12">
-                                            <div class="card shadow">
-                                                <div class="card-body">
-                                                    <div class="row no-gutters align-items-center">
-                                                        <div class="col mr-2">
-                                                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                                                {{ new.author}} </div>
-                                                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ new.title}}</div>
-                                                            <p>{{ new.details|truncatewords:20|linebreaks }}</p>
-                                                            <a href="{{ new.get_absolute_url }}" class="btn btn-primary">Read More</a>
-                                                            <p><i class="fas fa-calendar-day"></i> {{ new.date_posted|naturaltime }} </p>
-                                                        </div>
-                                                        <div class="col-auto">
-                                                            <img src="{{ new.picture.url }}" alt="" height="35">
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        {% endfor %}
-                                    </div>
-                                    <h4 class="pt-4">Older News <img src="{% static 'img/old_news.png' %}" alt="" height="50"></h4>
-                                    <div class="row">
-                                        {% for new in older_news %}
-                                            <div class="col-lg-3 mb-6">
-                                            <div class="card shadow">
-                                                <div class="card-body">
-                                                    <div class="row no-gutters">
-                                                        <div class="col mr-2">
-                                                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                                                {{ new.author}} </div>
-                                                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ new.title}}</div>
-                                                            <p>{{ new.details|truncatewords:10|linebreaks}}</p>
-                                                            <a href="{{ new.get_absolute_url }}" class="btn btn-primary">Read More</a>
-                                                            <p><i class="fas fa-calendar-day"></i> {{ new.date_posted|naturaltime }} </p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        {% endfor %}
-                                    </div>
+                                  <div class="row">
+                                      {% for share in shares_types %}
+                                      <div class="col-lg-3 mb-2">
+                                          <div class="card shadow">
+                                              <div class="card-body text-center">
+                                                  <a href="{% url 'share_type_detail' share.id %}">{{ share.share_type }}</a>
+                                              </div>
+                                          </div>
+                                      </div>
+                                      {% endfor %}
+                                  </div>
                                 </div>
                             </div>
+
+
+                            <div class="card shadow mb-4">
+                              <!-- Card Header - Dropdown -->
+                              <div
+                                  class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                  <h6 class="m-0 font-weight-bold text-primary"><a href="{% url 'news_list' %}">Latest News</a></h6>
+                              </div>
+                              <!-- Card Body -->
+                              <div class="card-body">
+                                  <div class="row pb-2">
+                                      {% for new in news %}
+                                      <div class="col-lg-6 mb-12">
+                                          <div class="card shadow">
+                                              <div class="card-body">
+                                                  <div class="row no-gutters align-items-center">
+                                                      <div class="col mr-2">
+                                                          <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                                              {{ new.author}} </div>
+                                                          <div class="h5 mb-0 font-weight-bold text-gray-800">{{ new.title}}</div>
+                                                          <p>{{ new.details|truncatewords:20|linebreaks }}</p>
+                                                          <a href="{{ new.get_absolute_url }}" class="btn btn-primary">Read More</a>
+                                                          <p><i class="fas fa-calendar-day"></i> {{ new.date_posted|naturaltime }} </p>
+                                                      </div>
+                                                      <div class="col-auto">
+                                                          <img src="{{ new.picture.url }}" alt="" height="35">
+                                                      </div>
+                                                  </div>
+                                              </div>
+                                          </div>
+                                      </div>
+                                      {% endfor %}
+                                  </div>
+                                  <h4 class="pt-4">Older News <img src="{% static 'img/old_news.png' %}" alt="" height="50"></h4>
+                                  <div class="row">
+                                      {% for new in older_news %}
+                                          <div class="col-lg-3 mb-6">
+                                          <div class="card shadow">
+                                              <div class="card-body">
+                                                  <div class="row no-gutters">
+                                                      <div class="col mr-2">
+                                                          <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                                              {{ new.author}} </div>
+                                                          <div class="h5 mb-0 font-weight-bold text-gray-800">{{ new.title}}</div>
+                                                          <p>{{ new.details|truncatewords:10|linebreaks}}</p>
+                                                          <a href="{{ new.get_absolute_url }}" class="btn btn-primary">Read More</a>
+                                                          <p><i class="fas fa-calendar-day"></i> {{ new.date_posted|naturaltime }} </p>
+                                                      </div>
+                                                  </div>
+                                              </div>
+                                          </div>
+                                      </div>
+                                      {% endfor %}
+                                  </div>
+                              </div>
+                          </div>
 
                             <div class="card mb-4">
                                 <div class="card-header py-3">
@@ -351,7 +374,7 @@
                                               </div>
                                               <div class="col-9">
                                                 <div class="tab-content" id="v-technicalContent">
-                                                    <p><span>Fri 26 May, 2023</span> <span><small>Session No: 6577</small></span></p>
+                                                    <p><span><small>{{ci.date}}</small></span></p>
                                                   <div class="tab-pane fade show active" id="v-Market" role="tabpanel" aria-labelledby="v-Market-tab">
                                                       <table class="table table-striped table-bordered">
                                                         <thead>
@@ -366,17 +389,17 @@
                                                           <tbody>
                                                             <tr>
                                                                 <td>GSE-CI</td>
-                                                                <td></td>
-                                                                <td></td>
-                                                                <td></td>
-                                                                <td></td>
+                                                                <td>{{ci.value}}</td>
+                                                                <td>{{ci_previous.value}}</td>
+                                                                <td class="value">{{ci.value|sub:ci_previous.value}}</td>
+                                                                <td class="value">{{ci.value|sub:ci_previous.value|div:ci_previous.value|mul:100|floatformat:2}}%</td>
                                                             </tr>
                                                           <tr>
                                                                 <td>GSE-FSI</td>
-                                                                <td></td>
-                                                                <td></td>
-                                                                <td></td>
-                                                                <td></td>
+                                                                <td>{{fsi.value}}</td>
+                                                                <td>{{fsi_previous.value}}</td>
+                                                                <td class="value">{{fsi.value|sub:fsi_previous.value}}</td>
+                                                                <td class="value">{{fsi.value|sub:fsi_previous.value|div:fsi_previous.value|mul:100|floatformat:2}}%</td>
                                                             </tr>
                                                           <tr>
                                                                 <td>GSE Market Cap (million)</td>
@@ -604,7 +627,7 @@
                                             </div>
                                       </div>
                                         <div class="tab-pane fade show pt-3" id="health" role="tabpanel" aria-labelledby="health-tab">
-                                        <table class="table table-striped table-bordered">
+                                        <table class="table table-striped table-bordered table-hover">
                                                         <thead>
                                                             <tr>
                                                                 <th>Company</th>
@@ -618,8 +641,9 @@
                                                             </tr>
                                                         </thead>
                                                           <tbody>
+                                                            {% for company in companies%}
                                                             <tr>
-                                                                <td></td>
+                                                                <td title="{{company.name}}"><a href="{{ company.get_absolute_url }}">{{company.company_id}}</a></td>
                                                                 <td></td>
                                                                 <td></td>
                                                                 <td></td>
@@ -628,16 +652,7 @@
                                                                 <td></td>
                                                                 <td></td>
                                                             </tr>
-                                                            <tr>
-                                                                <td></td>
-                                                                <td></td>
-                                                                <td></td>
-                                                                <td></td>
-                                                                <td></td>
-                                                                <td></td>
-                                                                <td></td>
-                                                                <td></td>
-                                                            </tr>
+                                                            {% endfor %}
                                                         </tbody>
                                                       </table>
                                       </div>

@@ -479,29 +479,139 @@
 
                         <!-- Currency -->
                         <div class="col-xl-4 col-lg-5">
-                            <div class="card shadow mb-4">
+                            <div class="card shadow">
                                 <!-- Card Header - Dropdown -->
-                                <div
-                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 font-weight-bold text-primary">Companies Sector's Treemap</h6>
-                                    <div class="dropdown no-arrow">
-                                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLinkTreemap"
-                                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                                        </a>
-                                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-                                            aria-labelledby="dropdownMenuLinkTreemap">
-                                            <div class="dropdown-header">Dropdown Header:</div>
-                                            <a class="dropdown-item" href="#">Action</a>
-                                            <a class="dropdown-item" href="#">Another action</a>
-                                            <div class="dropdown-divider"></div>
-                                            <a class="dropdown-item" href="#">Something else here</a>
-                                        </div>
-                                    </div>
+                                <div class="card-header d-flex flex-row align-items-center justify-content-between">
+                                    <h6 class="m-0 font-weight-bold text-primary">Assets Summary</h6>
                                 </div>
                                 <!-- Card Body -->
                                 <div class="card-body">
+                                    <div class="card-body text text-center">
+                                    <ul class="nav nav-tabs" id="myTab" role="tablist">
+                                      <li class="nav-item">
+                                        <a class="nav-link active" id="Indices-tab" data-toggle="tab" href="#Indices" role="tab" aria-controls="Indices" aria-selected="true">Indices</a>
+                                      </li>
+                                      <li class="nav-item">
+                                        <a class="nav-link" id="Commodities-tab" data-toggle="tab" href="#Commodities" role="tab" aria-controls="Commodities" aria-selected="false">Commodities</a>
+                                      </li>
+                                        <li class="nav-item">
+                                        <a class="nav-link" id="Bonds-tab" data-toggle="tab" href="#Bonds" role="tab" aria-controls="Bonds" aria-selected="false">T-Bills</a>
+                                      </li>
+                                        <li class="nav-item">
+                                        <a class="nav-link" id="Stocks-tab" data-toggle="tab" href="#Stocks" role="tab" aria-controls="Stocks" aria-selected="false">Stocks</a>
+                                      </li>
+                                    </ul>
+                                    <div class="tab-content" id="myTabContent">
+                                      <div class="tab-pane fade show active pt-3" id="Indices" role="tabpanel" aria-labelledby="Indices-tab">
+                                          <p>Indices Chart</p>
 
+                                          <div>
+                                              <table class="table table-hover table-bordered table-striped">
+                                                  <thead>
+                                                    <tr>
+                                                        <th>Index</th>
+                                                        <th>Level</th>
+                                                        <th>Change</th>
+                                                        <th>Change (%)</th>
+                                                    </tr>
+                                                  </thead>
+                                                  <tbody>
+                                                    {% for index in indices_chart %}
+                                                        <tr>
+                                                            <td>{{ index.index}}</td>
+                                                            <td>{{ index.value}}</td>
+                                                            <td></td>
+                                                            <td></td>
+                                                        </tr>
+                                                    {% empty %}
+                                                    {% endfor %}
+                                                  </tbody>
+                                              </table>
+                                          </div>
+                                      </div>
+                                      <div class="tab-pane fade pt-3" id="Commodities" role="tabpanel" aria-labelledby="Commodities-tab">
+                                          <p>Commodity Chart</p>
+
+                                          <div>
+                                              <table class="table table-hover table-bordered table-striped">
+                                                  <thead>
+                                                    <tr>
+                                                        <th>Commodities</th>
+                                                        <th>Price</th>
+                                                        <th>Change</th>
+                                                        <th>Change (%)</th>
+                                                    </tr>
+                                                  </thead>
+                                                  <tbody>
+                                                    {% for commodity in commodities_chart %}
+                                                        <tr>
+                                                            <td>{{ commodity.name}}</td>
+                                                            <td></td>
+                                                            <td></td>
+                                                            <td></td>
+                                                        </tr>
+                                                    {% empty %}
+                                                    {% endfor %}
+                                                  </tbody>
+                                              </table>
+                                          </div>
+                                      </div>
+                                        <div class="tab-pane fade pt-3" id="Bonds" role="tabpanel" aria-labelledby="Bonds-tab">
+                                          <p>Bonds Chart</p>
+
+                                            <div>
+                                                <table class="table table-hover table-bordered table-striped">
+                                                  <thead>
+                                                    <tr>
+                                                        <th>Security</th>
+                                                        <th>Interest</th>
+                                                        <th>Change</th>
+                                                        <th>Change (%)</th>
+                                                    </tr>
+                                                  </thead>
+                                                  <tbody>
+                                                    {% for security in t_bills_chart %}
+                                                        <tr>
+                                                            <td>{{ security.security.security}}</td>
+                                                            <td>{{ security.interest}}</td>
+                                                            <td></td>
+                                                            <td></td>
+                                                        </tr>
+                                                    {% empty %}
+                                                    {% endfor %}
+                                                  </tbody>
+                                              </table>
+                                            </div>
+                                      </div>
+                                        <div class="tab-pane fade pt-3" id="Stocks" role="tabpanel" aria-labelledby="Stocks-tab">
+                                          <p>Stocks Chart</p>
+
+                                            <div>
+                                                <table class="table table-hover table-bordered table-striped">
+                                                  <thead>
+                                                    <tr>
+                                                        <th>Companies</th>
+                                                        <th>Price</th>
+                                                        <th>Change</th>
+                                                        <th>Change (%)</th>
+                                                    </tr>
+                                                  </thead>
+                                                  <tbody>
+                                                    {% for company in shares_chart %}
+                                                        <tr>
+                                                            <td>{{ company.company.company_id}}</td>
+                                                            <td>{{ company.price}}</td>
+                                                            <td></td>
+                                                            <td></td>
+                                                        </tr>
+                                                    {% empty %}
+                                                    {% endfor %}
+                                                  </tbody>
+                                              </table>
+                                            </div>
+                                      </div>
+                                    </div>
+                                </div>
                                 </div>
                             </div>
                             <div class="card shadow mb-4">

@@ -1,0 +1,1162 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load mathfilters %}
+{% load humanize %}
+
+{% block title %} Ghana Commodity Exchange{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Ghana Commodity Exchange Market</h1>
+        <p>
+            <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
+                                class="fas fa-download fa-sm text-white-50"></i> General Report</a>
+            <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
+                    class="fas fa-download fa-sm text-white-50"></i> Day's Report</a>
+        </p>
+    </div>
+
+
+    <!-- Content Row -->
+    <div class="row">
+
+        <!-- Earnings (Monthly) Card Example -->
+        <div class="col-xl-2 col-md-6 mb-4">
+                            <div class="card border-left-primary shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                                <a href="{% url 'inflation' %}">Maize Price Index</a></div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">GHS 6,613.98M</div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+        <!-- Earnings (Monthly) Card Example -->
+        <div class="col-xl-2 col-md-6 mb-4">
+                            <div class="card border-left-success shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                                <a href="{% url 'index_detail' 1 %}">Soya Bean Price Index</a></div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800 value"><small class="value"></small> (<small class="value">%</small>)</div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+        <!-- Earnings (Monthly) Card Example -->
+        <div class="col-xl-2 col-md-6 mb-4">
+                            <div class="card border-left-info shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                                <a href="{% url 'index_detail' 2 %}">Sorghum Price Index</a></div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800"> <small class="value"></small> (<small class="value">%</small>)</div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+         <div class="col-xl-2 col-md-6 mb-4">
+                            <div class="card border-left-info shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                                <a href="{% url 'index_detail' 2 %}">Sesame Price Index</a></div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800"> <small class="value"></small> (<small class="value">%</small>)</div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+        <div class="col-xl-2 col-md-6 mb-4">
+                            <div class="card border-left-info shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                                <a href="{% url 'index_detail' 2 %}">Milled Rice Price Index</a></div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800"> <small class="value"></small> (<small class="value">%</small>)</div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+        <!-- Pending Requests Card Example -->
+        <div class="col-xl-2 col-md-6 mb-4">
+                            <div class="card border-left-warning shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                                <a href="{% url 'listed_companies' %}">All Commodities</a>
+                                            </div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ companies_counts }}</div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-comments fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+    </div>
+
+    <!-- Content Row -->
+
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card shadow mb-4">
+                                <!-- Card Header - Dropdown -->
+                                <div
+                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                    <h6 class="m-0 font-weight-bold text-primary">Commodity Market Overview</h6>
+                                    <div class="dropdown no-arrow">
+                                        <a class="dropdown-toggle" href="#" role="button" id="Overview"
+                                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                                        </a>
+                                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
+                                            aria-labelledby="Overview">
+                                            <div class="dropdown-header">GCX:</div>
+                                            <a class="dropdown-item" href="{% url 'listed_companies' %}">All Commodities</a>
+                                            <div class="dropdown-divider"></div>
+                                            <a class="dropdown-item" href="#">Fillings</a>
+                                            <a class="dropdown-item" href="#">Reports</a>
+                                            <a class="dropdown-item" href="{% url 'news_list' %}">News</a>
+                                            <div class="dropdown-divider"></div>
+                                            <a class="dropdown-item" href="#">Stock Course</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Card Body -->
+                                <div class="card-body">
+                                        <h4>Commodities Types</h4>
+                                        <div class="row">
+                                            {% for commodity in comm_types %}
+                                            <div class="col-lg-3 mb-2">
+                                                <div class="card shadow">
+                                                    <div class="card-body text-center">
+                                                        <a href="">{{ commodity.name }}</a>
+                                                        <div class="small">
+                                                            <img src="{{ commodity.logo.url }}" alt="" height="50">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                    <br>
+                                    <div class="dropdown-divider"></div>
+                                        <div class="row">
+                                            <div>
+                                                <div id="treemap"></div>
+                                                <script>
+                                                      var options = {
+                                                      series: [
+                                                      {
+                                                        data: [
+                                                          {
+                                                            x: 'INTC',
+                                                            y: 1.2
+                                                          },
+                                                          {
+                                                            x: 'GS',
+                                                            y: 0.4
+                                                          },
+                                                          {
+                                                            x: 'CVX',
+                                                            y: -1.4
+                                                          },
+                                                          {
+                                                            x: 'GE',
+                                                            y: 2.7
+                                                          },
+                                                          {
+                                                            x: 'CAT',
+                                                            y: -0.3
+                                                          },
+                                                          {
+                                                            x: 'RTX',
+                                                            y: 5.1
+                                                          },
+                                                          {
+                                                            x: 'CSCO',
+                                                            y: -2.3
+                                                          },
+                                                          {
+                                                            x: 'JNJ',
+                                                            y: 2.1
+                                                          },
+                                                          {
+                                                            x: 'PG',
+                                                            y: 0.3
+                                                          },
+                                                          {
+                                                            x: 'TRV',
+                                                            y: 0.12
+                                                          },
+                                                          {
+                                                            x: 'MMM',
+                                                            y: -2.31
+                                                          },
+                                                          {
+                                                            x: 'NKE',
+                                                            y: 3.98
+                                                          },
+                                                          {
+                                                            x: 'IYT',
+                                                            y: 1.67
+                                                          }
+                                                        ]
+                                                      }
+                                                    ],
+                                                      legend: {
+                                                      show: false
+                                                    },
+                                                    chart: {
+                                                      height: 350,
+                                                      width: 1000,
+                                                      type: 'treemap'
+                                                    },
+                                                    title: {
+                                                      text: ''
+                                                    },
+                                                    dataLabels: {
+                                                      enabled: true,
+                                                      style: {
+                                                        fontSize: '12px',
+                                                      },
+                                                      formatter: function(text, op) {
+                                                        return [text, op.value]
+                                                      },
+                                                      offsetY: -4
+                                                    },
+                                                    plotOptions: {
+                                                      treemap: {
+                                                        enableShades: true,
+                                                        shadeIntensity: 0.5,
+                                                        reverseNegativeShade: true,
+                                                        colorScale: {
+                                                          ranges: [
+                                                            {
+                                                              from: -6,
+                                                              to: 0,
+                                                              color: '#CD363A'
+                                                            },
+                                                            {
+                                                              from: 0.001,
+                                                              to: 6,
+                                                              color: '#52B12C'
+                                                            }
+                                                          ]
+                                                        }
+                                                      }
+                                                    }
+                                                    };
+
+                                                    var chart = new ApexCharts(document.querySelector("#treemap"), options);
+                                                    chart.render();
+                                        </script>
+                                    </div>
+                                        </div>
+
+                                </div>
+                            </div>
+
+                            <div class="card shadow mb-4">
+                                <!-- Card Header - Dropdown -->
+                                <div
+                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                    <h6 class="m-0 font-weight-bold text-primary"><a href="{% url 'news_list' %}">Latest News</a></h6>
+                                </div>
+                                <!-- Card Body -->
+                                <div class="card-body">
+                                    <div class="row pb-2">
+                                        {% for new in news %}
+                                        <div class="col-lg-6 mb-12">
+                                            <div class="card shadow">
+                                                <div class="card-body">
+                                                    <div class="row no-gutters align-items-center">
+                                                        <div class="col mr-2">
+                                                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                                                 </div>
+                                                            <div class="h5 mb-0 font-weight-bold text-gray-800"></div>
+                                                            <p></p>
+                                                            <a href="{{ new.get_absolute_url }}" class="btn btn-primary">Read More</a>
+                                                            <p><i class="fas fa-calendar-day"></i>  </p>
+                                                        </div>
+                                                        <div class="col-auto">
+                                                            <img src="" alt="" height="35">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                    <h4 class="pt-4">Older News <img src="{% static 'img/old_news.png' %}" alt="" height="50"></h4>
+                                    <div class="row">
+                                        {% for new in older_news %}
+                                            <div class="col-lg-3 mb-6">
+                                            <div class="card shadow">
+                                                <div class="card-body">
+                                                    <div class="row no-gutters">
+                                                        <div class="col mr-2">
+                                                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                                                 </div>
+                                                            <div class="h5 mb-0 font-weight-bold text-gray-800"></div>
+                                                            <p></p>
+                                                            <a href="{{ new.get_absolute_url }}" class="btn btn-primary">Read More</a>
+                                                            <p><i class="fas fa-calendar-day"></i>  </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">GCX Overview</h6>
+                                </div>
+                                <div class="card-body text text-center">
+                                    <ul class="nav nav-tabs" id="myPro" role="tablist">
+                                      <li class="nav-item">
+                                        <a class="nav-link active" id="fairvalue-tab" data-toggle="tab" href="#fairvalue" role="tab" aria-controls="contact" aria-selected="false">Day's Summary</a>
+                                      </li>
+                                        <li class="nav-item">
+                                        <a class="nav-link" id="score-tab" data-toggle="tab" href="#score" role="tab" aria-controls="score" aria-selected="false">Year-to-Date</a>
+                                      </li>
+                                        <li class="nav-item">
+                                        <a class="nav-link" id="health-tab" data-toggle="tab" href="#health" role="tab" aria-controls="health" aria-selected="false">Performance</a>
+                                      </li>
+                                    </ul>
+                                    <div class="tab-content" id="myProContent">
+                                      <div class="tab-pane fade show active pt-3" id="fairvalue" role="tabpanel" aria-labelledby="fairvalue-tab">
+                                        <div class="row">
+                                              <div class="col-3">
+                                                <div class="nav flex-column nav-pills" id="v-technical" role="tablist" aria-orientation="vertical">
+
+                                                  <button class="nav-link" id="v-Gainers-tab" data-toggle="pill" data-target="#v-Gainers" type="button" role="tab" aria-controls="v-Gainers" aria-selected="false">Gainers & Losers</button>
+                                                    <br>
+                                                  <button class="nav-link" id="v-Activities-tab" data-toggle="pill" data-target="#v-Activities" type="button" role="tab" aria-controls="v-Activities" aria-selected="false">Market Activities</button>
+                                                </div>
+                                              </div>
+                                              <div class="col-9">
+                                                <div class="tab-content" id="v-technicalContent">
+                                                    <p><span><small></small></span></p>
+                                                  <div class="tab-pane fade show active" id="v-Gainers" role="tabpanel" aria-labelledby="v-Gainers-tab">
+                                                      <h6>Gainers</h6>
+                                                      <table class="table table-striped table-bordered">
+                                                        <thead>
+                                                            <tr>
+                                                                <th></th>
+                                                                <th>Price (GHS)</th>
+                                                                <th>Change</th>
+                                                                <th>Change (%)</th>
+                                                            </tr>
+                                                        </thead>
+                                                          <tbody>
+                                                            <tr>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                            </tr>
+                                                          <tr>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                            </tr>
+                                                        </tbody>
+                                                      </table>
+
+                                                      <h6 class="text">Losers</h6>
+                                                      <table class="table table-striped table-bordered">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Commodity</th>
+                                                                <th>Price (GHS)</th>
+                                                                <th>Change</th>
+                                                                <th>Change (%)</th>
+                                                            </tr>
+                                                        </thead>
+                                                          <tbody>
+                                                            <tr>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                            </tr>
+                                                          <tr>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                            </tr>
+                                                        </tbody>
+                                                      </table>
+                                                  </div>
+                                                    <div class="tab-pane fade" id="v-Activities" role="tabpanel" aria-labelledby="v-Activities-tab">
+                                                      <table class="table table-striped table-bordered">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Commodity</th>
+                                                                <th>Price (GHS)</th>
+                                                                <th>Volume</th>
+                                                                <th>Traded value</th>
+                                                            </tr>
+                                                        </thead>
+                                                          <tbody>
+                                                            <tr>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                            </tr>
+                                                          <tr>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                            </tr>
+                                                        </tbody>
+                                                      </table>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </div>
+                                      </div>
+                                      <div class="tab-pane fade show pt-3" id="score" role="tabpanel" aria-labelledby="score-tab">
+                                        <div class="row">
+                                              <div class="col-3">
+                                                <div class="nav flex-column nav-pills" id="v-year" role="tablist" aria-orientation="vertical">
+                                                  <button class="nav-link" id="v-ytdGainers-tab" data-toggle="pill" data-target="#v-ytdGainers" type="button" role="tab" aria-controls="v-ytdGainers" aria-selected="false">Gainers & Losers</button>
+                                                    <br>
+                                                  <button class="nav-link" id="v-ytdActivities-tab" data-toggle="pill" data-target="#v-ytdActivities" type="button" role="tab" aria-controls="v-ytdActivities" aria-selected="false">Market Activities</button>
+                                                </div>
+                                              </div>
+                                              <div class="col-9">
+                                                <div class="tab-content" id="v-yearContent">
+                                                  <div class="tab-pane fade  show active" id="v-ytdGainers" role="tabpanel" aria-labelledby="v-ytdGainers-tab">
+                                                      <h6>Gainers</h6>
+                                                      <table class="table table-striped table-bordered">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Commodity</th>
+                                                                <th>Price (GHS)</th>
+                                                                <th>Change</th>
+                                                                <th>Change (%)</th>
+                                                            </tr>
+                                                        </thead>
+                                                          <tbody>
+                                                            <tr>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                            </tr>
+                                                          <tr>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                            </tr>
+                                                        </tbody>
+                                                      </table>
+
+                                                      <h6 class="text">Losers</h6>
+                                                      <table class="table table-striped table-bordered">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Commodity</th>
+                                                                <th>Price (GHS)</th>
+                                                                <th>Change</th>
+                                                                <th>Change (%)</th>
+                                                            </tr>
+                                                        </thead>
+                                                          <tbody>
+                                                            <tr>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                            </tr>
+                                                          <tr>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                            </tr>
+                                                        </tbody>
+                                                      </table>
+                                                  </div>
+                                                    <div class="tab-pane fade" id="v-ytdActivities" role="tabpanel" aria-labelledby="v-ytdActivities-tab">
+                                                      <table class="table table-striped table-bordered">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Commodity</th>
+                                                                <th>Price (GHS)</th>
+                                                                <th>Volume</th>
+                                                                <th>Traded value</th>
+                                                            </tr>
+                                                        </thead>
+                                                          <tbody>
+                                                            <tr>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                            </tr>
+                                                          <tr>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                            </tr>
+                                                        </tbody>
+                                                      </table>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </div>
+                                      </div>
+                                        <div class="tab-pane fade show pt-3" id="health" role="tabpanel" aria-labelledby="health-tab">
+                                        <table class="table table-striped table-bordered">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Commodity</th>
+                                                                <th>Daily (%)</th>
+                                                                <th>Weekly (%)</th>
+                                                                <th>1 Month (%)</th>
+                                                                <th>YTD (%)</th>
+                                                                <th>1 Year (%)</th>
+                                                                <th>3 Years (%)</th>
+                                                                <th>5 Years (%)</th>
+                                                            </tr>
+                                                        </thead>
+                                                          <tbody>
+                                                            <tr>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                            </tr>
+                                                        </tbody>
+                                                      </table>
+                                      </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">Others</h6>
+                                </div>
+                                <div class="card-body text text-center">
+                                    <ul class="nav nav-tabs" id="myTab" role="tablist">
+                                      <li class="nav-item">
+                                        <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Auditors</a>
+                                      </li>
+                                      <li class="nav-item">
+                                        <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">Registrars</a>
+                                      </li>
+                                    </ul>
+                                    <div class="tab-content" id="myTabContent">
+                                      <div class="tab-pane fade show active pt-3" id="home" role="tabpanel" aria-labelledby="home-tab">
+                                          <div class="row">
+                                            {% for auditor in auditors %}
+                                                <div class="col-lg-3 mb-2">
+                                                    <div class="card shadow">
+                                                        <div class="card-body text-center">
+                                                            <a href="{% url 'auditor' auditor.id %}" title="{{ auditor.name }}">{{ auditor.name|truncatechars:20 }}</a>
+                                                            <div class="small">
+                                                                <img src="{{ auditor.logo.url }}" alt="" height="100">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                      </div>
+                                      <div class="tab-pane fade pt-3" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+                                             <div class="row">
+                                            {% for registrar in registrars %}
+                                                <div class="col-lg-3 mb-2">
+                                                    <div class="card shadow">
+                                                        <div class="card-body text-center">
+                                                            <a href="{% url 'registrar' registrar.id %}" title="{{ registrar.name }}">{{ registrar.name|truncatechars:20 }}</a>
+                                                            <div class="small">
+                                                                <img src="{{ registrar.logo.url }}" alt="" height="100">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                      </div>
+                                    </div>
+                                </div>
+                            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="card shadow mb-4">
+                                <!-- Card Header - Dropdown -->
+                                <div
+                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                    <h6 class="m-0 font-weight-bold text-primary">Maize Movement</h6>
+                                    <div class="dropdown no-arrow">
+                                        <a class="dropdown-toggle" href="#" role="button" id="dropMenuLink"
+                                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                                        </a>
+                                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
+                                            aria-labelledby="dropMenuLink">
+                                            <div class="dropdown-header">Dropdown Header:</div>
+                                            <a class="dropdown-item" href="#">Action</a>
+                                            <a class="dropdown-item" href="#">Another action</a>
+                                            <div class="dropdown-divider"></div>
+                                            <a class="dropdown-item" href="#">Something else here</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Card Body -->
+                                <div class="card-body">
+                                        <div class="tab-pane fade show active" id="v-chart" role="tabpanel" aria-labelledby="v-chart-tab">
+                                                        <button id="one_month" type="button">1M</button>
+                                                        <button id="six_months" type="button">6M</button>
+                                                        <button id="one_year" type="button">1Y</button>
+                                                        <button id="three_year" type="button">3Y</button>
+                                                        <button id="five_year" type="button">5Y</button>
+                                                        <button id="ytd" type="button">YTD</button>
+                                                        <button id="all" type="button">ALL</button>
+                                                        <div id="ci_chart"></div>
+
+
+                                                      <script>
+                                                        const latest_trading_day = '{{share_price_latest.date}}';
+
+
+                                                        const one_month = '{{one_month}}';
+
+
+                                                        const six_month = '{{six_month}}';
+
+
+                                                        const one_year = '{{one_year}}';
+
+                                                        const three_year = '{{three_year}}';
+
+                                                        const five_year = '{{five_year}}';
+
+                                                        const share_price_first = '{{share_price_first}}';
+
+                                                        const ci_dates = [{% for price in indices %} Date.parse('{{price.date}}'),{% endfor %}]
+
+                                                        const ci_values = [{% for price in indices %} {{price.value}}, {% endfor %}]
+
+                                                        var data = ci_dates.map(function(e, i){
+                                                            return [e, ci_values[i]];
+                                                        });
+
+                                                        const series = {
+                                                            "dataSeries": {
+                                                              "dates": [{% for price in share_price %} '{{price.date|date:"D M, Y" }}', {% endfor %}],
+                                                              "prices": [{% for price in share_price %} {{price.price}}, {% endfor %}]
+                                                            }
+                                                          }
+
+                                                          var options = {
+                                                          series: [{
+                                                          name: "Share Price",
+                                                          data: data
+                                                        }],
+                                                          chart: {
+                                                          id: 'area-datetime',
+                                                          type: 'area',
+                                                          height: 350,
+                                                          zoom: {
+                                                            autoScaleYaxis: true
+                                                          }
+                                                        },
+                                                        annotations: {
+                                                          yaxis: [{
+                                                            y: 30,
+                                                            borderColor: '#999',
+                                                            label: {
+                                                              show: true,
+                                                              style: {
+                                                                color: "#fff",
+                                                                background: '#00E396'
+                                                              }
+                                                            }
+                                                          }],
+                                                          xaxis: [{
+                                                            x: new Date('{{share_price_first}}').getTime(),
+                                                            borderColor: '#999',
+                                                            yAxisIndex: 0,
+                                                            label: {
+                                                              show: true,
+                                                              style: {
+                                                                color: "#fff",
+                                                                background: '#775DD0'
+                                                              }
+                                                            }
+                                                          }]
+                                                        },
+                                                        dataLabels: {
+                                                          enabled: false
+                                                        },
+                                                        markers: {
+                                                          size: 0,
+                                                          style: 'hollow',
+                                                        },
+                                                        xaxis: {
+                                                          type: 'datetime',
+                                                          min: new Date('{{share_price_first}}').getTime(),
+                                                          tickAmount: 6,
+                                                        },
+                                                        tooltip: {
+                                                          x: {
+                                                            format: 'dd MMM yyyy',
+                                                          }
+                                                        },
+                                                        fill: {
+                                                          type: 'gradient',
+                                                          gradient: {
+                                                            shadeIntensity: 1,
+                                                            opacityFrom: 0.7,
+                                                            opacityTo: 0.9,
+                                                            stops: [0, 100]
+                                                          }
+                                                        },
+                                                        };
+
+                                                        var chart = new ApexCharts(document.querySelector("#ci_chart"), options);
+                                                        chart.render();
+
+                                                        var resetCssClasses = function(activeEl) {
+                                                            var els = document.querySelectorAll('button')
+                                                            Array.prototype.forEach.call(els, function(el) {
+                                                              el.classList.remove('active')
+                                                            })
+
+                                                            activeEl.target.classList.add('active')
+                                                          }
+
+                                                          document.querySelector('#one_month').addEventListener('click', function(e) {
+                                                              resetCssClasses(e)
+
+                                                              chart.zoomX(
+                                                                new Date(one_month).getTime(),
+                                                                new Date(latest_trading_day).getTime()
+                                                              )
+                                                            })
+
+                                                          document.querySelector('#six_months').addEventListener('click', function(e) {
+                                                              resetCssClasses(e)
+
+                                                              chart.zoomX(
+                                                                new Date(six_month).getTime(),
+                                                                new Date(latest_trading_day).getTime()
+                                                              )
+                                                            })
+
+                                                          document.querySelector('#one_year').addEventListener('click', function(e) {
+                                                              resetCssClasses(e)
+                                                              chart.zoomX(
+                                                                new Date(one_year).getTime(),
+                                                                new Date(latest_trading_day).getTime()
+                                                              )
+                                                            })
+
+                                                            document.querySelector('#three_year').addEventListener('click', function(e) {
+                                                              resetCssClasses(e)
+                                                              chart.zoomX(
+                                                                new Date(three_year).getTime(),
+                                                                new Date(latest_trading_day).getTime()
+                                                              )
+                                                            })
+
+                                                            document.querySelector('#five_year').addEventListener('click', function(e) {
+                                                              resetCssClasses(e)
+                                                              chart.zoomX(
+                                                                new Date(five_year).getTime(),
+                                                                new Date(latest_trading_day).getTime()
+                                                              )
+                                                            })
+
+                                                          document.querySelector('#ytd').addEventListener('click', function(e) {
+                                                            resetCssClasses(e)
+
+                                                            chart.zoomX(
+                                                              new Date('2023-01-01').getTime(),
+                                                              new Date(latest_trading_day).getTime()
+                                                            )
+                                                          })
+
+                                                          document.querySelector('#all').addEventListener('click', function(e) {
+                                                            resetCssClasses(e)
+
+                                                            chart.zoomX(
+                                                              new Date(share_price_first).getTime(),
+                                                              new Date().getTime(),
+                                                            )
+                                                          });
+                                                      </script>
+                                                        <!-- End Area Chart -->
+                                                  </div>
+                                    <div class="mt-4 text-center small">
+                                    </div>
+                                </div>
+                            </div>
+
+            <div class="card shadow mb-4">
+                                <!-- Card Header - Dropdown -->
+                                <div
+                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                    <h6 class="m-0 font-weight-bold text-primary">Milled Rice Movement</h6>
+                                    <div class="dropdown no-arrow">
+                                        <a class="dropdown-toggle" href="#" role="button" id="dropdownLink"
+                                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                                        </a>
+                                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
+                                            aria-labelledby="dropdownLink">
+                                            <div class="dropdown-header">Dropdown Header:</div>
+                                            <a class="dropdown-item" href="#">Action</a>
+                                            <a class="dropdown-item" href="#">Another action</a>
+                                            <div class="dropdown-divider"></div>
+                                            <a class="dropdown-item" href="#">Something else here</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Card Body -->
+                                <div class="card-body">
+                                        <div class="tab-pane fade show active" id="f-chart" role="tabpanel" aria-labelledby="f-chart-tab">
+                                                        <button id="fsi_one_month" type="button">1M</button>
+                                                        <button id="fsi_six_months" type="button">6M</button>
+                                                        <button id="fsi_one_year" type="button">1Y</button>
+                                                        <button id="fsi_three_year" type="button">3Y</button>
+                                                        <button id="fsi_five_year" type="button">5Y</button>
+                                                        <button id="fsi_ytd" type="button">YTD</button>
+                                                        <button id="fsi_all" type="button">ALL</button>
+                                                        <div id="fsi_chart"></div>
+
+
+                                                      <script>
+                                                        const fsi_latest_trading_day = '{{fsi_share_price_latest.date}}';
+
+
+                                                        const fsi_one_month = '{{fsi_one_month}}';
+
+
+                                                        const fsi_six_month = '{{fsi_six_month}}';
+
+
+                                                        const fsi_one_year = '{{fsi_one_year}}';
+
+                                                        const fsi_three_year = '{{fsi_three_year}}';
+
+                                                        const fsi_five_year = '{{fsi_five_year}}';
+
+                                                        const fsi_share_price_first = '{{fsi_share_price_first}}';
+
+                                                        const fsi_dates = [{% for price in fsi_indices %} Date.parse('{{price.date}}'),{% endfor %}]
+
+                                                        const fsi_values = [{% for price in fsi_indices %} {{price.value}}, {% endfor %}]
+
+                                                        var data = fsi_dates.map(function(e, i){
+                                                            return [e, fsi_values[i]];
+                                                        });
+
+                                                        const series1 = {
+                                                            "dataSeries": {
+                                                              "dates": [{% for price in share_price %} '{{price.date|date:"D M, Y" }}', {% endfor %}],
+                                                              "prices": [{% for price in share_price %} {{price.price}}, {% endfor %}]
+                                                            }
+                                                          }
+
+                                                          var options = {
+                                                          series: [{
+                                                          name: "Share Price",
+                                                          data: data
+                                                        }],
+                                                          chart: {
+                                                          id: 'area-datetime',
+                                                          type: 'area',
+                                                          height: 350,
+                                                          zoom: {
+                                                            autoScaleYaxis: true
+                                                          }
+                                                        },
+                                                        annotations: {
+                                                          yaxis: [{
+                                                            y: 30,
+                                                            borderColor: '#999',
+                                                            label: {
+                                                              show: true,
+                                                              style: {
+                                                                color: "#fff",
+                                                                background: '#00E396'
+                                                              }
+                                                            }
+                                                          }],
+                                                          xaxis: [{
+                                                            x: new Date('{{fsi_share_price_first}}').getTime(),
+                                                            borderColor: '#999',
+                                                            yAxisIndex: 0,
+                                                            label: {
+                                                              show: true,
+                                                              style: {
+                                                                color: "#fff",
+                                                                background: '#775DD0'
+                                                              }
+                                                            }
+                                                          }]
+                                                        },
+                                                        dataLabels: {
+                                                          enabled: false
+                                                        },
+                                                        markers: {
+                                                          size: 0,
+                                                          style: 'hollow',
+                                                        },
+                                                        xaxis: {
+                                                          type: 'datetime',
+                                                          min: new Date('{{fsi_share_price_first}}').getTime(),
+                                                          tickAmount: 6,
+                                                        },
+                                                        tooltip: {
+                                                          x: {
+                                                            format: 'dd MMM yyyy',
+                                                          }
+                                                        },
+                                                        fill: {
+                                                          type: 'gradient',
+                                                          gradient: {
+                                                            shadeIntensity: 1,
+                                                            opacityFrom: 0.7,
+                                                            opacityTo: 0.9,
+                                                            stops: [0, 100]
+                                                          }
+                                                        },
+                                                        };
+
+                                                        var fsi_chart = new ApexCharts(document.querySelector("#fsi_chart"), options);
+                                                        fsi_chart.render();
+
+                                                        var resetCssClasses = function(activeEl) {
+                                                            var els = document.querySelectorAll('button')
+                                                            Array.prototype.forEach.call(els, function(el) {
+                                                              el.classList.remove('active')
+                                                            })
+
+                                                            activeEl.target.classList.add('active')
+                                                          }
+
+                                                          document.querySelector('#fsi_one_month').addEventListener('click', function(e) {
+                                                              resetCssClasses(e)
+
+                                                              fsi_chart.zoomX(
+                                                                new Date(fsi_one_month).getTime(),
+                                                                new Date(latest_trading_day).getTime()
+                                                              )
+                                                            })
+
+                                                          document.querySelector('#fsi_six_months').addEventListener('click', function(e) {
+                                                              resetCssClasses(e)
+
+                                                              fsi_chart.zoomX(
+                                                                new Date(fsi_six_month).getTime(),
+                                                                new Date(latest_trading_day).getTime()
+                                                              )
+                                                            })
+
+                                                          document.querySelector('#fsi_one_year').addEventListener('click', function(e) {
+                                                              resetCssClasses(e)
+                                                              fsi_chart.zoomX(
+                                                                new Date(fsi_one_year).getTime(),
+                                                                new Date(latest_trading_day).getTime()
+                                                              )
+                                                            })
+
+                                                            document.querySelector('#fsi_three_year').addEventListener('click', function(e) {
+                                                              resetCssClasses(e)
+                                                              fsi_chart.zoomX(
+                                                                new Date(fsi_three_year).getTime(),
+                                                                new Date(latest_trading_day).getTime()
+                                                              )
+                                                            })
+
+                                                            document.querySelector('#fsi_five_year').addEventListener('click', function(e) {
+                                                              resetCssClasses(e)
+                                                              fsi_chart.zoomX(
+                                                                new Date(fsi_five_year).getTime(),
+                                                                new Date(latest_trading_day).getTime()
+                                                              )
+                                                            })
+
+                                                          document.querySelector('#fsi_ytd').addEventListener('click', function(e) {
+                                                            resetCssClasses(e)
+
+                                                            fsi_chart.zoomX(
+                                                              new Date('2023-01-01').getTime(),
+                                                              new Date(latest_trading_day).getTime()
+                                                            )
+                                                          })
+
+                                                          document.querySelector('#fsi_all').addEventListener('click', function(e) {
+                                                            resetCssClasses(e)
+
+                                                            fsi_chart.zoomX(
+                                                              new Date(fsi_share_price_first).getTime(),
+                                                              new Date().getTime(),
+                                                            )
+                                                          });
+                                                      </script>
+                                                        <!-- End Area Chart -->
+                                                  </div>
+                                    <div class="mt-4 text-center small">
+                                    </div>
+                                </div>
+                            </div>
+
+            <div class="card shadow mb-4">
+                                <!-- Card Header - Dropdown -->
+                                <div
+                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                    <h6 class="m-0 font-weight-bold text-primary" title="Click to download">Latest Reports</h6>
+                                    <div class="dropdown no-arrow">
+                                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+                                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                                        </a>
+                                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
+                                            aria-labelledby="dropdownMenuLink">
+                                            <div class="dropdown-header">Dropdown Header:</div>
+                                            <a class="dropdown-item" href="#">Action</a>
+                                            <a class="dropdown-item" href="#">Another action</a>
+                                            <div class="dropdown-divider"></div>
+                                            <a class="dropdown-item" href="#">Something else here</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Card Body -->
+                                <div class="card-body">
+                                    <div class="text text-center">
+                                        {% for report in market_reports %}
+                                            <p><img src="{% static 'img/excel.png' %}" alt="" height="30"><a href="{{ report.file.url }}">Trading Session-{{ report.session_number }} </a><i class="fas fa-download"></i></p>
+                                        {% endfor %}
+                                    </div>
+                                    <div class="mt-4 text-center small">
+                                    </div>
+                                </div>
+                            </div>
+
+            <div class="card shadow mb-4">
+                                <!-- Card Header - Dropdown -->
+                                <div
+                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                    <h6 class="m-0 font-weight-bold text-primary" title="Click to download">Commodity Advisory</h6>
+                                    <div class="dropdown no-arrow">
+                                        <a class="dropdown-toggle" href="#" role="button" id="Advisory"
+                                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                                        </a>
+                                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
+                                            aria-labelledby="Advisory">
+                                            <div class="dropdown-header">Dropdown Header:</div>
+                                            <a class="dropdown-item" href="#">Action</a>
+                                            <a class="dropdown-item" href="#">Another action</a>
+                                            <div class="dropdown-divider"></div>
+                                            <a class="dropdown-item" href="#">Something else here</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Card Body -->
+                                <div class="card-body">
+                                    <div class="text text-center">
+                                        <table class="table table-striped table-bordered">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Commodity</th>
+                                                                <th>Price (GHS)</th>
+                                                                <th>Advise</th>
+                                                                <th>Target</th>
+                                                                <th>Broker</th>
+                                                            </tr>
+                                                        </thead>
+                                                          <tbody>
+                                                            <tr>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                            </tr>
+                                                        </tbody>
+                                                      </table>
+                                    </div>
+                                    <div class="mt-4 text-center small">
+                                    </div>
+                                </div>
+                            </div>
+        </div>
+    </div>
+
+</div>
+
+
+{% endblock %}

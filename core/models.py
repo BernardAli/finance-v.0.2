@@ -58,6 +58,7 @@ class Market(models.Model):
 
 class Products(models.Model):
     products = models.CharField(max_length=255)
+    detail = models.TextField(blank=True, null=True)
 
     def get_absolute_url(self):
         return reverse('products', args=[str(self.id)])
@@ -67,11 +68,20 @@ class Products(models.Model):
 
 
 SHARE_TYPE_CHOICE = (
-    ('Private', 'Private'),
-    ('Public', 'Public'),
+    ('Equity', 'Equity'),
     ('Preference', 'Preference'),
-    ('Exchange Tradeable Funds', 'Exchange Tradeable Funds')
+    ('Depository Shares', 'Depository Shares'),
+    ('Exchange Tradeable Funds', 'Exchange Tradeable Funds'),
 )
+
+class ShareType(models.Model):
+    share_type = models.CharField(max_length=255, choices=SHARE_TYPE_CHOICE, default='Equity')
+
+    def get_absolute_url(self):
+        return reverse('share_type_details', arg=[self.slug])
+
+    def __str__(self):
+        return self.share_type
 
 
 class CompanyProfile(models.Model):
@@ -86,6 +96,7 @@ class CompanyProfile(models.Model):
     postal_address = models.CharField(max_length=255, blank=True, null=True)
     registered_office = models.CharField(max_length=255, blank=True, null=True)
     incorporated_date = models.DateField(blank=True, null=True)
+    employees = models.IntegerField(default=0)
     telephone = models.CharField(max_length=20, blank=True, null=True)
     toll_free = models.CharField(max_length=20, blank=True, null=True)
     website = models.CharField(max_length=255, blank=True, null=True)
@@ -95,7 +106,7 @@ class CompanyProfile(models.Model):
     market = models.ManyToManyField(Market, related_name='tags', default='None')
     summary = models.TextField(max_length=2500, blank=True, null=True)
     index = models.ManyToManyField(Indice, blank=True)
-    share_type = models.CharField(max_length=255, choices=SHARE_TYPE_CHOICE, default='Public')
+    share_type = models.ManyToManyField(ShareType, related_name='tags', blank=True, default=1)
 
     def get_absolute_url(self):
         return reverse('company_details', args=[str(self.id)])
@@ -247,7 +258,13 @@ class Registrar(models.Model):
     name = models.CharField(max_length=250)
     logo = models.ImageField(upload_to='auditors', default='sector.png')
     company = models.ManyToManyField(CompanyProfile, blank=True, related_name='registrar')
+    country = models.ForeignKey(Country, on_delete=models.CASCADE)
     address = models.CharField(max_length=255)
+    business_nature = models.TextField(blank=True, null=True)
+    incorporated_date = models.DateField(blank=True, null=True)
+    email = models.CharField(max_length=255, blank=True, null=True)
+    website = models.CharField(max_length=255, blank=True, null=True)
+    telephone = models.CharField(max_length=15, blank=True, null=True)
 
     def get_absolute_url(self):
         return reverse('registrar', args=[str(self.id)])
@@ -405,3 +422,11 @@ class Review(models.Model):
 
     def __str__(self):
         return f'{self.creator.username} - {self.company.name}'
+
+
+class GCX_Types(models.Model):
+    name = models.CharField(max_length=255)
+    logo = models.ImageField(upload_to='commodies', default='sector.png')
+
+    def __str__(self):
+        return f'{self.name}'

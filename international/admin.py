@@ -1,11 +1,12 @@
 from django.contrib import admin
 from .models import Continent, Country, Indice, Commodity_type, Commodity_profile, President, CentralBank, BankRate, \
-    Bourse, MajorExports, UnemploymentRate, GDP
+    Bourse, MajorExports, UnemploymentRate, GDP, Population
 
 # Register your models here.
 
 admin.site.register(Continent)
 admin.site.register(President)
+admin.site.register(Population)
 
 
 @admin.register(Country)

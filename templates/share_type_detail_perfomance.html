@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+
+{% block title %} {{ market.market }} Performance Summary{% endblock %}
+
+{% block content %}
+<h3></h3>
+
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h4 mb-0 ml-4 text-gray-800">{{ share.share_type }} Companies Performance ({{share_type_count}})</h1>
+    <p>
+        <a href="" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
+                class="fas fa-download fa-sm text-white-50"></i> Latest Report</a>
+    </p>
+</div>
+
+<div class="container-fluid">
+    {% include 'companies_performance.html' %}
+</div>
+
+{% endblock %}

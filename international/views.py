@@ -5,7 +5,7 @@ from django.core.paginator import Paginator
 from django.views.generic import ListView
 from django.db.models import Q, Max, Min
 from .models import Continent, Country, Indice, Commodity_type, Commodity_profile, President, CentralBank, Bourse, \
-    BankRate, MajorExports, UnemploymentRate, GDP
+    BankRate, MajorExports, UnemploymentRate, GDP, Population
 from core.models import CompanyProfile, Indices
 
 
@@ -49,10 +49,11 @@ def country(request, country_slug):
     index = Indice.objects.filter(country=country).order_by('name')
     exchange = Bourse.objects.filter(country=country).order_by('name')
     exports = MajorExports.objects.filter(country=country)
-    companies = CompanyProfile.objects.filter(country=country)[:10]
+    companies = CompanyProfile.objects.filter(country=country).filter(market=1).order_by('?', 'name')[:30]
     bank_rate = BankRate.objects.filter(central_bank=country).order_by('-effective_meeting_date')[:1]
-    banks = CompanyProfile.objects.filter(country=country).filter(industry=3)
+    banks = CompanyProfile.objects.filter(country=country).filter(market=1).filter(industry=6)
     gdp = GDP.objects.filter(country=country)
+    population = Population.objects.get(country=country)
     unemployment = UnemploymentRate.objects.filter(country=country)
     paginator = Paginator(index, 50)
 
@@ -74,6 +75,7 @@ def country(request, country_slug):
         'exports': exports,
         'gdp': gdp,
         'unemployment': unemployment,
+        'population': population
     }
     return render(request, 'country.html', context)
 
@@ -88,6 +90,18 @@ def index_list(request):
     }
 
     return render(request, 'indices_list.html', context)
+
+
+def index_summary(request):
+    indices = Indice.objects.all().order_by('country')
+    index_count = indices.count()
+
+    context = {
+        'indices': indices,
+        'index_count': index_count,
+    }
+
+    return render(request, 'index_summary.html', context)
 
 
 def index_detail(request, index_id):
@@ -124,6 +138,17 @@ def commodity_list(request):
         'commodities_count': commodities_count,
     }
     return render(request, 'commodity.html', context)
+
+
+def commodity_summary(request):
+    commodities = Commodity_profile.objects.all()
+    commodities_count = commodities.count()
+
+    context = {
+        'commodities': commodities,
+        'commodities_count': commodities_count,
+    }
+    return render(request, 'commodity_summary.html', context)
 
 
 def commodity_profile(request, commodity_slug):

@@ -51,9 +51,7 @@
                                     <h6 class="m-0 font-weight-bold text-primary">Nature of Business</h6>
                                 </div>
                                 <div class="card-body">
-                                    The styling for this basic card example is created by using default Bootstrap
-                                    utility classes. By using utility classes, the style of the card component can be
-                                    easily modified with no need for any custom CSS!
+                                    {{ registrar.business_nature }}
                                 </div>
                             </div>
 
@@ -131,10 +129,9 @@
                                 </div>
                                 <!-- Card Body -->
                                 <div class="card-body">
-                                    <p><strong>Country:</strong> </p>
-                                    <p><strong>Secretary:</strong></p>
-                                    <p><strong>Registered Office:</strong> {{ auditor.address }}</p>
-                                    <p><strong>Incorporate Date:</strong> </p>
+                                    <p><strong>Country:</strong> {{ registrar.country }}</p>
+                                    <p><strong>Registered Office:</strong> {{ registrar.address }}</p>
+                                    <p><strong>Incorporate Date:</strong> {{ registrar.incorporated_date }}</p>
                                 </div>
                             </div>
 
@@ -143,14 +140,11 @@
                                 <!-- Card Header - Accordion -->
                                 <a href="#collapse2" class="d-block card-header py-3" data-toggle="collapse"
                                     role="button" aria-expanded="true" aria-controls="collapseCardExample">
-                                    <h6 class="m-0 font-weight-bold text-primary">Share Statistics</h6>
+                                    <h6 class="m-0 font-weight-bold text-primary">Market Reports</h6>
                                 </a>
                                 <!-- Card Content - Collapse -->
                                 <div class="collapse show" id="collapse2">
                                     <div class="card-body">
-                                        This is a collapsable card example using Bootstrap's built in collapse
-                                        functionality. <strong>Click on the card header</strong> to see the card body
-                                        collapse and expand!
                                     </div>
                                 </div>
                             </div>
@@ -158,14 +152,11 @@
                                 <!-- Card Header - Accordion -->
                                 <a href="#collapse3" class="d-block card-header py-3" data-toggle="collapse"
                                     role="button" aria-expanded="true" aria-controls="collapseCardExample">
-                                    <h6 class="m-0 font-weight-bold text-primary">Dividends & Splits</h6>
+                                    <h6 class="m-0 font-weight-bold text-primary">Press Releases</h6>
                                 </a>
                                 <!-- Card Content - Collapse -->
                                 <div class="collapse show" id="collapse3">
                                     <div class="card-body">
-                                        This is a collapsable card example using Bootstrap's built in collapse
-                                        functionality. <strong>Click on the card header</strong> to see the card body
-                                        collapse and expand!
                                     </div>
                                 </div>
                             </div>
@@ -178,8 +169,9 @@
                                 </div>
                                 <!-- Card Body -->
                                 <div class="card-body">
-                                    <p><strong>Email:</strong> {{ company.email }}</p>
-                                    <p><strong>Website:</strong> {{ company.email }}</p>
+                                    <p><strong>Telephone:</strong> {{ registrar.telephone }}</p>
+                                    <p><strong>Email:</strong> {{ registrar.email }}</p>
+                                    <p><strong>Website:</strong> {{ registrar.email }}</p>
                                 </div>
                             </div>
 
