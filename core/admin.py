@@ -51,8 +51,8 @@ admin.site.register(GCX_Types)
 @admin.register(ShareDetail)
 class ShareDetailAdmin(admin.ModelAdmin):
     list_display = ('company', 'issued_shares', 'listed_date', 'financial_period_ends')
-    list_filter = ('financial_period_ends', 'company__market')
-    search_fields = ('company__market', )
+    list_filter = ('financial_period_ends', 'company__market', 'status')
+    search_fields = ('company__name', )
 
 
 @admin.register(SharePrice)

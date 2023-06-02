@@ -74,6 +74,7 @@ SHARE_TYPE_CHOICE = (
     ('Exchange Tradeable Funds', 'Exchange Tradeable Funds'),
 )
 
+
 class ShareType(models.Model):
     share_type = models.CharField(max_length=255, choices=SHARE_TYPE_CHOICE, default='Equity')
 
@@ -134,7 +135,7 @@ class Subsidiaries(models.Model):
 
 
 class ShareSplit(models.Model):
-    company = models.ForeignKey(CompanyProfile, on_delete=models.CASCADE)
+    company = models.ForeignKey(CompanyProfile, on_delete=models.CASCADE, related_name='share_splits')
     old_fv = models.DecimalField(max_digits=5, decimal_places=2)
     new_fv = models.DecimalField(max_digits=5, decimal_places=2)
     split_date = models.DateField()
@@ -143,19 +144,26 @@ class ShareSplit(models.Model):
         return f"{self.company}"
 
 
+STATUS_CHOICE = (
+    ('Active', 'Active'),
+    ('Inactive', 'Inactive'),
+)
+
+
 class ShareDetail(models.Model):
-    company = models.ForeignKey(CompanyProfile, on_delete=models.CASCADE)
+    company = models.ForeignKey(CompanyProfile, on_delete=models.CASCADE, related_name='share_details')
     issued_shares = models.PositiveBigIntegerField()
     stated_capital = models.PositiveBigIntegerField(blank=True, null=True)
     listed_date = models.DateField()
     financial_period_ends = models.CharField(max_length=255, default="31st December")
+    status = models.CharField(max_length=50, choices=STATUS_CHOICE, default="Active")
 
     def __str__(self):
         return f"{self.company}"
 
 
 class SharePrice(models.Model):
-    company = models.ForeignKey(CompanyProfile, on_delete=models.CASCADE)
+    company = models.ForeignKey(CompanyProfile, on_delete=models.CASCADE, related_name='share_price')
     date = models.DateField()
     price = models.DecimalField(max_digits=5, decimal_places=2)
     volume = models.PositiveBigIntegerField(default=0)
