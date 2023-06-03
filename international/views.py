@@ -42,6 +42,18 @@ def continent(request, continent_slug):
     return render(request, 'continent.html', context)
 
 
+def country_list(request):
+    countries = Country.objects.order_by('name')
+
+    country_count =  Country.objects.count()
+
+    context = {
+        'countries': countries,
+        'country_count': country_count
+    }
+    return render(request, 'all_countries.html', context)
+
+
 def country(request, country_slug):
     country = get_object_or_404(Country, slug=country_slug)
     president = President.objects.filter(country=country)

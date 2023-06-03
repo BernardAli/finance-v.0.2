@@ -3,6 +3,10 @@ from django.contrib.auth.models import User
 from django.utils.text import slugify
 from django.urls import reverse
 
+from core.models import CompanyProfile
+from international.models import Country
+
+
 # Create your models here.
 
 
@@ -31,6 +35,8 @@ class News(models.Model):
     title = models.CharField(max_length=120)
     picture = models.ImageField(upload_to='news/pictures')
     tags = models.ManyToManyField(Tag, related_name='tags', blank=True)
+    companies = models.ManyToManyField(CompanyProfile, related_name='companies', blank=True)
+    countries = models.ManyToManyField(Country, related_name='countries', blank=True)
     details = models.TextField()
     date_posted = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True)
