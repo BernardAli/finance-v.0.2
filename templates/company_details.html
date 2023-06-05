@@ -69,15 +69,13 @@
 
                     </div>
 
-                    <br>
-
                     <div class="row">
 
                         <div class="col-lg-8">
 
                             <!-- Default Card Example -->
                             <div class="card mb-4">
-                                <div class="card-header py-3">
+                                <div class="card-header mt-3">
                                     <h6 class="m-0 font-weight-bold text-primary">{{ company.name }} Summary</h6>
                                 </div>
                                 <div class="card-body text text-center">
@@ -101,9 +99,6 @@
                                         </li>
                                         <li class="nav-item">
                                         <a class="nav-link" id="ownership-tab" data-toggle="tab" href="#ownership" role="tab" aria-controls="contact" aria-selected="false">Ownership</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" id="ratings-tab" data-toggle="tab" href="#ratings" role="tab" aria-controls="contact" aria-selected="false">Ratings</a>
                                         </li>
                                         <li class="nav-item">
                                             <a class="nav-link" id="split-tab" data-toggle="tab" href="#split" role="tab" aria-controls="contact" aria-selected="false">Dividends / Share Splits</a>
@@ -289,17 +284,18 @@
                                               <div class="col-10">
                                                 <div class="tab-content" id="v-chartsContent">
                                                   <div class="tab-pane fade show active" id="v-chart" role="tabpanel" aria-labelledby="v-chart-tab">
-                                                        <button id="one_month" type="button">1M</button>
-                                                        <button id="six_months" type="button">6M</button>
-                                                        <button id="one_year" type="button">1Y</button>
-                                                        <button id="ytd" type="button">YTD</button>
-                                                        <button id="all" type="button">ALL</button>
+                                                        <div>
+                                                            <button id="one_month" type="button">1M</button>
+                                                            <button id="six_months" type="button">6M</button>
+                                                            <button id="one_year" type="button">1Y</button>
+                                                            <button id="ytd" type="button">YTD</button>
+                                                            <button id="all" type="button">ALL</button>
+                                                        </div>
+                                                        <p class="value pt-2" id="month-value"></p>
                                                         <div id="price_chart"></div>
-
 
                                                       <script>
                                                         const latest_trading_day = '{{share_price_latest.date}}';
-
 
                                                         const one_month = '{{one_month}}';
 
@@ -412,7 +408,9 @@
                                                                 new Date(one_month).getTime(),
                                                                 new Date(latest_trading_day).getTime()
                                                               )
+
                                                             })
+
 
                                                           document.querySelector('#six_months').addEventListener('click', function(e) {
                                                               resetCssClasses(e)
@@ -977,35 +975,6 @@
                                             {% endif %}
                                         </div>
                                         </div>
-
-                                        <div class="tab-pane fade pt-3" id="ratings" role="tabpanel" aria-labelledby="ratings-tab">
-                                            {% if not reviews %}
-                                                <h3>Be the first one to write a review.</h3>
-                                            {% else %}
-                                                <span>Overall Rating: </span><span>{{ company_rating }}</span>
-                                                <br>
-                                                <hr>
-                                                <h3>Review Comments</h3>
-                                                <ol>
-                                                {% for review in reviews %}
-                                                    <li class="ui list">
-                                                            <span>Review comment: </span> <span>{{ review.content }}</span>
-                                                            <br>
-                                                            <span>Created on: </span><span>{{ review.date_created }}</span>
-                                                            <br>
-                                                            <span>Modified on: </span><span>{{ review.date_edited }}</span>
-                                                            <br>
-                                                            <span>Rating: </span><span>{{ review.rating }}</span>
-                                                            <br>
-                                                            <span>Creator: </span><span>{{ review.creator.username }}</span>
-                                                            <br>
-                                                            <a href="{% url 'review_edit' company.pk review.pk %}">Edit Review</a>
-                                                    </li>
-                                                {% endfor %}
-                                                </ol>
-                                        {% endif %}
-                                        <a class="ui primary button" href="{% url 'review_create' company.pk %}" class="btn btn-primary">Add Review</a>
-                                        </div>
                                         <div class="tab-pane fade pt-3" id="split" role="tabpanel" aria-labelledby="split-tab">
                                             <div class="row">
                                               <div class="col-3">
@@ -1043,7 +1012,7 @@
 
                             <!-- Basic Card Example -->
                             <div class="card shadow mb-4">
-                                <div class="card-header py-3">
+                                <div class="card-header mt-3">
                                     <h6 class="m-0 font-weight-bold text-primary">Financial Statements</h6>
                                 </div>
                                 <div class="card-body text text-center">
@@ -1123,7 +1092,7 @@
 
                             <!-- Basic Card Example -->
                             <div class="card shadow mb-4">
-                                <div class="card-header py-3">
+                                <div class="card-header mt-3">
                                     <h6 class="m-0 font-weight-bold text-primary">Major Products</h6>
                                 </div>
                                 <div class="card-body">
@@ -1137,7 +1106,7 @@
 
                              <!-- Basic Card Example -->
                             <div class="card shadow mb-4">
-                                <div class="card-header py-3">
+                                <div class="card-header mt-3">
                                     <h6 class="m-0 font-weight-bold text-primary">Subsidiaries</h6>
                                 </div>
                                 <div class="card-body">
@@ -1151,7 +1120,7 @@
 
                             <!-- Basic Card Example -->
                             <div class="card shadow mb-4">
-                                <div class="card-header py-3">
+                                <div class="card-header mt-3">
                                     <h6 class="m-0 font-weight-bold text-primary">Key People</h6>
                                 </div>
                                 <div class="card-body">
@@ -1165,10 +1134,9 @@
                                 </div>
                             </div>
 
-
                             <!-- Default Card Example -->
                             <div class="card mb-4">
-                                <div class="card-header py-3">
+                                <div class="card-header mt-3">
                                     <h6 class="m-0 font-weight-bold text-primary">Pro</h6>
                                 </div>
                                 <div class="card-body text text-center">
@@ -1204,6 +1172,57 @@
                                 </div>
                             </div>
 
+                            <!-- Default Card Example -->
+                            <div class="card mb-4">
+                                <div class="card-header mt-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">Ratings & Forum</h6>
+                                </div>
+                                <div class="card-body text text-center">
+                                    <ul class="nav nav-tabs" id="myForum" role="tablist">
+                                      <li class="nav-item">
+                                        <a class="nav-link active" id="rating-tab" data-toggle="tab" href="#rating" role="tab" aria-controls="rating" aria-selected="false">User Ratings</a>
+                                      </li>
+                                        <li class="nav-item">
+                                        <a class="nav-link" id="forum-tab" data-toggle="tab" href="#forum" role="tab" aria-controls="forum" aria-selected="false">Forum</a>
+                                      </li>
+                                    </ul>
+                                    <div class="tab-content" id="myForumContent">
+                                      <div class="tab-pane fade show active pt-3" id="rating" role="tabpanel" aria-labelledby="rating-tab">
+                                        {% if not reviews %}
+                                                <h3>Be the first one to write a review.</h3>
+                                            {% else %}
+                                                <span>Overall Rating: </span><span>{{ company_rating }}</span>
+                                                <br>
+                                                <hr>
+                                                <h3>Review Comments</h3>
+                                                <ol>
+                                                {% for review in reviews %}
+                                                    <li class="ui list">
+                                                            <span>Review comment: </span> <span>{{ review.content }}</span>
+                                                            <br>
+                                                            <span>Created on: </span><span>{{ review.date_created }}</span>
+                                                            <br>
+                                                            <span>Modified on: </span><span>{{ review.date_edited }}</span>
+                                                            <br>
+                                                            <span>Rating: </span><span>{{ review.rating }}</span>
+                                                            <br>
+                                                            <span>Creator: </span><span>{{ review.creator.username }}</span>
+                                                            <br>
+                                                            <a href="{% url 'review_edit' company.pk review.pk %}">Edit Review</a>
+                                                    </li>
+                                                {% endfor %}
+                                                </ol>
+                                        {% endif %}
+                                        <a class="ui primary button" href="{% url 'review_create' company.pk %}" class="btn btn-primary">Add Review</a>
+                                      </div>
+                                      <div class="tab-pane fade show pt-3" id="forum" role="tabpanel" aria-labelledby="forum-tab">
+                                        <p>Forum Here</p>
+                                      </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
                         </div>
 
                         <div class="col-lg-4">
@@ -1212,7 +1231,7 @@
                             <div class="card shadow mb-4">
                                 <!-- Card Header - Dropdown -->
                                 <div
-                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                    class="card-header mt-3 d-flex flex-row align-items-center justify-content-between">
                                     <h6 class="m-0 font-weight-bold text-primary">Basic Info.</h6>
                                     <div class="dropdown no-arrow">
                                         <a class="dropdown-toggle" href="#" role="button" id="basicInfo"
@@ -1247,22 +1266,8 @@
                             <div class="card shadow mb-4">
                                 <!-- Card Header - Dropdown -->
                                 <div
-                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                    class="card-header mt-3 d-flex flex-row align-items-center justify-content-between">
                                     <h6 class="m-0 font-weight-bold text-primary">Stock Price Summary</h6>
-                                    <div class="dropdown no-arrow">
-                                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-                                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                                        </a>
-                                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-                                            aria-labelledby="dropdownMenuLink">
-                                            <div class="dropdown-header">Dropdown Header:</div>
-                                            <a class="dropdown-item" href="#">Action</a>
-                                            <a class="dropdown-item" href="#">Another action</a>
-                                            <div class="dropdown-divider"></div>
-                                            <a class="dropdown-item" href="#">Something else here</a>
-                                        </div>
-                                    </div>
                                 </div>
                                 <!-- Card Body -->
                                 <div class="card-body">
@@ -1314,12 +1319,68 @@
                                 </div>
                             </div>
 
+                            <div class="card shadow mb-4">
+                                <!-- Card Header - Dropdown -->
+                                <div
+                                    class="card-header mt-3 d-flex flex-row align-items-center justify-content-between">
+                                    <h6 class="m-0 font-weight-bold text-primary">Stock Price Performance</h6>
+                                </div>
+                                <!-- Card Body -->
+                                <div class="card-body">
+                                    <table class="table table-bordered table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Period</th>
+                                                <th>Performance</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>1 Month</td>
+                                                <td id="month-1">{% for value in sp %}
+                                                        {{value.price|sub:value.prev_mothn_val }} (<span class="value">{{value.price|sub:value.prev_mothn_val|div:value.prev_mothn_val|mul:100|floatformat:2 }}%</span>)
+                                                    {% endfor %}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>YTD</td>
+                                                <td>{% for value in sp %}
+                                                        {{value.price|sub:value.ytd_val }} (<span class="value">{{value.price|sub:value.ytd_val|div:value.ytd_val|mul:100|floatformat:2 }}%</span>)
+                                                    {% endfor %}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>1 Year</td>
+                                                <td>{% for value in sp %}
+                                                        {{value.price|sub:value.one_yr_val }} (<span class="value">{{value.price|sub:value.one_yr_val|div:value.one_yr_val|mul:100|floatformat:2 }}%</span>)
+                                                    {% endfor %}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>3 Years</td>
+                                                <td>{% for value in sp %}
+                                                        {{value.price|sub:value.three_yr_val }} (<span class="value">{{value.price|sub:value.three_yr_val|div:value.three_yr_val|mul:100|floatformat:2 }}%</span>)
+                                                    {% endfor %}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>5 Years</td>
+                                                <td>{% for value in sp %}
+                                                        {{value.price|sub:value.five_yr_val }} (<span class="value">{{value.price|sub:value.five_yr_val|div:value.five_yr_val|mul:100|floatformat:2 }}%</span>)
+                                                    {% endfor %}
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
                             <!-- Dropdown Card Example -->
                             <!-- Dropdown Card Example -->
                             <div class="card shadow mb-4">
                                 <!-- Card Header - Dropdown -->
                                 <div
-                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                    class="card-header mt-3 d-flex flex-row align-items-center justify-content-between">
                                     <h6 class="m-0 font-weight-bold text-primary">Latest Press Releases</h6>
                                     <div class="dropdown no-arrow">
                                         <a class="dropdown-toggle" href="#" role="button" id="Releases"
@@ -1346,7 +1407,7 @@
                             <!-- Collapsable Card Example -->
                             <div class="card shadow mb-4">
                                 <!-- Card Header - Accordion -->
-                                <a href="#collapse1" class="d-block card-header py-3" data-toggle="collapse"
+                                <a href="#collapse1" class="d-block card-header mt-3" data-toggle="collapse"
                                     role="button" aria-expanded="true" aria-controls="collapseCardExample">
                                     <h6 class="m-0 font-weight-bold text-primary">Stock Price History</h6>
                                 </a>
@@ -1396,7 +1457,7 @@
                             </div>
                             <div class="card shadow mb-4">
                                 <!-- Card Header - Accordion -->
-                                <a href="#collapse2" class="d-block card-header py-3" data-toggle="collapse"
+                                <a href="#collapse2" class="d-block card-header mt-3" data-toggle="collapse"
                                     role="button" aria-expanded="true" aria-controls="collapseCardExample">
                                     <h6 class="m-0 font-weight-bold text-primary">Share Listing Details</h6>
                                 </a>
@@ -1414,7 +1475,7 @@
                             </div>
                             <div class="card shadow mb-4">
                                 <!-- Card Header - Accordion -->
-                                <a href="#collapse3" class="d-block card-header py-3" data-toggle="collapse"
+                                <a href="#collapse3" class="d-block card-header mt-3" data-toggle="collapse"
                                     role="button" aria-expanded="true" aria-controls="collapseCardExample">
                                     <h6 class="m-0 font-weight-bold text-primary">Latest Dividend</h6>
                                 </a>
@@ -1444,7 +1505,7 @@
                             <div class="card shadow mb-4">
                                 <!-- Card Header - Dropdown -->
                                 <div
-                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                    class="card-header mt-3 d-flex flex-row align-items-center justify-content-between">
                                     <h6 class="m-0 font-weight-bold text-primary">Listing Information</h6>
                                 </div>
                                 <!-- Card Body -->
@@ -1460,7 +1521,7 @@
                             <div class="card shadow mb-4">
                                 <!-- Card Header - Dropdown -->
                                 <div
-                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                    class="card-header mt-3 d-flex flex-row align-items-center justify-content-between">
                                     <h6 class="m-0 font-weight-bold text-primary">Similar Companies</h6>
                                 </div>
                                 <!-- Card Body -->
@@ -1476,7 +1537,7 @@
                             <div class="card shadow mb-4">
                                 <!-- Card Header - Dropdown -->
                                 <div
-                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                    class="card-header mt-3 d-flex flex-row align-items-center justify-content-between">
                                     <h6 class="m-0 font-weight-bold text-primary">Indices</h6>
                                 </div>
                                 <!-- Card Body -->
@@ -1492,7 +1553,7 @@
                             <div class="card shadow mb-4">
                                 <!-- Card Header - Dropdown -->
                                 <div
-                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                    class="card-header mt-3 d-flex flex-row align-items-center justify-content-between">
                                     <h6 class="m-0 font-weight-bold text-primary">Contact Information</h6>
                                 </div>
                                 <!-- Card Body -->

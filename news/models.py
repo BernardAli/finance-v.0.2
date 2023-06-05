@@ -31,7 +31,7 @@ class Tag(models.Model):
 
 
 class News(models.Model):
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='news_author')
     title = models.CharField(max_length=120)
     picture = models.ImageField(upload_to='news/pictures')
     tags = models.ManyToManyField(Tag, related_name='tags', blank=True)

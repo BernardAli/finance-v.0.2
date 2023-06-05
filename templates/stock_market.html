@@ -524,8 +524,8 @@
                                                                     <td><a href="{% url 'index_detail' val.index.id %}">{{val.index}}</a></td>
                                                                     <td>{{val.value}}</td>
                                                                     <td>{{val.prev_val}}</td>
-                                                                    <td class="value">{{val.diff|floatformat:2}}</td>
-                                                                    <td class="value">{{val.diff|div:val.prev_val|mul:100|floatformat:2}}</td>
+                                                                    <td class="value">{{val.value|sub:val.ytd_val|floatformat:2}}</td>
+                                                                    <td class="value">{{val.value|sub:val.ytd_val|div:val.ytd_val|mul:100|floatformat:2}}</td>
                                                                 </tr>
                                                             {% endfor %}
                                                         </tbody>
@@ -905,9 +905,7 @@
                                                           });
                                                       </script>
                                                         <!-- End Area Chart -->
-                                                  </div>
-                                    <div class="mt-4 text-center small">
-                                    </div>
+                                        </div>
                                 </div>
                             </div>
 

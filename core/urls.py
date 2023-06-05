@@ -1,7 +1,8 @@
 from django.urls import path
 from .views import index_view, about_view, listed_companies, company_details, sector, market, stock_market_view, \
     industry_view, auditor_detail, company_summary, career_view, company_dividend_details, company_press_details, \
-    SearchResultsListView, review_edit, opinions_details, registrar_detail, market_detail, company_file, gcx_home, share_type_detail, share_type_detail_perfomance
+    SearchResultsListView, review_edit, opinions_details, registrar_detail, market_detail, company_file, gcx_home, \
+    share_type_detail, share_type_detail_perfomance, economic_calendar
 
 urlpatterns = [
     path('', index_view, name='index'),
@@ -24,6 +25,7 @@ urlpatterns = [
     path('share_type_detail_perfomance/<share_type_id>', share_type_detail_perfomance, name='share_type_detail_perfomance'),
     path('tag/<slug:tag_slug>', industry_view, name='industry'),
     path('summary/', company_summary, name='summary'),
+    path('economic_calendar/', economic_calendar, name='economic_calendar'),
     path('about/', about_view, name='about'),
     path('career/', career_view, name='career'),
     path('gcx_home/', gcx_home, name='gcx_home'),

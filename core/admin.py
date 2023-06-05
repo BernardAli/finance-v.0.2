@@ -2,7 +2,8 @@ from django.contrib import admin
 from .models import Tag, Sector, CompanyProfile, Market, ShareDetail, SharePrice, \
     Indices, FinancialPeriod, Report, MarketReport, PressRelease, Subsidiaries, \
     Auditors, Secretary, KeyPeople, IPO, Dividend, Registrar, Solicitor, Ownership, Opinions, \
-    FinancialStatement, Review, AuditingServices, Products, ShareSplit, GCX_Types, ShareType
+    FinancialStatement, Review, AuditingServices, Products, ShareSplit, GCX_Types, ShareType, \
+    EconomicCalendar, AGM
 
 
 # Register your models here.
@@ -46,6 +47,8 @@ admin.site.register(AuditingServices)
 admin.site.register(Products)
 admin.site.register(ShareSplit)
 admin.site.register(GCX_Types)
+admin.site.register(EconomicCalendar)
+admin.site.register(AGM)
 
 
 @admin.register(ShareDetail)

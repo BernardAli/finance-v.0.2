@@ -21,7 +21,7 @@ from .utils import html_to_pdf
 from rates.models import Inflation, MPR, Security, T_BILL, InterbankFX
 from .models import Sector, Tag, CompanyProfile, Market, ShareDetail, SharePrice, Indices, Report, \
     MarketReport, PressRelease, Auditors, IPO, Dividend, Ownership, Registrar, Subsidiaries, Opinions, \
-    FinancialStatement, Review, FinancialPeriod, ShareSplit, GCX_Types, ShareType
+    FinancialStatement, Review, FinancialPeriod, ShareSplit, GCX_Types, ShareType, EconomicCalendar, AGM
 from news.models import News
 from international.models import Continent, Indice, Commodity_type, BankRate, GDP, UnemploymentRate, Commodity_profile
 from .utils import average_rating
@@ -72,6 +72,80 @@ def index_view(request):
     commodities_chart = Commodity_profile.objects.filter()[:10]
     shares_chart = SharePrice.objects.filter().order_by('-date')[:10]
     t_bills_chart = T_BILL.objects.filter().order_by('-tender')[:2]
+    share_price_latest = SharePrice.objects.order_by('date').last()
+    dividend_calendar = Dividend.objects.filter(qualifying_date__year=2022)
+    economic_calendar = EconomicCalendar.objects.filter().order_by('time')
+    agm_calendar = AGM.objects.filter().order_by('time')
+    today = datetime.today()
+
+    com_numbers = SharePrice.objects.filter(company__market=1).filter(date=share_price_latest.date).count()
+    indices_values = Indices.objects.annotate(
+        prev_val=Window(
+            expression=Lag('value', default=0),
+            partition_by=['index'],
+            order_by=F('date').asc(),
+        )
+    ).annotate(
+        diff=F('value') - F('prev_val')
+    ).order_by('-date')[:2]
+
+    t_bills_values = T_BILL.objects.annotate(
+        prev_val=Window(
+            expression=Lag('interest', default=0),
+            partition_by=['security'],
+            order_by=F('issue_date').asc(),
+        )
+    ).annotate(
+        diff=F('interest') - F('prev_val')
+    ).order_by('-issue_date')[:2]
+
+    sp = SharePrice.objects.filter(company__share_type=1).filter(company__market=1).annotate(
+        prev_val=Window(
+            expression=Lag('price', default=0),
+            partition_by=['company'],
+            order_by=F('date').asc(),
+        )
+    ).annotate(
+        prev_wk_val=Window(
+            expression=Lag('price', default=5),
+            partition_by=['company'],
+            order_by=F('date').asc(),
+        )
+    ).annotate(
+        prev_mothn_val=Window(
+            expression=Lag('price', 20),
+            partition_by=['company'],
+            order_by=F('date').asc(),
+        )
+    ).annotate(
+        ytd_val=Window(
+            expression=Lag('price', 50),
+            partition_by=['company'],
+            order_by=F('date').asc(),
+        )
+    ).annotate(
+        one_yr_val=Window(
+            expression=Lag('price', 262),
+            partition_by=['company'],
+            order_by=F('date').asc(),
+        )
+    ).annotate(
+        three_yr_val=Window(
+            expression=Lag('price', 786),
+            partition_by=['company'],
+            order_by=F('date').asc(),
+        )
+    ).annotate(
+        five_yr_val=Window(
+            expression=Lag('price', 1310),
+            partition_by=['company'],
+            order_by=F('date').asc(),
+        )
+    ).annotate(
+        diff=F('price') - F('prev_val')
+    ).annotate(
+        year_diff=F('price') - F('ytd_val')
+    ).order_by('-date', 'company__name', '?')[:5]
 
     context = {
         'inflation': inflation,
@@ -100,7 +174,15 @@ def index_view(request):
         'indices_chart': indices_chart,
         'commodities_chart': commodities_chart,
         'shares_chart': shares_chart,
-        't_bills_chart': t_bills_chart
+        't_bills_chart': t_bills_chart,
+
+        'indices_values': indices_values,
+        'sp': sp,
+        't_bills_values': t_bills_values,
+        'dividend_calendar': dividend_calendar,
+        'economic_calendar': economic_calendar,
+        'today': today,
+        'agm_calendar': agm_calendar
     }
 
     return render(request, 'index.html', context)
@@ -172,6 +254,59 @@ def company_details(request, company_id):
     corr = 30
     dividend_latest = Dividend.objects.filter(company_id=company_id).order_by('-register_closure').last()
 
+    sp = SharePrice.objects.filter(company_id=company_id).annotate(
+        prev_val=Window(
+            expression=Lag('price', default=0),
+            partition_by=['company'],
+            order_by=F('date').asc(),
+        )
+    ).annotate(
+        prev_wk_val=Window(
+            expression=Lag('price', default=5),
+            partition_by=['company'],
+            order_by=F('date').asc(),
+        )
+    ).annotate(
+        prev_mothn_val=Window(
+            expression=Lag('price', 20),
+            partition_by=['company'],
+            order_by=F('date').asc(),
+        )
+    ).annotate(
+        ytd_val=Window(
+            expression=Lag('price', 50),
+            partition_by=['company'],
+            order_by=F('date').asc(),
+        )
+    ).annotate(
+        one_yr_val=Window(
+            expression=Lag('price', 262),
+            partition_by=['company'],
+            order_by=F('date').asc(),
+        )
+    ).annotate(
+        three_yr_val=Window(
+            expression=Lag('price', 786),
+            partition_by=['company'],
+            order_by=F('date').asc(),
+        )
+    ).annotate(
+        five_yr_val=Window(
+            expression=Lag('price', 1310),
+            partition_by=['company'],
+            order_by=F('date').asc(),
+        )
+    ).annotate(
+        all_time_val=Window(
+            expression=Lag('price', 150),
+            partition_by=['company'],
+            order_by=F('date').asc(),
+        )
+    ).annotate(
+        diff=F('price') - F('prev_val')
+    ).annotate(
+        year_diff=F('price') - F('ytd_val')
+    ).order_by('-date', 'company__name').all()[:1]
     context = {
         "company_rating": company_rating,
         "reviews": reviews,
@@ -227,7 +362,8 @@ def company_details(request, company_id):
         'corr': corr,
         'dividend_latest': dividend_latest,
         'products': products,
-        'share_splits': share_splits
+        'share_splits': share_splits,
+        'sp': sp
     }
     return render(request, 'company_details.html', context)
 
@@ -599,6 +735,12 @@ def stock_market_view(request):
             order_by=F('date').asc(),
         )
     ).annotate(
+        ytd_val=Window(
+            expression=Lag('value', 50),
+            partition_by=['index'],
+            order_by=F('date').asc(),
+        )
+    ).annotate(
         diff=F('value') - F('prev_val')
     ).order_by('-date')[:2]
     sp = SharePrice.objects.filter(company__share_type=1).annotate(
@@ -892,3 +1034,15 @@ def gcx_home(request):
         'comm_types': comm_types
     }
     return render(request, "gcx_home.html", context)
+
+
+def economic_calendar(request):
+    dividend_calendar = Dividend.objects.filter()
+    economic_calendar = EconomicCalendar.objects.filter().order_by('time')
+    agm_calendar = AGM.objects.filter().order_by('time')
+    context = {
+        'dividend_calendar': dividend_calendar,
+        'economic_calendar': economic_calendar,
+        'agm_calendar': agm_calendar
+    }
+    return render(request, "economic_calendar.html", context)

@@ -424,7 +424,7 @@ class Review(models.Model):
                                         help_text="The date and time the review was created.")
     date_edited = models.DateTimeField(auto_now=True,
                                        help_text="The date and time the review was last edited.")
-    creator = models.ForeignKey(auth.get_user_model(), on_delete=models.CASCADE)
+    creator = models.ForeignKey(User, on_delete=models.CASCADE)
     company = models.ForeignKey(CompanyProfile, on_delete=models.CASCADE,
                                 help_text="The Company that this review is for.")
 
@@ -438,3 +438,26 @@ class GCX_Types(models.Model):
 
     def __str__(self):
         return f'{self.name}'
+
+
+class EconomicCalendar(models.Model):
+    time = models.DateTimeField()
+    country = models.ForeignKey(Country, on_delete=models.DO_NOTHING)
+    event = models.CharField(max_length=255)
+    actual = models.IntegerField()
+    forecast = models.IntegerField()
+    previous = models.IntegerField()
+    file = models.FileField(upload_to='calendar')
+
+    def __str__(self):
+        return f'{self.event}'
+
+
+class AGM(models.Model):
+    date = models.DateField()
+    company = models.ForeignKey(CompanyProfile, on_delete=models.CASCADE)
+    time = models.TimeField()
+    venue = models.CharField(max_length=255)
+
+    def __str__(self):
+        return f'{self.company}'

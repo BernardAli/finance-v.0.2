@@ -8,7 +8,7 @@ from django.urls import reverse
 CONTINENT_CHOICE = (
     ('Africa', 'Africa'),
     ('Europe', 'Europe'),
-    ('Middle East', 'Middle East'),
+    ('Middle East and North Africa', 'Middle East and North Africa'),
     ('Asia', 'Asia'),
     ('Americas', 'Americas'),
     ('Oceania', 'Oceania')

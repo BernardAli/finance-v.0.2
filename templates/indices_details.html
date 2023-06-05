@@ -72,35 +72,317 @@
                                       </li>
                                     </ul>
                                     <div class="tab-content" id="myTabContent">
-                                      <div class="tab-pane fade show active pt-2" id="home" role="tabpanel" aria-labelledby="home-tab">
-                                        <p>{{ company.summary }}</p>
+                                      <div class="tab-pane fade show active mt-4" id="home" role="tabpanel" aria-labelledby="home-tab">
+                                        <p>{{ indices.details }}</p>
                                       </div>
-                                      <div class="tab-pane fade pt-2" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+                                      <div class="tab-pane fade mt-4" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+                                            <div class="tab-pane fade show active" id="v-chart" role="tabpanel" aria-labelledby="v-chart-tab">
+                                                        <button id="one_month" type="button">1M</button>
+                                                        <button id="six_months" type="button">6M</button>
+                                                        <button id="one_year" type="button">1Y</button>
+                                                        <button id="three_year" type="button">3Y</button>
+                                                        <button id="five_year" type="button">5Y</button>
+                                                        <button id="ytd" type="button">YTD</button>
+                                                        <button id="all" type="button">ALL</button>
+                                                        <div id="ci_chart"></div>
 
+
+                                                      <script>
+                                                        const latest_trading_day = '{{share_price_latest.date}}';
+
+
+                                                        const one_month = '{{one_month}}';
+
+
+                                                        const six_month = '{{six_month}}';
+
+
+                                                        const one_year = '{{one_year}}';
+
+                                                        const three_year = '{{three_year}}';
+
+                                                        const five_year = '{{five_year}}';
+
+                                                        const share_price_first = '{{share_price_first}}';
+
+                                                        const ci_dates = [{% for price in indices_val %} Date.parse('{{price.date}}'),{% endfor %}]
+
+                                                        const ci_values = [{% for price in indices_val %} {{price.value}}, {% endfor %}]
+
+                                                        var data = ci_dates.map(function(e, i){
+                                                            return [e, ci_values[i]];
+                                                        });
+
+                                                        const series = {
+                                                            "dataSeries": {
+                                                              "dates": [{% for price in share_price %} '{{price.date|date:"D M, Y" }}', {% endfor %}],
+                                                              "prices": [{% for price in share_price %} {{price.price}}, {% endfor %}]
+                                                            }
+                                                          }
+
+                                                          var options = {
+                                                          series: [{
+                                                          name: "Share Price",
+                                                          data: data
+                                                        }],
+                                                          chart: {
+                                                          id: 'area-datetime',
+                                                          type: 'area',
+                                                          height: 350,
+                                                          zoom: {
+                                                            autoScaleYaxis: true
+                                                          }
+                                                        },
+                                                        annotations: {
+                                                          yaxis: [{
+                                                            y: 30,
+                                                            borderColor: '#999',
+                                                            label: {
+                                                              show: true,
+                                                              style: {
+                                                                color: "#fff",
+                                                                background: '#00E396'
+                                                              }
+                                                            }
+                                                          }],
+                                                          xaxis: [{
+                                                            x: new Date('{{share_price_first}}').getTime(),
+                                                            borderColor: '#999',
+                                                            yAxisIndex: 0,
+                                                            label: {
+                                                              show: true,
+                                                              style: {
+                                                                color: "#fff",
+                                                                background: '#775DD0'
+                                                              }
+                                                            }
+                                                          }]
+                                                        },
+                                                        dataLabels: {
+                                                          enabled: false
+                                                        },
+                                                        markers: {
+                                                          size: 0,
+                                                          style: 'hollow',
+                                                        },
+                                                        xaxis: {
+                                                          type: 'datetime',
+                                                          min: new Date('{{share_price_first}}').getTime(),
+                                                          tickAmount: 6,
+                                                        },
+                                                        tooltip: {
+                                                          x: {
+                                                            format: 'dd MMM yyyy',
+                                                          }
+                                                        },
+                                                        fill: {
+                                                          type: 'gradient',
+                                                          gradient: {
+                                                            shadeIntensity: 1,
+                                                            opacityFrom: 0.7,
+                                                            opacityTo: 0.9,
+                                                            stops: [0, 100]
+                                                          }
+                                                        },
+                                                        };
+
+                                                        var chart = new ApexCharts(document.querySelector("#ci_chart"), options);
+                                                        chart.render();
+
+                                                        var resetCssClasses = function(activeEl) {
+                                                            var els = document.querySelectorAll('button')
+                                                            Array.prototype.forEach.call(els, function(el) {
+                                                              el.classList.remove('active')
+                                                            })
+
+                                                            activeEl.target.classList.add('active')
+                                                          }
+
+                                                          document.querySelector('#one_month').addEventListener('click', function(e) {
+                                                              resetCssClasses(e)
+
+                                                              chart.zoomX(
+                                                                new Date(one_month).getTime(),
+                                                                new Date(latest_trading_day).getTime()
+                                                              )
+                                                            })
+
+                                                          document.querySelector('#six_months').addEventListener('click', function(e) {
+                                                              resetCssClasses(e)
+
+                                                              chart.zoomX(
+                                                                new Date(six_month).getTime(),
+                                                                new Date(latest_trading_day).getTime()
+                                                              )
+                                                            })
+
+                                                          document.querySelector('#one_year').addEventListener('click', function(e) {
+                                                              resetCssClasses(e)
+                                                              chart.zoomX(
+                                                                new Date(one_year).getTime(),
+                                                                new Date(latest_trading_day).getTime()
+                                                              )
+                                                            })
+
+                                                            document.querySelector('#three_year').addEventListener('click', function(e) {
+                                                              resetCssClasses(e)
+                                                              chart.zoomX(
+                                                                new Date(three_year).getTime(),
+                                                                new Date(latest_trading_day).getTime()
+                                                              )
+                                                            })
+
+                                                            document.querySelector('#five_year').addEventListener('click', function(e) {
+                                                              resetCssClasses(e)
+                                                              chart.zoomX(
+                                                                new Date(five_year).getTime(),
+                                                                new Date(latest_trading_day).getTime()
+                                                              )
+                                                            })
+
+                                                          document.querySelector('#ytd').addEventListener('click', function(e) {
+                                                            resetCssClasses(e)
+
+                                                            chart.zoomX(
+                                                              new Date('2023-01-01').getTime(),
+                                                              new Date(latest_trading_day).getTime()
+                                                            )
+                                                          })
+
+                                                          document.querySelector('#all').addEventListener('click', function(e) {
+                                                            resetCssClasses(e)
+
+                                                            chart.zoomX(
+                                                              new Date(share_price_first).getTime(),
+                                                              new Date().getTime(),
+                                                            )
+                                                          });
+                                                      </script>
+                                                        <!-- End Area Chart -->
+                                                  </div>
                                       </div>
-                                        <div class="tab-pane fade pt-2" id="technical" role="tabpanel" aria-labelledby="technical-tab">
-
+                                        <div class="tab-pane fade mt-4" id="technical" role="tabpanel" aria-labelledby="technical-tab">
+                                            <div class="row">
+                                              <div class="col-3">
+                                                <div class="nav flex-column nav-pills" id="v-technical" role="tablist" aria-orientation="vertical">
+                                                  <button class="nav-link active" id="v-ma-tab" data-toggle="pill" data-target="#v-ma" type="button" role="tab" aria-controls="v-ma" aria-selected="true">Moving Averages (Days)</button>
+                                                    <br>
+                                                  <button class="nav-link" id="v-tech-tab" data-toggle="pill" data-target="#v-tech" type="button" role="tab" aria-controls="v-tech" aria-selected="false">Technical Indicators (Days)</button>
+                                                </div>
+                                              </div>
+                                              <div class="col-9">
+                                                <div class="tab-content" id="v-technicalContent">
+                                                  <div class="tab-pane fade show active" id="v-ma" role="tabpanel" aria-labelledby="v-ma-tab">
+                                                      <table class="table table-striped table-bordered">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Period (Days)</th>
+                                                                <th>Simple</th>
+                                                                <th>Action</th>
+                                                            </tr>
+                                                        </thead>
+                                                          <tbody>
+                                                            <tr>
+                                                                <th>5</th>
+                                                                <td>{{ma5.price__avg|floatformat:2}}</td>
+                                                                <td></td>
+                                                            </tr>
+                                                          <tr>
+                                                                <th>10</th>
+                                                                <td>{{ma5.price__avg|floatformat:2}}</td>
+                                                                <td></td>
+                                                            </tr>
+                                                          <tr>
+                                                                <th>20</th>
+                                                                <td>{{ma5.price__avg|floatformat:2}}</td>
+                                                                <td></td>
+                                                            </tr>
+                                                          <tr>
+                                                                <th>50</th>
+                                                                <td>{{ma50.price__avg|floatformat:2}}</td>
+                                                                <td></td>
+                                                            </tr>
+                                                          <tr>
+                                                                <th>100</th>
+                                                                <td>{{ma100.price__avg|floatformat:2}}</td>
+                                                                <td></td>
+                                                            </tr>
+                                                        </tbody>
+                                                      </table>
+                                                  </div>
+                                                  <div class="tab-pane fade" id="v-tech" role="tabpanel" aria-labelledby="v-tech-tab">
+                                                      <table class="table table-striped table-bordered">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Name</th>
+                                                                <th>Value</th>
+                                                                <th>Action</th>
+                                                            </tr>
+                                                        </thead>
+                                                          <tbody>
+                                                            <tr>
+                                                                <th>RSI(14)</th>
+                                                                <td></td>
+                                                                <td></td>
+                                                            </tr>
+                                                          <tr>
+                                                                <th>MACD(12,26)</th>
+                                                                <td></td>
+                                                                <td></td>
+                                                            </tr>
+                                                          <tr>
+                                                                <th>ATR(14)</th>
+                                                                <td></td>
+                                                                <td></td>
+                                                            </tr>
+                                                          <tr>
+                                                                <th>CCI(14)</th>
+                                                                <td></td>
+                                                                <td></td>
+                                                            </tr>
+                                                          <tr>
+                                                                <th>Highs/Lows(14)</th>
+                                                                <td>{{high_14.price__max|floatformat:2}}/{{low_14.price__min|floatformat:2}}</td>
+                                                                <td></td>
+                                                            </tr>
+                                                        </tbody>
+                                                      </table>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </div>
                                       </div>
-                                        <div class="tab-pane fade pt-2" id="analysis" role="tabpanel" aria-labelledby="analysis-tab">
-
+                                        <div class="tab-pane fade mt-4" id="analysis" role="tabpanel" aria-labelledby="analysis-tab">
+                                            <div class="card-body">
+                                                <div class="row pb-2">
+                                                    {% for opinion in analysis %}
+                                                    <div class="col-lg-6 mb-12">
+                                                        <div class="card shadow">
+                                                            <div class="card-body">
+                                                                <div class="row no-gutters align-items-center">
+                                                                    <div class="col mr-2">
+                                                                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                                                            {{ opinion.author}} </div>
+                                                                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ new.title}}</div>
+                                                                        <p>{{ opinion.opinion|truncatewords:20|linebreaks }}</p>
+                                                                        <a href="{{ opinion.get_absolute_url }}" class="btn btn-primary">Read More</a>
+                                                                        <p><i class="fas fa-calendar-day"></i> {{ opinion.date|naturaltime }} </p>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    {% empty %}
+                                                        <p>No Analysis Available</p>
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
                                       </div>
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- Basic Card Example -->
-                            <div class="card shadow mb-4">
-                                <div class="card-header py-3">
-                                    <h6 class="m-0 font-weight-bold text-primary">{{ indices.name }}'s Details</h6>
-                                </div>
-                                <div class="card-body">
-                                    {% if indices.details %}
-                                        {{ indices.details }}
-                                    {% else %}
-                                        No detail added yet
-                                    {% endif %}
-                                </div>
-                            </div>
+
                             <!-- Basic Card Example -->
                             {% include 'companies_performance.html' %}
 
@@ -143,27 +425,69 @@
                                 <div
                                     class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                                     <h6 class="m-0 font-weight-bold text-primary">Value Summary</h6>
-                                    <div class="dropdown no-arrow">
-                                        <a class="dropdown-toggle" href="#" role="button" id="Value"
-                                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                                        </a>
-                                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-                                            aria-labelledby="Value">
-                                            <div class="dropdown-header">Dropdown Header:</div>
-                                            <a class="dropdown-item" href="#">Action</a>
-                                            <a class="dropdown-item" href="#">Another action</a>
-                                            <div class="dropdown-divider"></div>
-                                            <a class="dropdown-item" href="#">Something else here</a>
-                                        </div>
-                                    </div>
                                 </div>
                                 <!-- Card Body -->
                                 <div class="card-body">
-                                    <p><strong>Prev. Close:  {{ point.value }}</strong></p>
-                                        <p><strong>Open:  {{ point.value }}</strong></p>
-                                        <p><strong>Days Range:  {{ point.value }} -  {{ point.value }}</strong></p>
-                                        <p><strong>52 wk Range Range: {{ low_52.value__min }} -  {{ high_52.value__max }}</strong></p>
+                                    <p><strong>Prev. Close:</strong>  {{ point.value }}</p>
+                                        <p><strong>Open:</strong>  {{ point.value }}</p>
+                                        <p><strong>Days Range:</strong> {{ point.value }} -  {{ point.value }}</p>
+                                        <p><strong>52 wk Range Range:</strong> {{ low_52.value__min }} -  {{ high_52.value__max }}</p>
+                                </div>
+                            </div>
+
+                            <div class="card shadow mb-4">
+                                <!-- Card Header - Dropdown -->
+                                <div
+                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                    <h6 class="m-0 font-weight-bold text-primary">Stock Price Performance</h6>
+                                </div>
+                                <!-- Card Body -->
+                                <div class="card-body">
+                                    <table class="table table-bordered table-striped text text-center table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Period</th>
+                                                <th>Performance</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>1 Month</td>
+                                                <td id="month-1">{% for value in index_values %}
+                                                        {{value.value|sub:value.prev_mothn_val }} (<span class="value">{{value.value|sub:value.prev_mothn_val|div:value.prev_mothn_val|mul:100|floatformat:2 }}%</span>)
+                                                    {% endfor %}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>YTD</td>
+                                                <td>{% for value in index_values %}
+                                                        {{value.value|sub:value.ytd_val }} (<span class="value">{{value.value|sub:value.ytd_val|div:value.ytd_val|mul:100|floatformat:2 }}%</span>)
+                                                    {% endfor %}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>1 Year</td>
+                                                <td>{% for value in index_values %}
+                                                        {{value.value|sub:value.one_yr_val }} (<span class="value">{{value.value|sub:value.one_yr_val|div:value.one_yr_val|mul:100|floatformat:2 }}%</span>)
+                                                    {% endfor %}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>3 Years</td>
+                                                <td>{% for value in index_values %}
+                                                        {{value.value|sub:value.three_yr_val }} (<span class="value">{{value.value|sub:value.three_yr_val|div:value.three_yr_val|mul:100|floatformat:2 }}%</span>)
+                                                    {% endfor %}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>5 Years</td>
+                                                <td>{% for value in index_values %}
+                                                        {{value.value|sub:value.five_yr_val }} (<span class="value">{{value.value|sub:value.five_yr_val|div:value.five_yr_val|mul:100|floatformat:2 }}%</span>)
+                                                    {% endfor %}
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
 
@@ -274,21 +598,6 @@
                                         </table>
                                         </div>
 
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="card shadow mb-4">
-                                <!-- Card Header - Accordion -->
-                                <a href="#collapse3" class="d-block card-header py-3" data-toggle="collapse"
-                                    role="button" aria-expanded="true" aria-controls="collapseCardExample">
-                                    <h6 class="m-0 font-weight-bold text-primary">Major Announcements</h6>
-                                </a>
-                                <!-- Card Content - Collapse -->
-                                <div class="collapse show" id="collapse3">
-                                    <div class="card-body">
-                                        This is a collapsable card example using Bootstrap's built in collapse
-                                        functionality. <strong>Click on the card header</strong> to see the card body
-                                        collapse and expand!
                                     </div>
                                 </div>
                             </div>
