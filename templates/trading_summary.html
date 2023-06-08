@@ -48,7 +48,7 @@
 
                 <tr>
                     <th>Market Cap GH(¢) mil</th>
-                    <td id="mkt-cap">189602</td>
+                    <td id="mkt-cap"></td>
                     <th> Avg Vol (3months)</th>
                     <td>{{three_months_volume.volume__sum|div:three_months_days|floatformat:0|intcomma}}</td>
                 </tr>
@@ -138,11 +138,11 @@
                             <th>Symbol</th>
                             <th>Issued Shares (mil)</th>
                             <th>Market Cap. GH(¢) mil</th>
-                            <th>Period</th>
-                            <th>Dividend/Share</th>
-                            <th>Div Yield (%)</th>
+                            <th>Period Ends</th>
+                            <th>Div Prev. Year</th>
+                            <th>Div Yield(%)</th>
                             <th>EPS GH(¢)</th>
-                            <th>PE Ratio</th>
+                            <th>P/E Ratio</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -153,10 +153,10 @@
                             <td>{{company.share_details.first.issued_shares|div:1000000|floatformat:2|intcomma}}</td>
                             <td class="mkt-cap-values">{{company.share_price.first.price|mul:company.share_details.first.issued_shares|div:1000000|floatformat:2}}</td>
                             <td>{{company.share_details.first.financial_period_ends}}</td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
+                            <td>{% if company.dividend.first %}{{company.dividend.first.final_dividend|floatformat:2}} {% else %} 0.00 {% endif %}</td>
+                            <td>{% if company.dividend.first %}{{company.dividend.first.final_dividend|div:company.share_price.first.price|mul:100|floatformat:2}} {% else %} 0.00 {% endif %}</td>
+                            <td class="value">{% if company.statement.first %}{{company.statement.first.net_profit_loss|div:company.share_details.first.issued_shares|floatformat:2}}{% else %} 0.00 {% endif %}</td>
+                            <td class="value">{% if company.statement.first %}{{company.share_price.first.price|mul:company.share_details.first.issued_shares|div:company.statement.first.net_profit_loss|floatformat:2}}{% else %} 0.00 {% endif %}</td>
                         </tr>
                     {% endfor %}
                     </tbody>

@@ -19,7 +19,7 @@ for (const td of elements) {
             console.log(element.innerText);
             console.log(typeof parseFloat(element.innerText));
             total_cap += parseFloat(element.innerText)
-            console.log(total_cap);
+//            console.log(total_cap);
         }
-        console.log(total_cap);
-        mkt_cap.innerText = total_cap;
+        console.log(Math.round(total_cap));
+        mkt_cap.innerText = parseFloat(total_cap).toFixed(2);

@@ -593,17 +593,15 @@
                                                         <thead>
                                                             <tr>
                                                                 <th>Company</th>
-                                                                <th>Price (GHS)</th>
-                                                                <th>Volume</th>
-                                                                <th>Traded value</th>
+                                                                <th>Total Volume</th>
+                                                                <th>Total Traded value</th>
                                                             </tr>
                                                         </thead>
-                                                          {% for company in sp %}
+                                                          {% for price in stock_performance %}
                                                             <tr>
-                                                                <td><a href="{{ company.company.get_absolute_url }}">{{ company.company.name }}</a></td>
-                                                                <td>{{company.price}}</td>
-                                                                <td>{{company.volume}}</td>
-                                                                <td>{{company.volume|mul:company.price}}</td>
+                                                                <td><a href="{{ price.company.get_absolute_url }}">{{ price.company__company_id }}</a></td>
+                                                                <td>{{price.total_volume|intcomma}}</td>
+                                                                <td>{{price.total_trasaction_value|floatformat:2|intcomma}}</td>
                                                             </tr>
                                                           {% endfor %}
                                                       </table>

@@ -13,10 +13,13 @@
                     <!-- Page Heading -->
                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
                         <h1 class="h3 mb-0 text-gray-800">{{ company.name }} ({{ company.country.code }}-{{ company.company_id }})</h1>
+
+                        {% if price_year_start.price >= 0 %}
                         <p>
                             <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-danger shadow-sm pl-3 pr-3">Sell</a>
                             <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm pl-3 pr-3">Buy</a>
                         </p>
+
                         <p>
                             <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-info shadow-sm"><i
                                 class="fas fa-bell fa-sm text-white-50"></i>
@@ -28,6 +31,14 @@
                                 class="fas fa-star fa-sm text-white-50"></i> Add to WatchList
                             </a>
                         </p>
+                        {% else %}
+                        <p>
+                            <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-danger shadow-sm">
+                                {{company.market.all.first}}
+                            </a>
+                        </p>
+
+                        {% endif %}
 
                     </div>
 
@@ -43,6 +54,7 @@
                                             <div class="h5 mb-0 font-weight-bold text-gray-800">
                                                 {{ company.name }}
                                             </div>
+                                            {% if price_year_start.price >= 0 %}
                                             <div class="h6 mb-0 font-weight-light text-gray-800">
                                                 <strong>{{ company.country.currency_code }} {{ price.price }}
                                                     <small>
@@ -58,6 +70,7 @@
                                                     </small>
                                                 </strong>
                                             </div>
+                                            {% endif %}
                                         </div>
                                         <div class="col-auto">
                                             <img src="{{ company.logo.url }}" alt="" height="100">
@@ -69,13 +82,13 @@
 
                     </div>
 
-                    <div class="row">
+                    <div class="row mt-4">
 
                         <div class="col-lg-8">
 
                             <!-- Default Card Example -->
                             <div class="card mb-4">
-                                <div class="card-header mt-3">
+                                <div class="card-header py-3">
                                     <h6 class="m-0 font-weight-bold text-primary">{{ company.name }} Summary</h6>
                                 </div>
                                 <div class="card-body text text-center">
@@ -83,9 +96,11 @@
                                       <li class="nav-item">
                                         <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Profile</a>
                                       </li>
+                                        {% if price_year_start.price >= 0 %}
                                       <li class="nav-item">
                                         <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Financial Summary</a>
                                       </li>
+                                        {% endif %}
                                       <li class="nav-item">
                                         <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">Charts</a>
                                       </li>
@@ -96,6 +111,7 @@
                                         <li class="nav-item">
                                         <a class="nav-link" id="analysis-tab" data-toggle="tab" href="#analysis" role="tab" aria-controls="contact" aria-selected="false">Analysis</a>
                                       </li>
+                                        {% if price_year_start.price >= 0 %}
                                         </li>
                                         <li class="nav-item">
                                         <a class="nav-link" id="ownership-tab" data-toggle="tab" href="#ownership" role="tab" aria-controls="contact" aria-selected="false">Ownership</a>
@@ -103,6 +119,7 @@
                                         <li class="nav-item">
                                             <a class="nav-link" id="split-tab" data-toggle="tab" href="#split" role="tab" aria-controls="contact" aria-selected="false">Dividends / Share Splits</a>
                                         </li>
+                                        {% endif %}
                                     </ul>
                                     <div class="tab-content" id="myTabContent">
                                       <div class="tab-pane fade show active pt-3" id="home" role="tabpanel" aria-labelledby="home-tab">
@@ -987,18 +1004,51 @@
                                               <div class="col-9">
                                                 <div class="tab-content" id="v-splitsContent">
                                                   <div class="tab-pane fade show active" id="v-dividend" role="tabpanel" aria-labelledby="v-dividend-tab">
-                                                      {% for split in share_splits %}
-                                                        <p><strong>{{split}}</strong></p>
-                                                     {% empty %}
-                                                        <p>{{ company.company_id }} has never paid dividend</p>
-                                                     {% endfor %}
+                                                      <table class="table table-bordered table-striped table-hover">
+                                                          <thead>
+                                                            <tr>
+                                                                <th>Financial Year</th>
+                                                                <th>Div Amount</th>
+                                                                <th>Payment Date</th>
+                                                            </tr>
+                                                          </thead>
+                                                          <tbody>
+                                                             {% for dividend in dividends %}
+                                                                <tr>
+                                                                    <td>{{dividend.financial_year}}</td>
+                                                                    <td>{{dividend.final_dividend}}</td>
+                                                                    <td>{{dividend.payment_date}}</td>
+                                                                </tr>
+                                                             {% empty %}
+                                                                <p>{{ company.company_id }} has never paid dividend</p>
+                                                             {% endfor %}
+                                                          </tbody>
+                                                      </table>
                                                   </div>
                                                   <div class="tab-pane fade" id="v-split" role="tabpanel" aria-labelledby="v-split-tab">
-                                                      {% for split in share_splits %}
-                                                        <p><strong>{{split}}</strong></p>
-                                                     {% empty %}
-                                                        <p>{{ company.company_id }} has no share spilts</p>
-                                                     {% endfor %}
+                                                      <table class="table table-bordered table-striped table-hover">
+                                                          {% if split%}
+                                                          <thead>
+                                                            <tr>
+                                                                <th>Financial Year</th>
+                                                                <th>Div Amount</th>
+                                                                <th>Payment Date</th>
+                                                            </tr>
+                                                          </thead>
+                                                          <tbody>
+
+                                                             {% for split in share_splits %}
+                                                                <tr>
+                                                                    <td>{{split}}</td>
+                                                                    <td>{{dividend.final_dividend}}</td>
+                                                                    <td>{{dividend.payment_date}}</td>
+                                                                </tr>
+                                                            {% endfor %}
+                                                          {% else %}
+                                                                <p class="mt-4">{{ company.company_id }} has no share spilts</p>
+                                                          </tbody>
+                                                          {% endif %}
+                                                      </table>
                                                   </div>
                                                 </div>
                                               </div>
@@ -1012,7 +1062,7 @@
 
                             <!-- Basic Card Example -->
                             <div class="card shadow mb-4">
-                                <div class="card-header mt-3">
+                                <div class="card-header py-3">
                                     <h6 class="m-0 font-weight-bold text-primary">Financial Statements</h6>
                                 </div>
                                 <div class="card-body text text-center">
@@ -1092,7 +1142,7 @@
 
                             <!-- Basic Card Example -->
                             <div class="card shadow mb-4">
-                                <div class="card-header mt-3">
+                                <div class="card-header py-3">
                                     <h6 class="m-0 font-weight-bold text-primary">Major Products</h6>
                                 </div>
                                 <div class="card-body">
@@ -1106,12 +1156,12 @@
 
                              <!-- Basic Card Example -->
                             <div class="card shadow mb-4">
-                                <div class="card-header mt-3">
+                                <div class="card-header py-3">
                                     <h6 class="m-0 font-weight-bold text-primary">Subsidiaries</h6>
                                 </div>
                                 <div class="card-body">
                                     {% for subsidiary in subsidiaries  %}
-                                        <p>{{ subsidiary.subsidiary_name }} ({{ subsidiary.ownership_pct }} %)</p>
+                                        <p>{{ subsidiary.subsidiary_name }} <strong>({{ subsidiary.ownership_pct }} %)</strong></p>
                                     {% empty %}
                                         No subsidiary added yet
                                     {% endfor %}
@@ -1120,23 +1170,24 @@
 
                             <!-- Basic Card Example -->
                             <div class="card shadow mb-4">
-                                <div class="card-header mt-3">
+                                <div class="card-header py-3">
                                     <h6 class="m-0 font-weight-bold text-primary">Key People</h6>
                                 </div>
                                 <div class="card-body">
                                     {% for people in key_people %}
-                                        <p>{{ people.position }} -
-                                            {{ people.name }}
-                                        </p>
+                                        <p title="{{people.description}}"><strong>{{ people.position }}</strong> {{ people.name }}</p>
                                     {% empty %}
                                         No person listed here
                                     {% endfor %}
                                 </div>
                             </div>
 
+
+                            {% if price_year_start.price >= 0 %}
+
                             <!-- Default Card Example -->
                             <div class="card mb-4">
-                                <div class="card-header mt-3">
+                                <div class="card-header py-3">
                                     <h6 class="m-0 font-weight-bold text-primary">Pro</h6>
                                 </div>
                                 <div class="card-body text text-center">
@@ -1172,9 +1223,11 @@
                                 </div>
                             </div>
 
+                            {% endif %}
+
                             <!-- Default Card Example -->
                             <div class="card mb-4">
-                                <div class="card-header mt-3">
+                                <div class="card-header py-3">
                                     <h6 class="m-0 font-weight-bold text-primary">Ratings & Forum</h6>
                                 </div>
                                 <div class="card-body text text-center">
@@ -1188,10 +1241,30 @@
                                     </ul>
                                     <div class="tab-content" id="myForumContent">
                                       <div class="tab-pane fade show active pt-3" id="rating" role="tabpanel" aria-labelledby="rating-tab">
-                                        {% if not reviews %}
+                                          {% if not reviews %}
                                                 <h3>Be the first one to write a review.</h3>
                                             {% else %}
-                                                <span>Overall Rating: </span><span>{{ company_rating }}</span>
+                                                <span>Overall Rating: </span>
+                                                <span>
+                                                    {% if company_rating == 0 %}
+                                                        <i class='bx bx-star'></i><i class='bx bx-star'></i><i class='bx bx-star'></i><i class='bx bx-star'></i><i class='bx bx-star'></i>
+                                                    {% endif%}
+                                                    {% if company_rating == 1 %}
+                                                        <i class='bx bxs-star'></i><i class='bx bx-star'></i><i class='bx bx-star'></i><i class='bx bx-star'></i><i class='bx bx-star'></i>
+                                                    {% endif%}
+                                                    {% if company_rating == 2 %}
+                                                        <i class='bx bxs-star'></i><i class='bx bxs-star'></i><i class='bx bx-star'></i><i class='bx bx-star'></i><i class='bx bx-star'></i>
+                                                    {% endif%}
+                                                    {% if company_rating == 3 %}
+                                                        <i class='bx bxs-star'></i><i class='bx bxs-star'></i><i class='bx bxs-star'></i><i class='bx bx-star'></i><i class='bx bx-star'></i>
+                                                    {% endif%}
+                                                    {% if company_rating == 4 %}
+                                                        <i class='bx bxs-star'></i><i class='bx bxs-star'></i><i class='bx bxs-star'></i><i class='bx bxs-star'></i><i class='bx bx-star'></i>
+                                                    {% endif%}
+                                                    {% if company_rating == 5 %}
+                                                        <i class='bx bxs-star'></i><i class='bx bxs-star'></i><i class='bx bxs-star'></i><i class='bx bxs-star'></i><i class='bx bxs-star'></i>
+                                                    {% endif%}
+                                                </span>
                                                 <br>
                                                 <hr>
                                                 <h3>Review Comments</h3>
@@ -1204,16 +1277,34 @@
                                                             <br>
                                                             <span>Modified on: </span><span>{{ review.date_edited }}</span>
                                                             <br>
-                                                            <span>Rating: </span><span>{{ review.rating }}</span>
+                                                            <span>Rating: </span><span>{% if review.rating == 0 %}
+                                                                    <i class='bx bx-star'></i><i class='bx bx-star'></i><i class='bx bx-star'></i><i class='bx bx-star'></i><i class='bx bx-star'></i>
+                                                                    {% endif%}
+                                                                    {% if review.rating == 1 %}
+                                                                        <i class='bx bxs-star'></i><i class='bx bx-star'></i><i class='bx bx-star'></i><i class='bx bx-star'></i><i class='bx bx-star'></i>
+                                                                    {% endif%}
+                                                                    {% if review.rating == 2 %}
+                                                                        <i class='bx bxs-star'></i><i class='bx bxs-star'></i><i class='bx bx-star'></i><i class='bx bx-star'></i><i class='bx bx-star'></i>
+                                                                    {% endif%}
+                                                                    {% if review.rating == 3 %}
+                                                                        <i class='bx bxs-star'></i><i class='bx bxs-star'></i><i class='bx bxs-star'></i><i class='bx bx-star'></i><i class='bx bx-star'></i>
+                                                                    {% endif%}
+                                                                    {% if review.rating == 4 %}
+                                                                        <i class='bx bxs-star'></i><i class='bx bxs-star'></i><i class='bx bxs-star'></i><i class='bx bxs-star'></i><i class='bx bx-star'></i>
+                                                                    {% endif%}
+                                                                    {% if review.rating == 5 %}
+                                                                        <i class='bx bxs-star'></i><i class='bx bxs-star'></i><i class='bx bxs-star'></i><i class='bx bxs-star'></i><i class='bx bxs-star'></i>
+                                                                    {% endif%}
+                                                            </span>
                                                             <br>
                                                             <span>Creator: </span><span>{{ review.creator.username }}</span>
                                                             <br>
-                                                            <a href="{% url 'review_edit' company.pk review.pk %}">Edit Review</a>
+                                                            <a href="{% url 'review_edit' company.pk review.pk %}"><i class='bx bxs-edit-alt' ></i> Edit Review</a>
                                                     </li>
                                                 {% endfor %}
                                                 </ol>
                                         {% endif %}
-                                        <a class="ui primary button" href="{% url 'review_create' company.pk %}" class="btn btn-primary">Add Review</a>
+                                        <a class="ui primary button" href="{% url 'review_create' company.pk %}" class="btn btn-primary"><i class='bx bxs-add-to-queue' ></i> Add Review</a>
                                       </div>
                                       <div class="tab-pane fade show pt-3" id="forum" role="tabpanel" aria-labelledby="forum-tab">
                                         <p>Forum Here</p>
@@ -1231,7 +1322,7 @@
                             <div class="card shadow mb-4">
                                 <!-- Card Header - Dropdown -->
                                 <div
-                                    class="card-header mt-3 d-flex flex-row align-items-center justify-content-between">
+                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                                     <h6 class="m-0 font-weight-bold text-primary">Basic Info.</h6>
                                     <div class="dropdown no-arrow">
                                         <a class="dropdown-toggle" href="#" role="button" id="basicInfo"
@@ -1261,12 +1352,12 @@
                                 </div>
                             </div>
 
-
+                            {% if price_year_start.price >= 0 %}
                             <!-- Dropdown Card Example -->
                             <div class="card shadow mb-4">
                                 <!-- Card Header - Dropdown -->
                                 <div
-                                    class="card-header mt-3 d-flex flex-row align-items-center justify-content-between">
+                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                                     <h6 class="m-0 font-weight-bold text-primary">Stock Price Summary</h6>
                                 </div>
                                 <!-- Card Body -->
@@ -1282,6 +1373,7 @@
                                             <p><strong>Shares Outstanding:</strong> {% for detail in share %} {{ detail.issued_shares|intcomma }}{% endfor %}</p>
                                         </div>
                                         <div class="col-5">
+
                                             <p><strong>Open:</strong> {{ company.country.currency_code }} {{ price.price }}</p>
                                             <p><strong>1-Yr Change:</strong>
                                                 {% if price.price|sub:price_year_start.price >= 0 %}
@@ -1319,10 +1411,11 @@
                                 </div>
                             </div>
 
+
                             <div class="card shadow mb-4">
                                 <!-- Card Header - Dropdown -->
                                 <div
-                                    class="card-header mt-3 d-flex flex-row align-items-center justify-content-between">
+                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                                     <h6 class="m-0 font-weight-bold text-primary">Stock Price Performance</h6>
                                 </div>
                                 <!-- Card Body -->
@@ -1380,7 +1473,7 @@
                             <div class="card shadow mb-4">
                                 <!-- Card Header - Dropdown -->
                                 <div
-                                    class="card-header mt-3 d-flex flex-row align-items-center justify-content-between">
+                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                                     <h6 class="m-0 font-weight-bold text-primary">Latest Press Releases</h6>
                                     <div class="dropdown no-arrow">
                                         <a class="dropdown-toggle" href="#" role="button" id="Releases"
@@ -1407,7 +1500,7 @@
                             <!-- Collapsable Card Example -->
                             <div class="card shadow mb-4">
                                 <!-- Card Header - Accordion -->
-                                <a href="#collapse1" class="d-block card-header mt-3" data-toggle="collapse"
+                                <a href="#collapse1" class="d-block card-header py-3" data-toggle="collapse"
                                     role="button" aria-expanded="true" aria-controls="collapseCardExample">
                                     <h6 class="m-0 font-weight-bold text-primary">Stock Price History</h6>
                                 </a>
@@ -1457,7 +1550,7 @@
                             </div>
                             <div class="card shadow mb-4">
                                 <!-- Card Header - Accordion -->
-                                <a href="#collapse2" class="d-block card-header mt-3" data-toggle="collapse"
+                                <a href="#collapse2" class="d-block card-header py-3" data-toggle="collapse"
                                     role="button" aria-expanded="true" aria-controls="collapseCardExample">
                                     <h6 class="m-0 font-weight-bold text-primary">Share Listing Details</h6>
                                 </a>
@@ -1475,14 +1568,14 @@
                             </div>
                             <div class="card shadow mb-4">
                                 <!-- Card Header - Accordion -->
-                                <a href="#collapse3" class="d-block card-header mt-3" data-toggle="collapse"
+                                <a href="#collapse3" class="d-block card-header py-3" data-toggle="collapse"
                                     role="button" aria-expanded="true" aria-controls="collapseCardExample">
                                     <h6 class="m-0 font-weight-bold text-primary">Latest Dividend</h6>
                                 </a>
                                 <!-- Card Content - Collapse -->
                                 <div class="collapse show" id="collapse3">
                                     <div class="card-body">
-                                        {% for dividend in dividends %}
+                                        {% for dividend in current_dividend %}
                                             <p><strong>Final Dividend:</strong> GHS {{ dividend.final_dividend|floatformat:2 }} </p>
                                             <p><strong>File:</strong><a href="{{ dividend.file.url }}" target="_blank"> Dividend File</a> <i class="fas fa-download"></i></p>
                                             <p><strong>Qualifying Date:</strong> {{ dividend.qualifying_date }} </p>
@@ -1505,7 +1598,7 @@
                             <div class="card shadow mb-4">
                                 <!-- Card Header - Dropdown -->
                                 <div
-                                    class="card-header mt-3 d-flex flex-row align-items-center justify-content-between">
+                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                                     <h6 class="m-0 font-weight-bold text-primary">Listing Information</h6>
                                 </div>
                                 <!-- Card Body -->
@@ -1521,7 +1614,7 @@
                             <div class="card shadow mb-4">
                                 <!-- Card Header - Dropdown -->
                                 <div
-                                    class="card-header mt-3 d-flex flex-row align-items-center justify-content-between">
+                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                                     <h6 class="m-0 font-weight-bold text-primary">Similar Companies</h6>
                                 </div>
                                 <!-- Card Body -->
@@ -1537,7 +1630,7 @@
                             <div class="card shadow mb-4">
                                 <!-- Card Header - Dropdown -->
                                 <div
-                                    class="card-header mt-3 d-flex flex-row align-items-center justify-content-between">
+                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                                     <h6 class="m-0 font-weight-bold text-primary">Indices</h6>
                                 </div>
                                 <!-- Card Body -->
@@ -1550,17 +1643,19 @@
                                 </div>
                             </div>
 
+                            {% endif %}
+
                             <div class="card shadow mb-4">
                                 <!-- Card Header - Dropdown -->
                                 <div
-                                    class="card-header mt-3 d-flex flex-row align-items-center justify-content-between">
+                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                                     <h6 class="m-0 font-weight-bold text-primary">Contact Information</h6>
                                 </div>
                                 <!-- Card Body -->
                                 <div class="card-body">
                                     <p><strong>Telephone:</strong> {{ company.telephone }}</p>
                                     <p><strong>Email:</strong> {{ company.email }}</p>
-                                    <p><strong>Website:</strong> {{ company.website }}</p>
+                                    <p><strong>Website:</strong> <a href="{{ company.website }}" target="_blank">{{ company.website }}</a></p>
                                 </div>
                             </div>
 

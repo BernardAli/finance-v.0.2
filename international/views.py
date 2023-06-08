@@ -62,9 +62,9 @@ def country(request, country_slug):
     index = Indice.objects.filter(country=country).order_by('name')
     exchange = Bourse.objects.filter(country=country).order_by('name')
     exports = MajorExports.objects.filter(country=country)
-    companies = CompanyProfile.objects.filter(country=country).filter(market=1).order_by('?', 'name')[:30]
+    companies = CompanyProfile.objects.filter(country=country).filter(market=1).order_by('name')[:30]
     bank_rate = BankRate.objects.filter(central_bank=country).order_by('-effective_meeting_date')[:1]
-    banks = CompanyProfile.objects.filter(country=country).filter(market=1).filter(industry=6)
+    banks = CompanyProfile.objects.filter(country=country).filter(market=1).filter(industry=6).order_by('name')
     gdp = GDP.objects.filter(country=country)
     population = Population.objects.get(country=country)
     unemployment = UnemploymentRate.objects.filter(country=country)

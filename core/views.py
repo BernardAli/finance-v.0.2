@@ -69,8 +69,8 @@ def index_view(request):
     dollar_rate = InterbankFX.objects.filter(pair__pair='USDGHS').last()
     dollar_rate_previous = InterbankFX.objects.filter(pair__pair='USDGHS').order_by('-date')[1]
     indices_chart = Indices.objects.filter().order_by('-date')[:2]
-    commodities_chart = Commodity_profile.objects.filter()[:10]
-    shares_chart = SharePrice.objects.filter().order_by('-date')[:10]
+    commodities_chart = Commodity_profile.objects.order_by('?')[:2]
+    shares_chart = SharePrice.objects.filter().order_by('-date')[:2]
     t_bills_chart = T_BILL.objects.filter().order_by('-tender')[:2]
     share_price_latest = SharePrice.objects.order_by('date').last()
     dividend_calendar = Dividend.objects.filter(qualifying_date__year=2022)
@@ -215,11 +215,11 @@ def company_details(request, company_id):
     share_splits = ShareSplit.objects.filter(company_id=company_id)
     auditor = Auditors.objects.filter(company=company_id)
     reports = Report.objects.filter(company_id=company_id)
-    reports_qtr = Report.objects.filter(company_id=company_id).filter(period__period='Q1')
-    reports_half = Report.objects.filter(company_id=company_id).filter(period__period='H1')
-    reports_nine = Report.objects.filter(company_id=company_id).filter(period__period='9M')
-    reports_full = Report.objects.filter(company_id=company_id).filter(period__period='FY')
-    dividends = Dividend.objects.filter(company_id=company_id).order_by('-register_closure')[:1]
+    reports_qtr = Report.objects.filter(company_id=company_id).filter(period__period='Q1').order_by('-year')
+    reports_half = Report.objects.filter(company_id=company_id).filter(period__period='H1').order_by('-year')
+    reports_nine = Report.objects.filter(company_id=company_id).filter(period__period='9M').order_by('-year')
+    reports_full = Report.objects.filter(company_id=company_id).filter(period__period='FY').order_by('-year')
+    dividends = Dividend.objects.filter(company_id=company_id).order_by('-register_closure')
     release = PressRelease.objects.filter(company_id=company_id).order_by('-date')[:5]
     price_year_start = SharePrice.objects.filter(company_id=company_id, date__year=2022).order_by('-date').first()
     price = SharePrice.objects.filter(company_id=company_id).last()
@@ -228,12 +228,12 @@ def company_details(request, company_id):
     percent_sum = Ownership.objects.aggregate(Sum('percentage_holding'))
     subsidiaries = Subsidiaries.objects.filter(company_id=company_id).all()
     statement = FinancialStatement.objects.filter(company_id=company_id).order_by('file__year').last()
-    previous_revenue = FinancialStatement.objects.filter(company_id=company_id).order_by('-file__year')[1]
+    previous_revenue = FinancialStatement.objects.filter(company_id=company_id).order_by('-file__year').last()
     reviews = company.review_set.all()
     analysis = Opinions.objects.filter(commentary_type='Analysis', company=company).order_by('-date')[:3]
     periods = FinancialPeriod.objects.all()
     # market_cap = price.price * share.issued_shares
-    print(reviews.count())
+    # print(reviews.count())
     company_rating = average_rating([review.rating for review in reviews])
     # df = pd.DataFrame(share_price)
     high_52 = SharePrice.objects.filter(company_id=company_id,
@@ -322,7 +322,8 @@ def company_details(request, company_id):
         'release': release,
         'auditor': auditor,
         'secretaries': company.secretary.all(),
-        'key_people': company.key_people.all(),
+        'key_people': company.key_people.all().order_by('-position'),
+        'current_dividend': Dividend.objects.filter(company_id=company_id).order_by('-register_closure')[:1],
         'price': price,
         'ipos': ipos,
         'dividends': dividends,
@@ -356,8 +357,7 @@ def company_details(request, company_id):
         'high_14': SharePrice.objects.filter(company_id=company_id).order_by('-date')[:14].aggregate(Max("price")),
 
         'statements': statements,
-        'cap': cap * issued_shares.issued_shares,
-
+        'cap': cap * issued_shares.issued_shares if issued_shares else 0,
         'indices': indices,
         'corr': corr,
         'dividend_latest': dividend_latest,
@@ -545,33 +545,22 @@ def sector(request, sector_slug):
     return render(request, 'sectors.html', context)
 
 
-def market(request, market_slug):
-    market = get_object_or_404(Market, slug=market_slug)
-    companies = CompanyProfile.objects.filter(market=market).order_by('name')
-    paginator = Paginator(companies, 50)
-
-    market_count = CompanyProfile.objects.filter(market=market).count()
-
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
-
-    context = {
-        'page_obj': page_obj,
-        'market': market,
-        'market_count': market_count,
-
-    }
-    return render(request, 'market.html', context)
-
-
 def market_detail(request, market_slug):
     market = get_object_or_404(Market, slug=market_slug)
     companies = CompanyProfile.objects.filter(market=market).order_by('name')
     market_count = CompanyProfile.objects.filter(market=market).count()
     share_price_latest = SharePrice.objects.order_by('date').last()
 
+    share_price = SharePrice.objects.filter(date=share_price_latest.date)
+    share_detail = ShareDetail.objects.select_related('company')
+    data = CompanyProfile.objects.filter(share_type=1).filter(market=market).prefetch_related(
+        Prefetch("share_price", queryset=share_price),
+        Prefetch("statement", queryset=FinancialStatement.objects.all()),
+        Prefetch("dividend", queryset=Dividend.objects.all()),
+        Prefetch("share_details", queryset=share_detail)).order_by('name')
+
     com_numbers = SharePrice.objects.filter(company__market=market).filter(date=share_price_latest.date).count()
-    sp = SharePrice.objects.filter(company__share_type=1).filter(company__market=market).annotate(
+    sp = SharePrice.objects.filter(company__market=market).annotate(
         prev_val=Window(
             expression=Lag('price', default=0),
             partition_by=['company'],
@@ -623,7 +612,8 @@ def market_detail(request, market_slug):
         'market': market,
         'companies': companies,
         'market_count': market_count,
-        'sp': sp
+        'sp': sp,
+        'data': data
 
     }
     return render(request, 'market_detail.html', context)
@@ -631,12 +621,59 @@ def market_detail(request, market_slug):
 
 def share_type_detail(request, share_type_id):
     share = get_object_or_404(ShareType, id=share_type_id)
-    companies = CompanyProfile.objects.filter(share_type=share.id).order_by('share_type')
     share_type_count = CompanyProfile.objects.filter(share_type=share.id).count()
+
+    sp = SharePrice.objects.filter(company__share_type=share.id).annotate(
+        prev_val=Window(
+            expression=Lag('price', default=0),
+            partition_by=['company'],
+            order_by=F('date').asc(),
+        )
+    ).annotate(
+        prev_wk_val=Window(
+            expression=Lag('price', default=5),
+            partition_by=['company'],
+            order_by=F('date').asc(),
+        )
+    ).annotate(
+        prev_mothn_val=Window(
+            expression=Lag('price', 20),
+            partition_by=['company'],
+            order_by=F('date').asc(),
+        )
+    ).annotate(
+        ytd_val=Window(
+            expression=Lag('price', 50),
+            partition_by=['company'],
+            order_by=F('date').asc(),
+        )
+    ).annotate(
+        one_yr_val=Window(
+            expression=Lag('price', 262),
+            partition_by=['company'],
+            order_by=F('date').asc(),
+        )
+    ).annotate(
+        three_yr_val=Window(
+            expression=Lag('price', 786),
+            partition_by=['company'],
+            order_by=F('date').asc(),
+        )
+    ).annotate(
+        five_yr_val=Window(
+            expression=Lag('price', 1310),
+            partition_by=['company'],
+            order_by=F('date').asc(),
+        )
+    ).annotate(
+        diff=F('price') - F('prev_val')
+    ).annotate(
+        year_diff=F('price') - F('ytd_val')
+    ).order_by('-date', 'company__name')[:share_type_count]
 
     context = {
         'share': share,
-        'companies': companies,
+        'sp': sp,
         'share_type_count': share_type_count,
 
     }
@@ -726,6 +763,9 @@ def stock_market_view(request):
 
     fsi_price_first = Indices.objects.filter(index__symbol='GSE-CI').order_by('date').first()
     fsi_price_latest = Indices.objects.filter(index__symbol='GSE-CI').order_by('date').last()
+
+    stock_performance = SharePrice.objects.filter(date__gt='2022-12-31').values('company__name', 'company__company_id').\
+        annotate(total_price=Sum('price')).annotate(total_volume=Sum('volume')).annotate(total_trasaction_value=Sum(F('price') * F('volume'))).order_by('-total_trasaction_value')
 
     com_numbers = SharePrice.objects.filter(company__share_type=1).filter(date=share_price_latest.date).count()
     indices_values = Indices.objects.annotate(
@@ -826,6 +866,8 @@ def stock_market_view(request):
         'fsi_one_year': ci_price_latest.date - timedelta(weeks=52),
         'fsi_three_year': ci_price_latest.date - timedelta(weeks=156),
         'fsi_five_year': ci_price_latest.date - timedelta(weeks=260),
+
+        'stock_performance': stock_performance
     }
 
     return render(request, 'stock_market.html', context)
@@ -869,10 +911,24 @@ def market(request, market_slug):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
+    latest_date = SharePrice.objects.order_by('-date').first().date
+
+    sp = SharePrice.objects.filter(company__market=market).order_by('company__name').annotate(
+        prev_val=Window(
+            expression=Lag('price', default=0),
+            partition_by=['company'],
+            order_by=F('date').asc(),
+        )
+    ).annotate(
+        diff=F('price') - F('prev_val')
+    ).order_by('-date', 'company__name')[:market_count]
+
     context = {
         'page_obj': page_obj,
         'market': market,
         'market_count': market_count,
+        'sp': sp,
+        'latest_date': latest_date
     }
     return render(request, 'market.html', context)
 
@@ -881,16 +937,15 @@ def company_summary(request):
     share_price_latest = SharePrice.objects.order_by('-date').first()
     companies = SharePrice.objects.filter(date=share_price_latest.date).select_related('company').count()
     share_price_previous = SharePrice.objects.order_by('-date')[companies]
-    share_price = SharePrice.objects.filter(date=share_price_latest.date).select_related('company')
-    share_price2 = SharePrice.objects.filter(date=share_price_previous.date).select_related('company')
+    share_price = SharePrice.objects.filter(date=share_price_latest.date)
+    share_price2 = SharePrice.objects.filter(date=share_price_previous.date)
     share_detail = ShareDetail.objects.select_related('company')
     # data = CompanyProfile.objects.filter(share_type=1).prefetch_related("share_details", "share_price")
-    data = CompanyProfile.objects.filter(share_type=1).prefetch_related(Prefetch("share_price", queryset=share_price),
-                                                                        Prefetch("share_details",
-                                                                                 queryset=share_detail)).order_by('name')
-    total_mkt_cap = CompanyProfile.objects.filter(share_type=1).prefetch_related(
+    data = CompanyProfile.objects.filter(share_type=1).prefetch_related(
         Prefetch("share_price", queryset=share_price),
-        Prefetch("share_details", queryset=share_detail), Prefetch("share_price", queryset=share_price2))
+        Prefetch("statement", queryset=FinancialStatement.objects.all()),
+        Prefetch("dividend", queryset=Dividend.objects.all()),
+        Prefetch("share_details", queryset=share_detail)).order_by('name')
     total_volume = SharePrice.objects.filter(date=share_price_latest.date).aggregate(Sum('volume'))
 
     # Test
@@ -953,7 +1008,6 @@ def company_summary(request):
         'share_price_latest': share_price_latest,
         'share_price': share_price,
         'data': data,
-        'total_mkt_cap': total_mkt_cap,
         'total_volume': total_volume,
         'gse_ci_one_month': Indices.objects.filter(index=1).filter(date__lt=one_month).last(),
         'gse_ci_open': Indices.objects.filter(index=1).last(),

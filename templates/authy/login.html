@@ -1,0 +1,11 @@
+<form action="" method="POST" role="form" class="register">
+                {% csrf_token %}
+                <input type="text" class="box" placeholder="enter your username" name="username">
+                <input type="password" class="box" placeholder="enter your password" name="password" id="myInput-1">
+                <span toggle="#password-field" class="fa fa-fw fa-eye field-icon-1 toggle-password"></span>
+                <input type="submit" value="login now" class="btn btn-primary">
+                <p>Forgot password? <a href="{% url 'password_reset' %}">click here</a></p>
+                <p>Not a member? <a href="{% url 'register' %}">Register</a></p>
+
+                <input type="hidden" name="next" value="{{ next }}">
+            </form>

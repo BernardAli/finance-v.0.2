@@ -1,0 +1,11 @@
+<form action="" method="POST" role="form" class="register">
+                {% csrf_token %}
+                <input type="text" class="box" placeholder="enter your username" name="username" required>
+                <input type="email" class="box" placeholder="enter your email" name="email" required>
+                <input type="password" class="box" placeholder="enter your password" name="password" id="myInput-1" required>
+                <span toggle="#password-field" class="fa fa-fw fa-eye field-icon-1 toggle-password"></span>
+                <input type="password" class="box" placeholder="confirm your password" name="password2" id="myInput-2" required>
+                <span toggle="#password-field" class="fa fa-fw fa-eye field-icon-1 toggle-password-1"></span>
+                <input type="submit" value="create now" class="btn btn-primary">
+                <p>Already have an account? <a href="{% url 'login' %}">login</a></p>
+            </form>

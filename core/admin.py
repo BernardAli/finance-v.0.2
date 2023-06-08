@@ -16,7 +16,7 @@ class SectorAdmin(admin.ModelAdmin):
 @admin.register(CompanyProfile)
 class CompanyProfileAdmin(admin.ModelAdmin):
     list_display = ('name', 'company_id', 'country', 'id')
-    list_filter = ('sector', 'industry', 'country', 'share_type', 'market')
+    list_filter = ('index', 'sector', 'industry', 'country', 'share_type', 'market')
     search_fields = ['name', 'company_id', ]
     ordering = ('name',)
 

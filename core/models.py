@@ -339,7 +339,7 @@ class IPO(models.Model):
 
 
 class Dividend(models.Model):
-    company = models.ForeignKey(CompanyProfile, on_delete=models.CASCADE)
+    company = models.ForeignKey(CompanyProfile, on_delete=models.CASCADE, related_name="dividend")
     financial_year = models.IntegerField(default='2020')
     file = models.FileField(upload_to='dividends')
     final_dividend = models.DecimalField(max_digits=7, decimal_places=4)
@@ -393,7 +393,7 @@ class Opinions(models.Model):
 
 
 class FinancialStatement(models.Model):
-    company = models.ForeignKey(CompanyProfile, on_delete=models.CASCADE)
+    company = models.ForeignKey(CompanyProfile, on_delete=models.CASCADE, related_name="statement")
     auditor = models.ForeignKey(Auditors, on_delete=models.PROTECT, null=True, blank=True)
     financial_period = models.ForeignKey(FinancialPeriod, on_delete=models.PROTECT)
     file = models.ForeignKey(Report, on_delete=models.PROTECT)

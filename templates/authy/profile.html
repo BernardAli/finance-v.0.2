@@ -1,0 +1,4 @@
+<li><a href="{% url 'index' %}">Home</a></li>
+<li>{{ profile.user.username }}</li>
+
+<a class="btn" href="{% url 'edit_profile' profile.user %}">Complete Profile</a>
