@@ -1,0 +1,147 @@
+{% extends 'base.html' %}
+{% load mathfilters %}
+{% load humanize %}
+{% load static %}
+
+{% block title %} Calendar  {% endblock %}
+
+{% block content %}
+
+<!-- Begin Page Content -->
+                <div class="container-fluid">
+
+                   <div class="row">
+                        <div class="col-12">
+                            <div class="card border-left-primary shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ country.name }}</div>
+                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                                <h5>Financial Dictionary</h5>
+                                            </div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-book fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <br>
+
+                    <div class="row">
+
+                        <div class="col-lg-8">
+
+
+                            <!-- Basic Card Example -->
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">Select Topic</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+
+                                        <!-- Listed Company Card -->
+                                        {% for topic in topics %}
+                                        <div class="col-xl-3 col-md-6 mb-4">
+                                            <div class="card border-left-primary shadow h-100 py-2">
+                                                <div class="card-body">
+                                                    <div class="row no-gutters align-items-center">
+                                                        <div class="col mr-2">
+                                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                                                <a href="{{ topic.get_absolute_url }}">{{ topic.topic }}</a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {% empty %}
+                                            <p>No Topic Found...</p>
+                                        {% endfor %}
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Basic Card Example -->
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">Alphabetical Order</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <!-- Listed Company Card -->
+                                        {% for letter in alphabet %}
+                                        <div class="col-xl-2 col-md-3 mb-4">
+                                            <div class="card border-left-primary shadow h-100 py-2">
+                                                <div class="card-body">
+                                                    <div class="row no-gutters align-items-center">
+                                                        <div class="col mr-2">
+                                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                                                <a href="">{{ letter.alphabet }}</a>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-auto">
+                                                            <img src="{{ letter.icon.url }}" alt="" height="80">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {% empty %}
+                                            <p>No Topic Found...</p>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="col-lg-4">
+
+                            <!-- Dropdown Card Example -->
+                            <div class="card shadow mb-4">
+                                <!-- Card Header - Dropdown -->
+                                <div
+                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                    <h6 class="m-0 font-weight-bold text-primary">Term for the Day</h6>
+                                </div>
+                                <!-- Card Body -->
+                                <div class="card-body">
+
+                                </div>
+                            </div>
+
+                            <div class="card shadow mb-4">
+                                <!-- Card Header - Dropdown -->
+                                <div
+                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                    <h6 class="m-0 font-weight-bold text-primary">Common Terms</h6>
+                                </div>
+                                <!-- Card Body -->
+                                <div class="card-body">
+
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+                <!-- /.container-fluid -->
+
+{% endblock %}
+{% block script %}
+<!-- Page level plugins -->
+    <script src="{% static 'vendor/datatables/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'vendor/datatables/dataTables.bootstrap4.min.js' %}"></script>
+
+    <!-- Page level custom scripts -->
+    <script src="{% static 'js/demo/datatables-demo.js' %}"></script>
+{% endblock %}

@@ -28,6 +28,7 @@ urlpatterns = [
     path('', include('core.urls')),
     path('rates/', include('rates.urls')),
     path('news/', include('news.urls')),
+    path('education/', include('education.urls')),
     path('international/', include('international.urls')),
     path('fixedincome/', include('fixedincome.urls')),
     path('bonds/', include('bonds.urls')),

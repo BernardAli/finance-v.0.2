@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'rates',
     'news',
     'comment',
+    'education',
     'international',
     'bonds',
     'fixedincome',

@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+{% load mathfilters %}
+{% load humanize %}
+{% load static %}
+
+{% block title %} {{ term.word }}  {% endblock %}
+
+{% block content %}
+
+<!-- Begin Page Content -->
+                <div class="container-fluid">
+
+                   <div class="row">
+                        <div class="col-12">
+                            <div class="card border-left-primary shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ term.word }}</div>
+                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                                <h5>{{ term }}</h5>
+                                            </div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-book fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <br>
+
+                    <div class="row">
+
+                        <div class="col-lg-8">
+
+
+                            <!-- Basic Card Example -->
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">What is {{term.word}}?</h6>
+                                </div>
+                                <div class="card-body">
+                                    {{term.meaning}}
+                                </div>
+                            </div>
+
+                            <!-- Basic Card Example -->
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">Example</h6>
+                                </div>
+                                <div class="card-body">
+                                    {{term.example}}
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="col-lg-4">
+
+                            <!-- Dropdown Card Example -->
+                            <div class="card shadow mb-4">
+                                <!-- Card Header - Dropdown -->
+                                <div
+                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                    <h6 class="m-0 font-weight-bold text-primary">Key Takeaway</h6>
+                                </div>
+                                <!-- Card Body -->
+                                <div class="card-body">
+                                    {{term.take_away}}
+                                </div>
+                            </div>
+
+                            <div class="card shadow mb-4">
+                                <!-- Card Header - Dropdown -->
+                                <div
+                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                    <h6 class="m-0 font-weight-bold text-primary">Video</h6>
+                                </div>
+                                <!-- Card Body -->
+                                <div class="card-body">
+                                    {% if term.video_url %}
+                                        <video src="{{term.video_url}}" controls loop width="100%"></video>
+                                    {% else %}
+                                        <p>No Video Added</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+                <!-- /.container-fluid -->
+
+{% endblock %}
+{% block script %}
+<!-- Page level plugins -->
+    <script src="{% static 'vendor/datatables/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'vendor/datatables/dataTables.bootstrap4.min.js' %}"></script>
+
+    <!-- Page level custom scripts -->
+    <script src="{% static 'js/demo/datatables-demo.js' %}"></script>
+{% endblock %}
