@@ -382,6 +382,45 @@
                                 </div>
                             </div>
 
+                            <!-- Default Card Example -->
+                            <!-- Default Card Example -->
+                            <div class="card mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">Pro <i class='bx bxs-lock'></i></h6>
+
+                                </div>
+                                <div class="card-body text text-center">
+                                    <ul class="nav nav-tabs" id="myPro" role="tablist">
+                                      <li class="nav-item">
+                                        <a class="nav-link active" id="fairvalue-tab" data-toggle="tab" href="#fairvalue" role="tab" aria-controls="contact" aria-selected="false">Fair value</a>
+                                      </li>
+                                        <li class="nav-item">
+                                        <a class="nav-link" id="score-tab" data-toggle="tab" href="#score" role="tab" aria-controls="score" aria-selected="false">Index Score</a>
+                                      </li>
+                                        <li class="nav-item">
+                                        <a class="nav-link" id="health-tab" data-toggle="tab" href="#health" role="tab" aria-controls="health" aria-selected="false">Index Health</a>
+                                      </li>
+                                        <li class="nav-item">
+                                        <a class="nav-link" id="Advisory-tab" data-toggle="tab" href="#Advisory" role="tab" aria-controls="Advisory" aria-selected="false">Index Advisory</a>
+                                      </li>
+                                    </ul>
+                                    <div class="tab-content" id="myProContent">
+                                      <div class="tab-pane fade show active pt-3" id="fairvalue" role="tabpanel" aria-labelledby="fairvalue-tab">
+                                        <p>Index Fair Value Here</p>
+                                      </div>
+                                      <div class="tab-pane fade show pt-3" id="score" role="tabpanel" aria-labelledby="score-tab">
+                                        <p>Index Score Here</p>
+                                      </div>
+                                        <div class="tab-pane fade show pt-3" id="health" role="tabpanel" aria-labelledby="health-tab">
+                                        <p>Index Health Here</p>
+                                      </div>
+                                        <div class="tab-pane fade show pt-3" id="Advisory" role="tabpanel" aria-labelledby="Advisory-tab">
+                                        <p>Index Advisory Here</p>
+                                      </div>
+
+                                    </div>
+                                </div>
+                            </div>
 
                             <!-- Basic Card Example -->
                             {% include 'companies_performance.html' %}
@@ -432,6 +471,7 @@
                                         <p><strong>Open:</strong>  {{ point.value }}</p>
                                         <p><strong>Days Range:</strong> {{ point.value }} -  {{ point.value }}</p>
                                         <p><strong>52 wk Range Range:</strong> {{ low_52.value__min }} -  {{ high_52.value__max }}</p>
+                                        <p><strong>Total Mkt Cap:</strong>  <span id="mkt-cap"></span></p>
                                 </div>
                             </div>
 
@@ -497,7 +537,7 @@
                                 <!-- Card Header - Dropdown -->
                                 <div
                                     class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 font-weight-bold text-primary">{{ indices.name }}'s Summary</h6>
+                                    <h6 class="m-0 font-weight-bold text-primary">Video Here</h6>
                                     <div class="dropdown no-arrow">
                                         <a class="dropdown-toggle" href="#" role="button" id="Summary"
                                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -515,11 +555,7 @@
                                 </div>
                                 <!-- Card Body -->
                                 <div class="card-body">
-                                    {% if indices.summary %}
-                                        {{ indices.summary }}
-                                    {% else %}
-                                        No detail added yet
-                                    {% endif %}
+                                    Video Here
                                 </div>
                             </div>
 
@@ -624,6 +660,22 @@
 
                 </div>
                 <!-- /.container-fluid -->
+
+    <script>
+                let mkt_cap = document.querySelector('#mkt-cap');
+                mkt_cap.innerText = "Yes";
+
+                let cap_values = document.querySelectorAll('.mkt-cap-values');
+                let total_cap = 0
+                for (const element of cap_values) {
+                    console.log(element.innerText);
+                    console.log(typeof parseFloat(element.innerText));
+                    total_cap += parseFloat(element.innerText)
+        //            console.log(total_cap);
+                }
+                console.log(Math.round(total_cap));
+                mkt_cap.innerText = parseFloat(total_cap).toFixed(2);
+    </script>
 
 {% endblock %}
 {% block script %}

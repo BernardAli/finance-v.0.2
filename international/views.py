@@ -4,10 +4,10 @@ from django.db.models.functions import Lag
 from django.shortcuts import render, get_object_or_404
 from django.core.paginator import Paginator
 from django.views.generic import ListView
-from django.db.models import Q, Max, Min, Window, F
+from django.db.models import Q, Max, Min, Window, F, Prefetch
 from .models import Continent, Country, Indice, Commodity_type, Commodity_profile, President, CentralBank, Bourse, \
     BankRate, MajorExports, UnemploymentRate, GDP, Population
-from core.models import CompanyProfile, Indices, SharePrice
+from core.models import CompanyProfile, Indices, SharePrice, ShareDetail, FinancialStatement, Dividend
 
 
 class SearchIndexListView(ListView):
@@ -128,6 +128,16 @@ def index_detail(request, index_id):
     ci_price_first = Indices.objects.filter(index=index_id).order_by('date').first()
     ci_price_latest = Indices.objects.filter(index=index_id).order_by('date').last()
 
+    share_price_latest = SharePrice.objects.order_by('date').last()
+
+    share_price = SharePrice.objects.filter(date=share_price_latest.date)
+    share_detail = ShareDetail.objects.select_related('company')
+    data = CompanyProfile.objects.filter(index=index_id).prefetch_related(
+        Prefetch("share_price", queryset=share_price),
+        Prefetch("statement", queryset=FinancialStatement.objects.all()),
+        Prefetch("dividend", queryset=Dividend.objects.all()),
+        Prefetch("share_details", queryset=share_detail)).order_by('name')
+
     index_components = companies.count()
 
     index_values = Indices.objects.filter(index=index_id).annotate(
@@ -238,6 +248,7 @@ def index_detail(request, index_id):
         'low_52': Indices.objects.filter(index=index_id, date__gt=point.date - timedelta(weeks=52)).order_by('-date')[:14].aggregate(Min("value")),
         'high_52': Indices.objects.filter(index=index_id, date__gt=point.date - timedelta(weeks=52)).order_by('-date')[:14].aggregate(Max("value")),
         'sp': sp,
+        'data': data,
         'index_values': index_values,
 
         'indices_val': indices_val,

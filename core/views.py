@@ -623,6 +623,15 @@ def share_type_detail(request, share_type_id):
     share = get_object_or_404(ShareType, id=share_type_id)
     share_type_count = CompanyProfile.objects.filter(share_type=share.id).count()
 
+    share_price_latest = SharePrice.objects.order_by('date').last()
+    share_price = SharePrice.objects.filter(date=share_price_latest.date)
+    share_detail = ShareDetail.objects.select_related('company')
+    data = CompanyProfile.objects.filter(share_type=share.id).prefetch_related(
+        Prefetch("share_price", queryset=share_price),
+        Prefetch("statement", queryset=FinancialStatement.objects.all()),
+        Prefetch("dividend", queryset=Dividend.objects.all()),
+        Prefetch("share_details", queryset=share_detail)).order_by('name')
+
     sp = SharePrice.objects.filter(company__share_type=share.id).annotate(
         prev_val=Window(
             expression=Lag('price', default=0),
@@ -674,6 +683,7 @@ def share_type_detail(request, share_type_id):
     context = {
         'share': share,
         'sp': sp,
+        'data': data,
         'share_type_count': share_type_count,
 
     }
@@ -685,6 +695,14 @@ def share_type_detail_perfomance(request, share_type_id):
     companies = CompanyProfile.objects.filter(share_type=share.id).order_by('share_type')
     share_type_count = CompanyProfile.objects.filter(share_type=share.id).count()
     share_price_latest = SharePrice.objects.order_by('date').last()
+
+    share_price = SharePrice.objects.filter(date=share_price_latest.date)
+    share_detail = ShareDetail.objects.select_related('company')
+    data = CompanyProfile.objects.filter(share_type=share.id).prefetch_related(
+        Prefetch("share_price", queryset=share_price),
+        Prefetch("statement", queryset=FinancialStatement.objects.all()),
+        Prefetch("dividend", queryset=Dividend.objects.all()),
+        Prefetch("share_details", queryset=share_detail)).order_by('name')
 
     com_numbers = SharePrice.objects.filter(company__share_type=share).filter(date=share_price_latest.date).count()
     sp = SharePrice.objects.filter(company__share_type=share).annotate(
@@ -740,6 +758,7 @@ def share_type_detail_perfomance(request, share_type_id):
         'companies': companies,
         'share_type_count': share_type_count,
         'sp': sp,
+        'data': data
 
     }
     return render(request, 'share_type_detail_perfomance.html', context)
@@ -941,7 +960,7 @@ def company_summary(request):
     share_price2 = SharePrice.objects.filter(date=share_price_previous.date)
     share_detail = ShareDetail.objects.select_related('company')
     # data = CompanyProfile.objects.filter(share_type=1).prefetch_related("share_details", "share_price")
-    data = CompanyProfile.objects.filter(share_type=1).prefetch_related(
+    data = CompanyProfile.objects.exclude(market=3).prefetch_related(
         Prefetch("share_price", queryset=share_price),
         Prefetch("statement", queryset=FinancialStatement.objects.all()),
         Prefetch("dividend", queryset=Dividend.objects.all()),

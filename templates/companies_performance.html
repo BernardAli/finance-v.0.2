@@ -123,7 +123,7 @@
                                                                 <td><a href="{{ company.get_absolute_url }}">{{ company.name }}</a></td>
                                                                 <td>{{company.statement.first.total_operating_revenue|div:1000000|floatformat:2}}</td>
                                                                 <td>{{company.share_details.first.issued_shares|div:1000000|floatformat:2|intcomma}}</td>
-                                                                <td class="mkt-cap-values">{{company.share_price.first.price|mul:company.share_details.first.issued_shares|div:1000000|floatformat:2|intcomma}}</td>
+                                                                <td class="mkt-cap-values">{% if company.share_details.first.issued_shares %}{{company.share_price.first.price|mul:company.share_details.first.issued_shares|div:1000000|floatformat:2}} {% else %} - {% endif %}</td>
                                                                 <td>{% if company.dividend.first %}{{company.dividend.first.final_dividend|floatformat:2}} {% else %} 0.00 {% endif %}</td>
                                                                 <td>{% if company.dividend.first %}{{company.dividend.first.final_dividend|div:company.share_price.first.price|mul:100|floatformat:2}} {% else %} 0.00 {% endif %}</td>
                                                                 <td class="value">{% if company.statement.first %}{{company.statement.first.net_profit_loss|div:company.share_details.first.issued_shares|floatformat:2}}{% else %} 0.00 {% endif %}</td>

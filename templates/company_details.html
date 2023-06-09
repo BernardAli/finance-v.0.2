@@ -1140,17 +1140,83 @@
                                 </div>
                             </div>
 
+                            <!-- Default Card Example -->
+                            <div class="card mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">Revenue Centers</h6>
+                                </div>
+                                <div class="card-body text text-center">
+                                    <ul class="nav nav-tabs" id="myCenters" role="tablist">
+                                      <li class="nav-item">
+                                        <a class="nav-link active" id="services-tab" data-toggle="tab" href="#services" role="tab" aria-controls="services" aria-selected="false">Services / Products</a>
+                                      </li>
+                                        <li class="nav-item">
+                                        <a class="nav-link" id="brands-tab" data-toggle="tab" href="#brands" role="tab" aria-controls="brands" aria-selected="false">Brands</a>
+                                      </li>
+                                        <li class="nav-item">
+                                        <a class="nav-link" id="segments-tab" data-toggle="tab" href="#segments" role="tab" aria-controls="segments" aria-selected="false">Operating Segments</a>
+                                      </li>
+                                    </ul>
+                                    <div class="tab-content" id="myCentersContent">
+                                      <div class="tab-pane fade show active pt-3" id="services" role="tabpanel" aria-labelledby="services-tab">
+                                        {% for service in products %}
+                                            <p title="{{service.detail}}"><strong>{{service}}</strong></p>
+                                         {% empty %}
+                                            <p>No service/product added yet</p>
+                                         {% endfor %}
+                                      </div>
+                                      <div class="tab-pane fade show pt-3" id="brands" role="tabpanel" aria-labelledby="brands-tab">
+                                        <p>Brands Here</p>
+                                      </div>
+                                        <div class="tab-pane fade show pt-3" id="segments" role="tabpanel" aria-labelledby="segments-tab">
+                                        <p>Segments Here</p>
+                                      </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            {% if company.industry.first.title == 'Banking' %}
+                            <!-- Default Card Example -->
+                            <div class="card mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">Bank Health <i class='bx bxs-lock'></i></h6>
+                                </div>
+                                <div class="card-body text text-center">
+                                    <ul class="nav nav-tabs" id="myHealth" role="tablist">
+                                      <li class="nav-item">
+                                        <a class="nav-link active" id="deposits-tab" data-toggle="tab" href="#deposits" role="tab" aria-controls="deposits" aria-selected="false">Deposits</a>
+                                      </li>
+                                        <li class="nav-item">
+                                        <a class="nav-link" id="advances-tab" data-toggle="tab" href="#advances" role="tab" aria-controls="advances" aria-selected="false">Net Advances</a>
+                                      </li>
+                                        <li class="nav-item">
+                                        <a class="nav-link" id="impairment-tab" data-toggle="tab" href="#impairment" role="tab" aria-controls="impairment" aria-selected="false">Net Impairment</a>
+                                      </li>
+                                    </ul>
+                                    <div class="tab-content" id="myHealthContent">
+                                      <div class="tab-pane fade show active pt-3" id="deposits" role="tabpanel" aria-labelledby="deposits-tab">
+                                        <p>Deposits Here</p>
+                                      </div>
+                                      <div class="tab-pane fade show pt-3" id="advances" role="tabpanel" aria-labelledby="advances-tab">
+                                        <p>Net Advances Here</p>
+                                      </div>
+                                        <div class="tab-pane fade show pt-3" id="impairment" role="tabpanel" aria-labelledby="impairment-tab">
+                                        <p>Net Impairment Here</p>
+                                      </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            {% endif %}
+
                             <!-- Basic Card Example -->
                             <div class="card shadow mb-4">
                                 <div class="card-header py-3">
-                                    <h6 class="m-0 font-weight-bold text-primary">Major Products</h6>
+                                    <h6 class="m-0 font-weight-bold text-primary">Others</h6>
                                 </div>
                                 <div class="card-body">
-                                     {% for service in products %}
-                                        <p title="{{service.detail}}"><strong>{{service}}</strong></p>
-                                     {% empty %}
-                                        <p>No service/product added yet</p>
-                                     {% endfor %}
                                 </div>
                             </div>
 
@@ -1188,7 +1254,7 @@
                             <!-- Default Card Example -->
                             <div class="card mb-4">
                                 <div class="card-header py-3">
-                                    <h6 class="m-0 font-weight-bold text-primary">Pro</h6>
+                                    <h6 class="m-0 font-weight-bold text-primary">Pro  <i class='bx bxs-lock'></i></h6>
                                 </div>
                                 <div class="card-body text text-center">
                                     <ul class="nav nav-tabs" id="myPro" role="tablist">
