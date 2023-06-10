@@ -67,6 +67,22 @@ class Products(models.Model):
         return f"{self.products}"
 
 
+class Brand(models.Model):
+    brand = models.CharField(max_length=255)
+    detail = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.brand}"
+
+
+class OperatingSegment(models.Model):
+    segment = models.CharField(max_length=255)
+    detail = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.segment}"
+
+
 SHARE_TYPE_CHOICE = (
     ('Equity', 'Equity'),
     ('Preference', 'Preference'),
@@ -104,6 +120,8 @@ class CompanyProfile(models.Model):
     email = models.CharField(max_length=255, blank=True, null=True)
     core_activities = models.TextField()
     products = models.ManyToManyField(Products, blank=True)
+    brands = models.ManyToManyField(Brand, blank=True)
+    segments = models.ManyToManyField(OperatingSegment, blank=True)
     market = models.ManyToManyField(Market, related_name='tags', default='None')
     summary = models.TextField(max_length=2500, blank=True, null=True)
     index = models.ManyToManyField(Indice, blank=True)
@@ -142,6 +160,14 @@ class ShareSplit(models.Model):
 
     def __str__(self):
         return f"{self.company}"
+
+
+class Advertisement(models.Model):
+    url = models.CharField(max_length=255)
+    company = models.ForeignKey(CompanyProfile, on_delete=models.CASCADE, related_name='adverts')
+
+    def __str__(self):
+        return f"{self.url}"
 
 
 STATUS_CHOICE = (

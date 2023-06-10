@@ -17,8 +17,8 @@
                                     <div class="row no-gutters align-items-center">
                                         <div class="col mr-2">
                                             <div class="h5 mb-0 font-weight-bold text-gray-800">{{ country.name }}</div>
-                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                                <h5>Financial Dictionary</h5>
+                                            <div class="text-xs font-weight-bold text-primary text-uppercase">
+                                                <h5><strong>Financial Dictionary</strong></h5>
                                             </div>
                                         </div>
                                         <div class="col-auto">
@@ -47,12 +47,12 @@
 
                                         <!-- Listed Company Card -->
                                         {% for topic in topics %}
-                                        <div class="col-xl-3 col-md-6 mb-4">
-                                            <div class="card border-left-primary shadow h-100 py-2">
+                                        <div class="col-xl-3 col-md-6">
+                                            <div class="card border-left-primary shadow h-100">
                                                 <div class="card-body">
                                                     <div class="row no-gutters align-items-center">
-                                                        <div class="col mr-2">
-                                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                                        <div class="col">
+                                                            <div class="text-lg font-weight-bold text-primary mb-1 text-center">
                                                                 <a href="{{ topic.get_absolute_url }}">{{ topic.topic }}</a>
                                                             </div>
                                                         </div>
@@ -77,24 +77,24 @@
                                     <div class="row">
                                         <!-- Listed Company Card -->
                                         {% for letter in alphabet %}
-                                        <div class="col-xl-2 col-md-3 mb-4">
+                                        <div class="col-xl-2 col-md-3">
                                             <div class="card border-left-primary shadow h-100 py-2">
                                                 <div class="card-body">
                                                     <div class="row no-gutters align-items-center">
                                                         <div class="col mr-2">
-                                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                                                <a href="">{{ letter.alphabet }}</a>
+                                                            <div class="h2 font-weight-bold text-secondary text-uppercase mb-1">
+                                                                <a href="{{ letter.get_absolute_url }}">{{ letter.alphabet }}</a>
                                                             </div>
                                                         </div>
                                                         <div class="col-auto">
-                                                            <img src="{{ letter.icon.url }}" alt="" height="80">
+                                                            <img src="{{ letter.icon.url }}" alt="" height="40">
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                         {% empty %}
-                                            <p>No Topic Found...</p>
+                                            <p>No Letter Found...</p>
                                         {% endfor %}
                                     </div>
                                 </div>
@@ -113,7 +113,8 @@
                                 </div>
                                 <!-- Card Body -->
                                 <div class="card-body">
-
+                                    <h6 class="m-0 font-weight-bold text-primary"><a href="{{ day_term.get_absolute_url }}">{{day_term.word}}</a></h6>
+                                    <p>{{day_term.meaning}}</p>
                                 </div>
                             </div>
 
@@ -125,7 +126,11 @@
                                 </div>
                                 <!-- Card Body -->
                                 <div class="card-body">
-
+                                    {% for term in common_terms %}
+                                        <h6 class="m-0 font-weight-bold text-primary"><a href="{{ term.get_absolute_url }}">{{term.word}}</a></h6>
+                                    {% empty %}
+                                        <p>No term added</p>
+                                    {% endfor %}
                                 </div>
                             </div>
 

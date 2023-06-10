@@ -21,8 +21,8 @@
                         </p>
 
                         <p>
-                            <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-info shadow-sm"><i
-                                class="fas fa-bell fa-sm text-white-50"></i>
+                            <a href="{% url 'company_file' company.id %}" class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm"><i
+                                class="fas fa-bell fa-sm text-white-50"></i> Create Alert
                             </a>
                             <a href="{% url 'company_file' company.id %}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
                                 class="fas fa-download fa-sm text-white-50"></i> Latest Report
@@ -1159,17 +1159,45 @@
                                     </ul>
                                     <div class="tab-content" id="myCentersContent">
                                       <div class="tab-pane fade show active pt-3" id="services" role="tabpanel" aria-labelledby="services-tab">
-                                        {% for service in products %}
-                                            <p title="{{service.detail}}"><strong>{{service}}</strong></p>
-                                         {% empty %}
-                                            <p>No service/product added yet</p>
-                                         {% endfor %}
+                                        <div class="row">
+                                             {% for service in products %}
+                                                    <div class="col-lg-3 mb-2" title="{{service.detail}}">
+                                                        <div class="card shadow">
+                                                            <div class="card-body text-center">
+                                                                <p><strong>{{service}}</strong></p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                             {% empty %}
+                                                <p>No service/product added yet</p>
+                                             {% endfor %}
+                                        </div>
                                       </div>
                                       <div class="tab-pane fade show pt-3" id="brands" role="tabpanel" aria-labelledby="brands-tab">
-                                        <p>Brands Here</p>
+                                            {% for brand in brands %}
+                                                    <div class="col-lg-3 mb-2" title="{{brand.detail}}">
+                                                        <div class="card shadow">
+                                                            <div class="card-body text-center">
+                                                                <p><strong>{{brand}}</strong></p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                            {% empty %}
+                                                <p>No brand added yet</p>
+                                             {% endfor %}
                                       </div>
                                         <div class="tab-pane fade show pt-3" id="segments" role="tabpanel" aria-labelledby="segments-tab">
-                                        <p>Segments Here</p>
+                                            {% for segment in segments %}
+                                                    <div class="col-lg-3 mb-2" title="{{segment.detail}}">
+                                                        <div class="card shadow">
+                                                            <div class="card-body text-center">
+                                                                <p><strong>{{segment}}</strong></p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                            {% empty %}
+                                                <p>No segment added yet</p>
+                                             {% endfor %}
                                       </div>
 
                                     </div>
@@ -1237,14 +1265,31 @@
                             <!-- Basic Card Example -->
                             <div class="card shadow mb-4">
                                 <div class="card-header py-3">
-                                    <h6 class="m-0 font-weight-bold text-primary">Key People</h6>
+                                    <h6 class="m-0 font-weight-bold text-primary">Top Executives</h6>
                                 </div>
                                 <div class="card-body">
-                                    {% for people in key_people %}
-                                        <p title="{{people.description}}"><strong>{{ people.position }}</strong> {{ people.name }}</p>
-                                    {% empty %}
-                                        No person listed here
-                                    {% endfor %}
+                                    <table class="table table-bordered table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Name</th>
+                                                <th>Birth Date</th>
+                                                <th>Since</th>
+                                                <th>Title</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for people in key_people %}
+                                                <tr>
+                                                    <td title="{{ people.description }}">{{ people.name }}</td>
+                                                    <td>{{ people.birth_date|date:"M, Y" }}</td>
+                                                    <td>{{ people.appointment_date|date:"M, Y"  }}</td>
+                                                    <td>{{ people.position }}</td>
+                                                </tr>
+                                            {% empty %}
+                                                No person listed here
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
 
@@ -1415,6 +1460,7 @@
                                     <p><strong>Registered Office:</strong> {{ company.registered_office }}</p>
                                     <p><strong>Incorporate Date:</strong> {{ company.incorporated_date }}</p>
                                     <p><strong>Employees:</strong> {{ company.employees }}</p>
+                                    <p><strong>Share Type:</strong> {{ company.share_type.first.share_type }}</p>
                                 </div>
                             </div>
 
@@ -1477,7 +1523,18 @@
                                 </div>
                             </div>
 
-
+                            {% if advert %}
+                            <div class="card shadow mb-4">
+                                <!-- Card Header - Dropdown -->
+                                <div
+                                    class="card-header d-flex flex-row align-items-center justify-content-between">
+                                    <h6 class="m-0 font-weight-bold text-primary">
+                                        <a href="{{advert.url}}"><i class='bx bxs-videos'></i> Official Advert</a>
+                                    </h6>
+                                </div>
+                            </div>
+                            {% endif %}
+                            
                             <div class="card shadow mb-4">
                                 <!-- Card Header - Dropdown -->
                                 <div

@@ -21,7 +21,7 @@ from .utils import html_to_pdf
 from rates.models import Inflation, MPR, Security, T_BILL, InterbankFX
 from .models import Sector, Tag, CompanyProfile, Market, ShareDetail, SharePrice, Indices, Report, \
     MarketReport, PressRelease, Auditors, IPO, Dividend, Ownership, Registrar, Subsidiaries, Opinions, \
-    FinancialStatement, Review, FinancialPeriod, ShareSplit, GCX_Types, ShareType, EconomicCalendar, AGM
+    FinancialStatement, Review, FinancialPeriod, ShareSplit, GCX_Types, ShareType, EconomicCalendar, AGM, Advertisement
 from news.models import News
 from international.models import Continent, Indice, Commodity_type, BankRate, GDP, UnemploymentRate, Commodity_profile
 from .utils import average_rating
@@ -204,7 +204,10 @@ def company_details(request, company_id):
     similar_company = CompanyProfile.objects.filter(country=company.country).filter(industry__id=industry) \
         .filter(market__id=market).exclude(company_id=company.company_id).order_by('company_id')
     share = ShareDetail.objects.filter(company_id=company_id)
+    advert = Advertisement.objects.filter(company_id=company_id).first()
     products = company.products.all().order_by('products')
+    brands = company.brands.all().order_by('brand')
+    segments = company.segments.all().order_by('segment')
     issued_shares = ShareDetail.objects.filter(company_id=company_id).first()
     share_price = SharePrice.objects.filter(company_id=company_id).order_by('date')
     country_indices = Indice.objects.filter(country=company.country).order_by('name')
@@ -361,7 +364,10 @@ def company_details(request, company_id):
         'indices': indices,
         'corr': corr,
         'dividend_latest': dividend_latest,
+        'advert': advert,
         'products': products,
+        'brands': brands,
+        'segments': segments,
         'share_splits': share_splits,
         'sp': sp
     }

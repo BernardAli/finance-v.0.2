@@ -3,7 +3,7 @@ from .models import Tag, Sector, CompanyProfile, Market, ShareDetail, SharePrice
     Indices, FinancialPeriod, Report, MarketReport, PressRelease, Subsidiaries, \
     Auditors, Secretary, KeyPeople, IPO, Dividend, Registrar, Solicitor, Ownership, Opinions, \
     FinancialStatement, Review, AuditingServices, Products, ShareSplit, GCX_Types, ShareType, \
-    EconomicCalendar, AGM
+    EconomicCalendar, AGM, Brand, OperatingSegment, Advertisement
 
 
 # Register your models here.
@@ -49,6 +49,9 @@ admin.site.register(ShareSplit)
 admin.site.register(GCX_Types)
 admin.site.register(EconomicCalendar)
 admin.site.register(AGM)
+admin.site.register(Brand)
+admin.site.register(OperatingSegment)
+admin.site.register(Advertisement)
 
 
 @admin.register(ShareDetail)

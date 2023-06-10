@@ -22,7 +22,7 @@ class FirstAlphabet(models.Model):
     slug = models.SlugField(unique=True, default='A')
 
     def get_absolute_url(self):
-        return reverse('sector', arg=[self.slug])
+        return reverse('alphabet_details', args=[self.slug])
 
     def __str__(self):
         return self.alphabet
