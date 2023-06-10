@@ -20,7 +20,7 @@ def inflation_view(request):
 
 
 def mpr_view(request):
-    mprs = MPR.objects.all()
+    mprs = MPR.objects.all().order_by("-meeting_no")
 
     context = {
         'mprs': mprs,

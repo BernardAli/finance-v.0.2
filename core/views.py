@@ -209,7 +209,7 @@ def company_details(request, company_id):
     brands = company.brands.all().order_by('brand')
     segments = company.segments.all().order_by('segment')
     issued_shares = ShareDetail.objects.filter(company_id=company_id).first()
-    share_price = SharePrice.objects.filter(company_id=company_id).order_by('date')
+    share_price = SharePrice.objects.filter(company_id=company_id).order_by('-date')
     country_indices = Indice.objects.filter(country=company.country).order_by('name')
     open_price = SharePrice.objects.filter(company_id=company_id).order_by('date')
     share_price_latest = SharePrice.objects.filter(company_id=company_id).order_by('date').last()

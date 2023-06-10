@@ -1,8 +1,20 @@
 from django.shortcuts import render
+from django.views.generic import ListView
+from django.db.models import Q
+
 from .models import Topics, FirstAlphabet, Term
 
 
-# Create your views here.
+class SearchTermResultsListView(ListView):
+    model = Term
+    context_object_name = "term"
+    template_name = "term_search.html"
+
+    def get_queryset(self):
+        query = self.request.GET.get("q")
+        return Term.objects.filter(
+            Q(word__icontains=query) | Q(example_activities__icontains=query)
+        )
 
 
 def dictionary(request):

@@ -9,3 +9,30 @@ for (const td of elements) {
         td.classList.add("change-down");
     }
 }
+
+var dataTable1 = new DataTable("#example", {
+	searchable: true,
+	fixedHeight: false,
+	sortable: true,
+	exportable: {
+        // options go here
+        type: "sql",
+        tableName: "sql_users",
+        selection: [1,2,3,4,5]
+    }
+});
+
+var dataTable2 = new DataTable("#example2", {
+	searchable: true,
+	fixedHeight: false,
+	sortable: true,
+	exportable: {
+        // options go here
+        type: "sql",
+        tableName: "sql_users",
+        selection: [1,2,3,4,5]
+    }
+});
+
+
+

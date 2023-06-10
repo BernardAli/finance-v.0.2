@@ -1004,11 +1004,14 @@
                                               <div class="col-9">
                                                 <div class="tab-content" id="v-splitsContent">
                                                   <div class="tab-pane fade show active" id="v-dividend" role="tabpanel" aria-labelledby="v-dividend-tab">
-                                                      <table class="table table-bordered table-striped table-hover">
+                                                      <table class="table table-bordered table-striped table-hover" id="example2">
                                                           <thead>
                                                             <tr>
                                                                 <th>Financial Year</th>
-                                                                <th>Div Amount</th>
+                                                                <th>Div Amnt</th>
+                                                                <th>Qual. Date</th>
+                                                                <th>Ex. Div. Date</th>
+                                                                <th>Reg. Clo. Date</th>
                                                                 <th>Payment Date</th>
                                                             </tr>
                                                           </thead>
@@ -1017,6 +1020,9 @@
                                                                 <tr>
                                                                     <td>{{dividend.financial_year}}</td>
                                                                     <td>{{dividend.final_dividend}}</td>
+                                                                    <td>{{dividend.qualifying_date}}</td>
+                                                                    <td>{{dividend.ex_dividend_date}}</td>
+                                                                    <td>{{dividend.register_closure}}</td>
                                                                     <td>{{dividend.payment_date}}</td>
                                                                 </tr>
                                                              {% empty %}
@@ -1639,7 +1645,7 @@
 
                                     <div class="card-body">
                                         <div class="table-responsive">
-                                            <table class="table table-bordered table-striped table-hover" id="dataTable" width="80%" cellspacing="0">
+                                            <table class="table table-bordered table-striped table-hover" id="example" width="80%" cellspacing="0">
                                             <thead>
                                                 <tr>
                                                     <th>Date</th>
