@@ -34,5 +34,11 @@ var dataTable2 = new DataTable("#example2", {
     }
 });
 
+var dataTable3 = new DataTable("#example3", {
+	searchable: true,
+	fixedHeight: false,
+	sortable: true
+});
+
 
 

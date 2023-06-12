@@ -120,7 +120,7 @@ def index_summary(request):
 def index_detail(request, index_id):
     indices = get_object_or_404(Indice, id=index_id)
     companies = CompanyProfile.objects.filter(index=index_id).order_by('name')
-    points = Indices.objects.filter(index=index_id)
+    points = Indices.objects.filter(index=index_id).order_by('-date')
     point = Indices.objects.filter(index=index_id).last()
     similar_index = Indice.objects.filter(country=1).exclude(name=indices.name).order_by('name')
 

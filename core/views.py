@@ -145,7 +145,20 @@ def index_view(request):
         diff=F('price') - F('prev_val')
     ).annotate(
         year_diff=F('price') - F('ytd_val')
-    ).order_by('-date', 'company__name', '?')[:5]
+    ).order_by('-date', '?')[:2]
+
+    first_index = indices_values.first().index.id
+    indices_val = Indices.objects.filter(index=first_index)
+    ci_price_first = Indices.objects.filter(index=first_index).order_by('date').first()
+    ci_price_latest = Indices.objects.filter(index=first_index).order_by('date').last()
+
+    first_share = sp[0].company.company_id
+    share_price = SharePrice.objects.filter(company__company_id=first_share).order_by('-date')
+    share_price_first = SharePrice.objects.filter(company__company_id=first_share).order_by('date').first()
+
+    t_bill = T_BILL.objects.filter(security__slug='91_DAY_BILL').order_by('-issue_date')
+    t_bill_first = T_BILL.objects.filter(security__slug='91_DAY_BILL').order_by('issue_date').first()
+    t_bill_last = T_BILL.objects.filter(security__slug='91_DAY_BILL').order_by('issue_date').last()
 
     context = {
         'inflation': inflation,
@@ -182,7 +195,37 @@ def index_view(request):
         'dividend_calendar': dividend_calendar,
         'economic_calendar': economic_calendar,
         'today': today,
-        'agm_calendar': agm_calendar
+        'agm_calendar': agm_calendar,
+
+        'indices_val': indices_val,
+        'ci_chart': Indices.objects.filter(index=first_index).order_by('-date')[:5],
+        'fsi': Indices.objects.filter(index=first_index).last(),
+        'fsi_previous': Indices.objects.filter(index=first_index).order_by('-date')[1],
+        'ci_price_first': ci_price_first.date,
+        'latest_trading_day': ci_price_latest.date,
+        'one_month': ci_price_latest.date - timedelta(weeks=4),
+        'six_month': ci_price_latest.date - timedelta(weeks=26),
+        'one_year': ci_price_latest.date - timedelta(weeks=52),
+        'three_year': ci_price_latest.date - timedelta(weeks=156),
+        'five_year': ci_price_latest.date - timedelta(weeks=260),
+
+        'share_price': share_price,
+        'share_price_first': share_price_first.date,
+        'stock_one_month': share_price_latest.date - timedelta(weeks=4),
+        'stock_six_month': share_price_latest.date - timedelta(weeks=26),
+        'stock_one_year': share_price_latest.date - timedelta(weeks=52),
+        'stock_three_year': share_price_latest.date - timedelta(weeks=156),
+        'stock_five_year': share_price_latest.date - timedelta(weeks=260),
+        'first_share': first_share,
+
+        't_bill': t_bill,
+        't_bill_first': t_bill_first.issue_date,
+        't_bill_last': t_bill_last.issue_date,
+        't_bill_one_month': t_bill_first.issue_date - timedelta(weeks=4),
+        't_bill_six_month': t_bill_first.issue_date - timedelta(weeks=26),
+        't_bill_one_year': t_bill_first.issue_date - timedelta(weeks=52),
+        't_bill_three_year': t_bill_first.issue_date - timedelta(weeks=156),
+        't_bill_five_year': t_bill_first.issue_date - timedelta(weeks=260),
     }
 
     return render(request, 'index.html', context)

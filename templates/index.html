@@ -17,7 +17,6 @@
                         <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
                                 class="fas fa-download fa-sm text-white-50"></i> Generate Report</a>
                     </div>
-
                     <!-- Content Row -->
                     <div class="row">
 
@@ -453,8 +452,188 @@
                                     </ul>
                                     <div class="tab-content" id="myTabContent">
                                       <div class="tab-pane fade show active pt-3" id="Indices" role="tabpanel" aria-labelledby="Indices-tab">
-                                          <p>Indices Chart</p>
+                                                        <button id="one_month" type="button">1M</button>
+                                                        <button id="six_months" type="button">6M</button>
+                                                        <button id="one_year" type="button">1Y</button>
+                                                        <button id="three_year" type="button">3Y</button>
+                                                        <button id="five_year" type="button">5Y</button>
+                                                        <button id="ytd" type="button">YTD</button>
+                                                        <button id="all" type="button">ALL</button>
+                                                        <div id="ci_chart"></div>
 
+
+                                                      <script>
+                                                        const latest_trading_day = '{{latest_trading_day}}';
+
+
+                                                        const one_month = '{{one_month}}';
+
+
+                                                        const six_month = '{{six_month}}';
+
+
+                                                        const one_year = '{{one_year}}';
+
+                                                        const three_year = '{{three_year}}';
+
+                                                        const five_year = '{{five_year}}';
+
+                                                        const share_price_first = '{{share_price_first}}';
+
+                                                        const ci_dates = [{% for price in indices_val %} Date.parse('{{price.date}}'),{% endfor %}]
+
+                                                        const ci_values = [{% for price in indices_val %} {{price.value}}, {% endfor %}]
+
+                                                        var data = ci_dates.map(function(e, i){
+                                                            return [e, ci_values[i]];
+                                                        });
+
+                                                        const series = {
+                                                            "dataSeries": {
+                                                              "dates": [{% for price in share_price %} '{{price.date|date:"D M, Y" }}', {% endfor %}],
+                                                              "prices": [{% for price in share_price %} {{price.price}}, {% endfor %}]
+                                                            }
+                                                          }
+
+                                                          var options = {
+                                                          series: [{
+                                                          name: "GSE-CI",
+                                                          data: data
+                                                        }],
+                                                          chart: {
+                                                          id: 'area-datetime',
+                                                          type: 'area',
+                                                          height: 350,
+                                                          zoom: {
+                                                            autoScaleYaxis: true
+                                                          }
+                                                        },
+                                                        annotations: {
+                                                          yaxis: [{
+                                                            y: 30,
+                                                            borderColor: '#999',
+                                                            label: {
+                                                              show: true,
+                                                              style: {
+                                                                color: "#fff",
+                                                                background: '#00E396'
+                                                              }
+                                                            }
+                                                          }],
+                                                          xaxis: [{
+                                                            x: new Date('{{share_price_first}}').getTime(),
+                                                            borderColor: '#999',
+                                                            yAxisIndex: 0,
+                                                            label: {
+                                                              show: true,
+                                                              style: {
+                                                                color: "#fff",
+                                                                background: '#775DD0'
+                                                              }
+                                                            }
+                                                          }]
+                                                        },
+                                                        dataLabels: {
+                                                          enabled: false
+                                                        },
+                                                        markers: {
+                                                          size: 0,
+                                                          style: 'hollow',
+                                                        },
+                                                        xaxis: {
+                                                          type: 'datetime',
+                                                          min: new Date('{{share_price_first}}').getTime(),
+                                                          tickAmount: 6,
+                                                        },
+                                                        tooltip: {
+                                                          x: {
+                                                            format: 'dd MMM yyyy',
+                                                          }
+                                                        },
+                                                        fill: {
+                                                          type: 'gradient',
+                                                          gradient: {
+                                                            shadeIntensity: 1,
+                                                            opacityFrom: 0.7,
+                                                            opacityTo: 0.9,
+                                                            stops: [0, 100]
+                                                          }
+                                                        },
+                                                        };
+
+                                                        var chart = new ApexCharts(document.querySelector("#ci_chart"), options);
+                                                        chart.render();
+
+                                                        var resetCssClasses = function(activeEl) {
+                                                            var els = document.querySelectorAll('button')
+                                                            Array.prototype.forEach.call(els, function(el) {
+                                                              el.classList.remove('active')
+                                                            })
+
+                                                            activeEl.target.classList.add('active')
+                                                          }
+
+                                                          document.querySelector('#one_month').addEventListener('click', function(e) {
+                                                              resetCssClasses(e)
+
+                                                              chart.zoomX(
+                                                                new Date(one_month).getTime(),
+                                                                new Date(latest_trading_day).getTime()
+                                                              )
+                                                            })
+
+                                                          document.querySelector('#six_months').addEventListener('click', function(e) {
+                                                              resetCssClasses(e)
+
+                                                              chart.zoomX(
+                                                                new Date(six_month).getTime(),
+                                                                new Date(latest_trading_day).getTime()
+                                                              )
+                                                            })
+
+                                                          document.querySelector('#one_year').addEventListener('click', function(e) {
+                                                              resetCssClasses(e)
+                                                              chart.zoomX(
+                                                                new Date(one_year).getTime(),
+                                                                new Date(latest_trading_day).getTime()
+                                                              )
+                                                            })
+
+                                                            document.querySelector('#three_year').addEventListener('click', function(e) {
+                                                              resetCssClasses(e)
+                                                              chart.zoomX(
+                                                                new Date(three_year).getTime(),
+                                                                new Date(latest_trading_day).getTime()
+                                                              )
+                                                            })
+
+                                                            document.querySelector('#five_year').addEventListener('click', function(e) {
+                                                              resetCssClasses(e)
+                                                              chart.zoomX(
+                                                                new Date(five_year).getTime(),
+                                                                new Date(latest_trading_day).getTime()
+                                                              )
+                                                            })
+
+                                                          document.querySelector('#ytd').addEventListener('click', function(e) {
+                                                            resetCssClasses(e)
+
+                                                            chart.zoomX(
+                                                              new Date('2023-01-01').getTime(),
+                                                              new Date(latest_trading_day).getTime()
+                                                            )
+                                                          })
+
+                                                          document.querySelector('#all').addEventListener('click', function(e) {
+                                                            resetCssClasses(e)
+
+                                                            chart.zoomX(
+                                                              new Date(share_price_first).getTime(),
+                                                              new Date().getTime(),
+                                                            )
+                                                          });
+                                                      </script>
+                                                        <!-- End Area Chart -->
                                           <div>
                                               <table class="table table-hover table-bordered table-striped">
                                                   <thead>
@@ -506,7 +685,178 @@
                                           </div>
                                       </div>
                                         <div class="tab-pane fade pt-3" id="Bonds" role="tabpanel" aria-labelledby="Bonds-tab">
-                                          <p>Bonds Chart</p>
+                                            <button id="t_bill_one_month" type="button">1M</button>
+                                            <button id="t_bill_six_months" type="button">6M</button>
+                                            <button id="t_bill_one_year" type="button">1Y</button>
+                                            <button id="t_bill_three_year" type="button">3Y</button>
+                                            <button id="t_bill_five_year" type="button">5Y</button>
+                                            <button id="t_bill_ytd" type="button">YTD</button>
+                                            <button id="t_bill_all" type="button">ALL</button>
+                                            <div id="t_bill_chart"></div>
+
+                                            <script>
+
+                                                        const t_bill_one_month = '{{t_bill_one_month}}';
+
+
+                                                        const t_bill_six_month = '{{t_bill_six_month}}';
+
+
+                                                        const t_bill_one_year = '{{t_bill_one_year}}';
+
+                                                        const t_bill_three_year = '{{t_bill_three_year}}';
+
+                                                        const t_bill_five_year = '{{t_bill_five_year}}';
+
+                                                        const t_bill_first = '{{t_bill_first}}';
+
+                                                        const t_bill_dates = [{% for interest in t_bill %} Date.parse('{{interest.issue_date}}'),{% endfor %}]
+
+                                                        const t_bill_values = [{% for interest in t_bill %} {{interest.interest}}, {% endfor %}]
+
+                                                        var t_bill_data = t_bill_dates.map(function(e, i){
+                                                            return [e, t_bill_values[i]];
+                                                        });
+
+                                                          var t_bill_options = {
+                                                          series: [{
+                                                          name: "91 Day T-Bill",
+                                                          data: t_bill_data
+                                                        }],
+                                                          chart: {
+                                                          id: 'area-datetime',
+                                                          type: 'area',
+                                                          height: 350,
+                                                          zoom: {
+                                                            autoScaleYaxis: true
+                                                          }
+                                                        },
+                                                        annotations: {
+                                                          yaxis: [{
+                                                            y: 30,
+                                                            borderColor: '#999',
+                                                            label: {
+                                                              show: true,
+                                                              style: {
+                                                                color: "#fff",
+                                                                background: '#00E396'
+                                                              }
+                                                            }
+                                                          }],
+                                                          xaxis: [{
+                                                            x: new Date('{{t_bill_first}}').getTime(),
+                                                            borderColor: '#999',
+                                                            yAxisIndex: 0,
+                                                            label: {
+                                                              show: true,
+                                                              style: {
+                                                                color: "#fff",
+                                                                background: '#775DD0'
+                                                              }
+                                                            }
+                                                          }]
+                                                        },
+                                                        dataLabels: {
+                                                          enabled: false
+                                                        },
+                                                        markers: {
+                                                          size: 0,
+                                                          style: 'hollow',
+                                                        },
+                                                        xaxis: {
+                                                          type: 'datetime',
+                                                          min: new Date('{{t_bill_first}}').getTime(),
+                                                          tickAmount: 6,
+                                                        },
+                                                        tooltip: {
+                                                          x: {
+                                                            format: 'dd MMM yyyy',
+                                                          }
+                                                        },
+                                                        fill: {
+                                                          type: 'gradient',
+                                                          gradient: {
+                                                            shadeIntensity: 1,
+                                                            opacityFrom: 0.7,
+                                                            opacityTo: 0.9,
+                                                            stops: [0, 100]
+                                                          }
+                                                        },
+                                                        };
+
+                                                        var t_bill_chart = new ApexCharts(document.querySelector("#t_bill_chart"), t_bill_options);
+                                                        t_bill_chart.render();
+
+                                                        var resetCssClasses = function(activeEl) {
+                                                            var els = document.querySelectorAll('button')
+                                                            Array.prototype.forEach.call(els, function(el) {
+                                                              el.classList.remove('active')
+                                                            })
+
+                                                            activeEl.target.classList.add('active')
+                                                          }
+
+                                                          document.querySelector('#t_bill_one_month').addEventListener('click', function(e) {
+                                                              resetCssClasses(e)
+
+                                                              t_bill_chart.zoomX(
+                                                                new Date(one_month).getTime(),
+                                                                new Date(latest_trading_day).getTime()
+                                                              )
+                                                            })
+
+                                                          document.querySelector('#t_bill_six_months').addEventListener('click', function(e) {
+                                                              resetCssClasses(e)
+
+                                                              t_bill_chart.zoomX(
+                                                                new Date(six_month).getTime(),
+                                                                new Date(latest_trading_day).getTime()
+                                                              )
+                                                            })
+
+                                                          document.querySelector('#t_bill_one_year').addEventListener('click', function(e) {
+                                                              resetCssClasses(e)
+                                                              t_bill_chart.zoomX(
+                                                                new Date(one_year).getTime(),
+                                                                new Date(latest_trading_day).getTime()
+                                                              )
+                                                            })
+
+                                                            document.querySelector('#t_bill_three_year').addEventListener('click', function(e) {
+                                                              resetCssClasses(e)
+                                                              t_bill_chart.zoomX(
+                                                                new Date(three_year).getTime(),
+                                                                new Date(latest_trading_day).getTime()
+                                                              )
+                                                            })
+
+                                                            document.querySelector('#t_bill_five_year').addEventListener('click', function(e) {
+                                                              resetCssClasses(e)
+                                                              t_bill_chart.zoomX(
+                                                                new Date(five_year).getTime(),
+                                                                new Date(latest_trading_day).getTime()
+                                                              )
+                                                            })
+
+                                                          document.querySelector('#t_bill_ytd').addEventListener('click', function(e) {
+                                                            resetCssClasses(e)
+
+                                                            t_bill_chart.zoomX(
+                                                              new Date('2023-01-01').getTime(),
+                                                              new Date(latest_trading_day).getTime()
+                                                            )
+                                                          })
+
+                                                          document.querySelector('#t_bill_all').addEventListener('click', function(e) {
+                                                            resetCssClasses(e)
+
+                                                            t_bill_chart.zoomX(
+                                                              new Date(t_bill_first).getTime(),
+                                                              new Date().getTime(),
+                                                            )
+                                                          });
+                                                      </script>
+                                                        <!-- End Area Chart -->
 
                                             <div>
                                                 <table class="table table-hover table-bordered table-striped">
@@ -533,8 +883,180 @@
                                             </div>
                                       </div>
                                         <div class="tab-pane fade pt-3" id="Stocks" role="tabpanel" aria-labelledby="Stocks-tab">
-                                          <p>Stocks Chart</p>
+                                            <p>{{first_share}}</p>
+                                            <button id="stock_one_month" type="button">1M</button>
+                                            <button id="stock_six_months" type="button">6M</button>
+                                            <button id="stock_one_year" type="button">1Y</button>
+                                            <button id="stock_three_year" type="button">3Y</button>
+                                            <button id="stock_five_year" type="button">5Y</button>
+                                            <button id="stock_ytd" type="button">YTD</button>
+                                            <button id="stock_all" type="button">ALL</button>
+                                            <div id="stock_chart"></div>
+                                            <script>
+                                                        const stock_one_month = '{{stock_one_month}}';
 
+                                                        const stock_six_month = '{{stock_six_month}}';
+
+                                                        const stock_one_year = '{{stock_one_year}}';
+
+                                                        const stock_three_year = '{{stock_three_year}}';
+
+                                                        const stock_five_year = '{{stock_five_year}}';
+
+                                                        const stock_dates = [{% for price in share_price %} Date.parse('{{price.date}}'),{% endfor %}]
+
+                                                        const stock_values = [{% for price in share_price %} {{price.price}}, {% endfor %}]
+
+                                                        var stock_data = stock_dates.map(function(e, i){
+                                                            return [e, stock_values[i]];
+                                                        });
+
+                                                        const stock_series = {
+                                                            "dataSeries": {
+                                                              "dates": [{% for price in share_price %} '{{price.date|date:"D M, Y" }}', {% endfor %}],
+                                                              "prices": [{% for price in share_price %} {{price.price}}, {% endfor %}]
+                                                            }
+                                                          }
+
+                                                          var options = {
+                                                          series: [{
+                                                          name: "Share Price",
+                                                          data: stock_data
+                                                        }],
+                                                          chart: {
+                                                          id: 'area-datetime',
+                                                          type: 'area',
+                                                          height: 350,
+                                                          zoom: {
+                                                            autoScaleYaxis: true
+                                                          }
+                                                        },
+                                                        annotations: {
+                                                          yaxis: [{
+                                                            y: 30,
+                                                            borderColor: '#999',
+                                                            label: {
+                                                              show: true,
+                                                              style: {
+                                                                color: "#fff",
+                                                                background: '#00E396'
+                                                              }
+                                                            }
+                                                          }],
+                                                          xaxis: [{
+                                                            x: new Date('{{share_price_first}}').getTime(),
+                                                            borderColor: '#999',
+                                                            yAxisIndex: 0,
+                                                            label: {
+                                                              show: true,
+                                                              style: {
+                                                                color: "#fff",
+                                                                background: '#775DD0'
+                                                              }
+                                                            }
+                                                          }]
+                                                        },
+                                                        dataLabels: {
+                                                          enabled: false
+                                                        },
+                                                        markers: {
+                                                          size: 0,
+                                                          style: 'hollow',
+                                                        },
+                                                        xaxis: {
+                                                          type: 'datetime',
+                                                          min: new Date('{{share_price_first}}').getTime(),
+                                                          tickAmount: 6,
+                                                        },
+                                                        tooltip: {
+                                                          x: {
+                                                            format: 'dd MMM yyyy',
+                                                          }
+                                                        },
+                                                        fill: {
+                                                          type: 'gradient',
+                                                          gradient: {
+                                                            shadeIntensity: 1,
+                                                            opacityFrom: 0.7,
+                                                            opacityTo: 0.9,
+                                                            stops: [0, 100]
+                                                          }
+                                                        },
+                                                        };
+
+                                                        var stock_chart = new ApexCharts(document.querySelector("#stock_chart"), options);
+                                                        stock_chart.render();
+
+                                                        var stock_resetCssClasses = function(activeEl) {
+                                                            var els = document.querySelectorAll('button')
+                                                            Array.prototype.forEach.call(els, function(el) {
+                                                              el.classList.remove('active')
+                                                            })
+
+                                                            activeEl.target.classList.add('active')
+                                                          }
+
+                                                          document.querySelector('#stock_one_month').addEventListener('click', function(e) {
+                                                              stock_resetCssClasses(e)
+
+                                                              stock_chart.zoomX(
+                                                                new Date(stock_one_month).getTime(),
+                                                                new Date(latest_trading_day).getTime()
+                                                              )
+                                                            })
+
+                                                          document.querySelector('#stock_six_months').addEventListener('click', function(e) {
+                                                              stock_resetCssClasses(e)
+
+                                                              stock_chart.zoomX(
+                                                                new Date(stock_six_month).getTime(),
+                                                                new Date(latest_trading_day).getTime()
+                                                              )
+                                                            })
+
+                                                          document.querySelector('#stock_one_year').addEventListener('click', function(e) {
+                                                              stock_resetCssClasses(e)
+                                                              stock_chart.zoomX(
+                                                                new Date(one_year).getTime(),
+                                                                new Date(latest_trading_day).getTime()
+                                                              )
+                                                            })
+
+                                                            document.querySelector('#stock_three_year').addEventListener('click', function(e) {
+                                                              stock_resetCssClasses(e)
+                                                              stock_chart.zoomX(
+                                                                new Date(three_year).getTime(),
+                                                                new Date(latest_trading_day).getTime()
+                                                              )
+                                                            })
+
+                                                            document.querySelector('#stock_five_year').addEventListener('click', function(e) {
+                                                              stock_resetCssClasses(e)
+                                                              stock_chart.zoomX(
+                                                                new Date(five_year).getTime(),
+                                                                new Date(latest_trading_day).getTime()
+                                                              )
+                                                            })
+
+                                                          document.querySelector('#stock_ytd').addEventListener('click', function(e) {
+                                                            stock_resetCssClasses(e)
+
+                                                            stock_chart.zoomX(
+                                                              new Date('2023-01-01').getTime(),
+                                                              new Date(latest_trading_day).getTime()
+                                                            )
+                                                          })
+
+                                                          document.querySelector('#stock_all').addEventListener('click', function(e) {
+                                                            stock_resetCssClasses(e)
+
+                                                            stock_chart.zoomX(
+                                                              new Date(share_price_first).getTime(),
+                                                              new Date().getTime(),
+                                                            )
+                                                          });
+                                                      </script>
+                                                        <!-- End Area Chart -->
                                             <div>
                                                 <table class="table table-hover table-bordered table-striped">
                                                   <thead>
@@ -551,7 +1073,7 @@
                                                                 <td title="{{ company.company.name }}"><a href="{{ company.company.get_absolute_url }}">{{ company.company.company_id }}</a></td>
                                                                 <td>{{company.price}}</td>
                                                                 <td>{{company.diff}}</td>
-                                                                <td class="value">{{company.diff|div:company.prev_val|mul:100}}</td>
+                                                                <td class="value">{{company.diff|div:company.prev_val|mul:100|floatformat:2}}</td>
                                                             </tr>
                                                           {% endfor %}
                                                   </tbody>
