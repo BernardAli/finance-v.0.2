@@ -21,7 +21,8 @@ from .utils import html_to_pdf
 from rates.models import Inflation, MPR, Security, T_BILL, InterbankFX
 from .models import Sector, Tag, CompanyProfile, Market, ShareDetail, SharePrice, Indices, Report, \
     MarketReport, PressRelease, Auditors, IPO, Dividend, Ownership, Registrar, Subsidiaries, Opinions, \
-    FinancialStatement, Review, FinancialPeriod, ShareSplit, GCX_Types, ShareType, EconomicCalendar, AGM, Advertisement
+    FinancialStatement, Review, FinancialPeriod, ShareSplit, GCX_Types, ShareType, EconomicCalendar, AGM, Advertisement, \
+    BankHealth
 from news.models import News
 from international.models import Continent, Indice, Commodity_type, BankRate, GDP, UnemploymentRate, Commodity_profile
 from .utils import average_rating
@@ -299,6 +300,7 @@ def company_details(request, company_id):
     market = Indices.objects.filter(index=1).order_by('-date')[:30]
     corr = 30
     dividend_latest = Dividend.objects.filter(company_id=company_id).order_by('-register_closure').last()
+    bank_health = BankHealth.objects.filter(company_id=company_id).order_by('financial_year')
 
     sp = SharePrice.objects.filter(company_id=company_id).annotate(
         prev_val=Window(
@@ -413,7 +415,8 @@ def company_details(request, company_id):
         'brands': brands,
         'segments': segments,
         'share_splits': share_splits,
-        'sp': sp
+        'sp': sp,
+        'bank_health': bank_health
     }
     return render(request, 'company_details.html', context)
 

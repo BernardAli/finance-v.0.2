@@ -240,6 +240,17 @@ class Report(models.Model):
         return f"{self.company} - {self.year}"
 
 
+class BankHealth(models.Model):
+    company = models.ForeignKey(CompanyProfile, on_delete=models.CASCADE)
+    financial_year = models.IntegerField(default='2022')
+    total_deposits = models.BigIntegerField()
+    netAdvances = models.BigIntegerField()
+    netImpairments = models.BigIntegerField()
+
+    def __str__(self):
+        return f"{self.financial_year}"
+
+
 class MarketReport(models.Model):
     date = models.DateField(unique=True)
     file = models.FileField(upload_to='reports')
