@@ -296,6 +296,8 @@
                                                   <button class="nav-link" id="v-profit-tab" data-toggle="pill" data-target="#v-profit" type="button" role="tab" aria-controls="v-profit" aria-selected="false">Fin. Statement</button>
                                                     <br>
                                                   <button class="nav-link" id="v-radar-tab" data-toggle="pill" data-target="#v-radar" type="button" role="tab" aria-controls="v-radar" aria-selected="false">Stmt Radar</button>
+                                                    <br>
+                                                  <button class="nav-link" id="v-radarBar-tab" data-toggle="pill" data-target="#v-radarBar" type="button" role="tab" aria-controls="v-radarBar" aria-selected="false">Stmt Radial Bar</button>
                                                 </div>
                                               </div>
                                               <div class="col-10">
@@ -835,6 +837,53 @@
                                                                 chart.render();
                                                         </script>
                                                   </div>
+                                                    <div class="tab-pane fade" id="v-radarBar" role="tabpanel" aria-labelledby="v-radarBar-tab">
+                                                        <p>Radial Chart for {{statement.file.year}}</p>
+                                                      <!-- Radial Bar Chart -->
+                                                      <div id="radialBarChart"></div>
+
+                                                      <script>
+                                                        let profitPercent = {{ statement.net_profit_loss|div:statement.total_operating_revenue|mul:100|floatformat:2 }}
+                                                        let ebitdaPercent = {{ statement.gross_profit_ebitda|div:statement.total_operating_revenue|mul:100|floatformat:2 }}
+                                                        let ebitPercent = {{ statement.operating_profit_ebit|div:statement.total_operating_revenue|mul:100|floatformat:2 }}
+                                                        console.log(ebitPercent);
+
+                                                        document.addEventListener("DOMContentLoaded", () => {
+                                                          new ApexCharts(document.querySelector("#radialBarChart"), {
+                                                            series: [ebitdaPercent, ebitPercent, profitPercent],
+                                                            chart: {
+                                                              height: 350,
+                                                              type: 'radialBar',
+                                                              toolbar: {
+                                                                show: true
+                                                              }
+                                                            },
+                                                            plotOptions: {
+                                                              radialBar: {
+                                                                dataLabels: {
+                                                                  name: {
+                                                                    fontSize: '22px',
+                                                                  },
+                                                                  value: {
+                                                                    fontSize: '16px',
+                                                                  },
+                                                                  total: {
+                                                                    show: true,
+                                                                    label: 'Total Revenue',
+                                                                    formatter: function(w) {
+                                                                      // By default this function returns the average of all series. The below is just an example to show the use of custom formatter function
+                                                                      return `{{statement.total_operating_revenue|div:1000000|intcomma}} million`
+                                                                    }
+                                                                  }
+                                                                }
+                                                              }
+                                                            },
+                                                            labels: ['EBITDA', 'EBIT', 'Net Profit(Loss)'],
+                                                          }).render();
+                                                        });
+                                                      </script>
+                                                      <!-- End Radial Bar Chart -->
+                                                  </div>
                                                 </div>
                                               </div>
                                             </div>
@@ -958,39 +1007,79 @@
                                             </div>
                                       </div>
                                       <div class="tab-pane fade pt-3" id="ownership" role="tabpanel" aria-labelledby="ownership-tab">
-                                          <p><strong></strong></p>
-                                          <div class="table-responsive">
+                                          <div class="row">
+                                              <div class="col-3">
+                                                <div class="nav flex-column nav-pills" id="v-ownership" role="tablist" aria-orientation="vertical">
+                                                  <button class="nav-link active" id="ownershipChart-tab" data-toggle="pill" data-target="#ownershipChart" type="button" role="tab" aria-controls="ownershipChart" aria-selected="true">Ownership Chart</button>
+                                                    <br>
+                                                  <button class="nav-link" id="ownershipList-tab" data-toggle="pill" data-target="#ownershipList" type="button" role="tab" aria-controls="ownershipList" aria-selected="false">Ownership List</button>
+                                                </div>
+                                              </div>
+                                              <div class="col-9">
+                                                <div class="tab-content" id="v-ownershipContent">
+                                                  <div class="tab-pane fade show active" id="ownershipChart" role="tabpanel" aria-labelledby="ownershipChart">
+                                                    <!-- Donut Chart -->
+                                                      <div id="donutChart"></div>
+
+                                                      <script>
+                                                        const owners = [{% for shareholder in ownership %} '{{ shareholder.shareholder_name }}', {% endfor %}];
+                                                        const shares = [{% for shareholder in ownership %} {{ shareholder.shares_owned }}, {% endfor %}];
+
+                                                        document.addEventListener("DOMContentLoaded", () => {
+                                                          new ApexCharts(document.querySelector("#donutChart"), {
+                                                            series: shares,
+                                                            chart: {
+                                                              height: 350,
+                                                              type: 'donut',
+                                                              toolbar: {
+                                                                show: true
+                                                              }
+                                                            },
+                                                            labels: owners,
+                                                          }).render();
+                                                        });
+                                                      </script>
+                                                      <!-- End Donut Chart -->
+                                                  </div>
+                                                  <div class="tab-pane fade" id="ownershipList" role="tabpanel" aria-labelledby="ownershipList-tab">
+                                                    <div class="table-responsive">
                                               {% if ownership %}
                                               <h5>20 Largest Shareholders</h5>
-                                            <table class="table table-bordered table-hover table-striped" width="40%" cellspacing="0">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Shareholders</th>
-                                                        <th>Number of Shares</th>
-                                                        <th>Percentage Holding (%)</th>
-                                                    </tr>
-                                                </thead>
-                                                <tfoot>
-                                                    <tr>
-                                                        <th>Total</th>
-                                                        <th>{% for detail in share %} {{ detail.issued_shares|intcomma }}{% endfor %}</th>
-                                                        <th>100 (%)</th>
-                                                    </tr>
-                                                </tfoot>
-                                                <tbody>
-                                                {% for shareholder in ownership %}
-                                                    <tr>
-                                                        <td>{{ shareholder.shareholder_name }}</td>
-                                                        <td>{{ shareholder.shares_owned|intcomma }}</td>
-                                                        <td>{{ shareholder.percentage_holding }}</td>
-                                                    </tr>
-                                                {% endfor %}
-                                                </tbody>
-                                            </table>
-                                            {% else %}
-                                                No Ownership Details Added Yet
-                                            {% endif %}
+                                                <table class="table table-bordered table-hover table-striped" width="40%" cellspacing="0">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Shareholders</th>
+                                                            <th>Number of Shares</th>
+                                                            <th>Percentage Holding (%)</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tfoot>
+                                                        <tr>
+                                                            <th>Total</th>
+                                                            <th>{% for detail in share %} {{ detail.issued_shares|intcomma }}{% endfor %}</th>
+                                                            <th>100 (%)</th>
+                                                        </tr>
+                                                    </tfoot>
+                                                    <tbody>
+                                                    {% for shareholder in ownership %}
+                                                        <tr>
+                                                            <td>{{ shareholder.shareholder_name }}</td>
+                                                            <td>{{ shareholder.shares_owned|intcomma }}</td>
+                                                            <td>{{ shareholder.percentage_holding }}</td>
+                                                        </tr>
+                                                    {% endfor %}
+                                                    </tbody>
+                                                </table>
+                                                {% else %}
+                                                    No Ownership Details Added Yet
+                                                {% endif %}
+
                                         </div>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </div>
+
                                         </div>
                                         <div class="tab-pane fade pt-3" id="split" role="tabpanel" aria-labelledby="split-tab">
                                             <div class="row">
@@ -999,6 +1088,8 @@
                                                   <button class="nav-link active" id="v-dividend-tab" data-toggle="pill" data-target="#v-dividend" type="button" role="tab" aria-controls="v-dividend" aria-selected="true">Dividend</button>
                                                     <br>
                                                   <button class="nav-link" id="v-split-tab" data-toggle="pill" data-target="#v-split" type="button" role="tab" aria-controls="v-split" aria-selected="false">Share Splits</button>
+                                                    <br>
+                                                  <button class="nav-link" id="divChart-tab" data-toggle="pill" data-target="#divChart" type="button" role="tab" aria-controls="divChart" aria-selected="false">Dividend Chart</button>
                                                 </div>
                                               </div>
                                               <div class="col-9">
@@ -1055,6 +1146,48 @@
                                                           </tbody>
                                                           {% endif %}
                                                       </table>
+                                                  </div>
+                                                    <div class="tab-pane fade" id="divChart" role="tabpanel" aria-labelledby="divChart-tab">
+                                                        <p>Dividend Chart</p>
+                                                        <div id="divChartJs" style="min-height: 400px;" class="echart"></div>
+
+                                                          <script>
+                                                            const years = [{% for year in  dividend_chart %} {{ year.financial_year }}, {% endfor %}];
+                                                            const dividends = [{% for dividend in  dividend_chart %} {{ dividend.final_dividend }},{% endfor %}];
+
+
+                                                            document.addEventListener("DOMContentLoaded", () => {
+                                                              new ApexCharts(document.querySelector("#divChartJs"), {
+                                                                series: [{
+                                                                  name: "Dividend / Share",
+                                                                  data: dividends
+                                                                }],
+                                                                chart: {
+                                                                  height: 350,
+                                                                  type: 'bar',
+                                                                  zoom: {
+                                                                    enabled: false
+                                                                  }
+                                                                },
+                                                                dataLabels: {
+                                                                  enabled: false
+                                                                },
+                                                                stroke: {
+                                                                  curve: 'straight'
+                                                                },
+                                                                grid: {
+                                                                  row: {
+                                                                    colors: ['#f3f3f3', 'transparent'], // takes an array which will be repeated on columns
+                                                                    opacity: 0.5
+                                                                  },
+                                                                },
+                                                                xaxis: {
+                                                                  categories: years,
+                                                                }
+                                                              }).render();
+                                                            });
+                                                          </script>
+                                                        <!-- End Line Chart -->
                                                   </div>
                                                 </div>
                                               </div>
@@ -1180,20 +1313,23 @@
                                         </div>
                                       </div>
                                       <div class="tab-pane fade show pt-3" id="brands" role="tabpanel" aria-labelledby="brands-tab">
-                                            {% for brand in brands %}
-                                                    <div class="col-lg-3 mb-2" title="{{brand.detail}}">
-                                                        <div class="card shadow">
-                                                            <div class="card-body text-center">
-                                                                <p><strong>{{brand}}</strong></p>
+                                            <row>
+                                                {% for brand in brands %}
+                                                        <div class="col-lg-3 mb-2" title="{{brand.detail}}">
+                                                            <div class="card shadow">
+                                                                <div class="card-body text-center">
+                                                                    <p><strong>{{brand}}</strong></p>
+                                                                </div>
                                                             </div>
                                                         </div>
-                                                    </div>
-                                            {% empty %}
-                                                <p>No brand added yet</p>
-                                             {% endfor %}
+                                                {% empty %}
+                                                    <p>No brand added yet</p>
+                                                 {% endfor %}
+                                            </row>
                                       </div>
                                         <div class="tab-pane fade show pt-3" id="segments" role="tabpanel" aria-labelledby="segments-tab">
-                                            {% for segment in segments %}
+                                            <div class="row">
+                                                {% for segment in segments %}
                                                     <div class="col-lg-3 mb-2" title="{{segment.detail}}">
                                                         <div class="card shadow">
                                                             <div class="card-body text-center">
@@ -1201,9 +1337,10 @@
                                                             </div>
                                                         </div>
                                                     </div>
-                                            {% empty %}
-                                                <p>No segment added yet</p>
-                                             {% endfor %}
+                                                {% empty %}
+                                                    <p>No segment added yet</p>
+                                                {% endfor %}
+                                            </div>
                                       </div>
 
                                     </div>
@@ -1271,31 +1408,47 @@
                             <!-- Basic Card Example -->
                             <div class="card shadow mb-4">
                                 <div class="card-header py-3">
-                                    <h6 class="m-0 font-weight-bold text-primary">Top Executives</h6>
+                                    <h6 class="m-0 font-weight-bold text-primary">Key People</h6>
                                 </div>
                                 <div class="card-body">
-                                    <table class="table table-bordered table-hover">
-                                        <thead>
-                                            <tr>
-                                                <th>Name</th>
-                                                <th>Birth Date</th>
-                                                <th>Since</th>
-                                                <th>Title</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {% for people in key_people %}
-                                                <tr>
-                                                    <td title="{{ people.description }}">{{ people.name }}</td>
-                                                    <td>{{ people.birth_date|date:"M, Y" }}</td>
-                                                    <td>{{ people.appointment_date|date:"M, Y"  }}</td>
-                                                    <td>{{ people.position }}</td>
-                                                </tr>
-                                            {% empty %}
-                                                No person listed here
-                                            {% endfor %}
-                                        </tbody>
-                                    </table>
+                                    <div class="row">
+                                              <div class="col-3">
+                                                <div class="nav flex-column nav-pills" id="v-Executive" role="tablist" aria-orientation="vertical">
+                                                  <button class="nav-link active" id="board-tab" data-toggle="pill" data-target="#board" type="button" role="tab" aria-controls="board" aria-selected="true">Board</button>
+                                                    <br>
+                                                  <button class="nav-link" id="management-tab" data-toggle="pill" data-target="#management" type="button" role="tab" aria-controls="management" aria-selected="false">Management</button>
+                                                </div>
+                                              </div>
+                                              <div class="col-9">
+                                                <div class="tab-content" id="v-ExecutiveContent">
+                                                  <div class="tab-pane fade show active" id="board" role="tabpanel" aria-labelledby="board-tab">
+                                                    <table class="table table-bordered table-hover">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Name</th>
+                                                                <th>Since</th>
+                                                                <th>Title</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            {% for people in key_people %}
+                                                                <tr>
+                                                                    <td title="{{ people.description }}">{{ people.name }}</td>
+                                                                    <td>{{ people.appointment_date|date:"M, Y"  }}</td>
+                                                                    <td>{{ people.position }}</td>
+                                                                </tr>
+                                                            {% empty %}
+                                                                No person listed here
+                                                            {% endfor %}
+                                                        </tbody>
+                                                    </table>
+                                                  </div>
+                                                  <div class="tab-pane fade" id="management" role="tabpanel" aria-labelledby="management-tab">
+                                                    <p>Management List Here</p>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </div>
                                 </div>
                             </div>
 
@@ -1324,16 +1477,262 @@
                                     </ul>
                                     <div class="tab-content" id="myProContent">
                                       <div class="tab-pane fade show active pt-3" id="fairvalue" role="tabpanel" aria-labelledby="fairvalue-tab">
-                                        <p>Company Fair Value Here</p>
+                                          <p>Fair Value</p>
+                                          <p><b>GHS 3.80</b></p>
+                                                <table class="table table-striped table-bordered">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Broker</th>
+                                                                <th>Fair value (GHS)</th>
+                                                                <th>Undervalued / Overvalued</th>
+                                                                <th>Advice</th>
+                                                            </tr>
+                                                        </thead>
+                                                          <tbody>
+                                                            <tr>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                            </tr>
+                                                        </tbody>
+                                                      </table>
+                                                <p><small>These are sourced from our advisors</small></p>
                                       </div>
                                       <div class="tab-pane fade show pt-3" id="score" role="tabpanel" aria-labelledby="score-tab">
-                                        <p>Company Score Here</p>
+                                          <p>Overall Score</p>
+                                          <p><i class='bx bxs-star'></i><i class='bx bxs-star'></i><i class='bx bxs-star'></i><i class='bx bxs-star'></i><i class='bx bx-star'></i></p>
+                                                <table class="table table-striped table-bordered">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Broker</th>
+                                                                <th>Score</th>
+                                                                <th>Undervalued / Overvalued</th>
+                                                                <th>Advice</th>
+                                                            </tr>
+                                                        </thead>
+                                                          <tbody>
+                                                            <tr>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                            </tr>
+                                                        </tbody>
+                                                      </table>
+                                                <p><small>These are sourced from our advisors</small></p>
                                       </div>
                                         <div class="tab-pane fade show pt-3" id="health" role="tabpanel" aria-labelledby="health-tab">
-                                        <p>Company Health Here</p>
+                                                    <table class="table table-striped table-bordered">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Ratio</th>
+                                                                <th>Value</th>
+                                                                <th>Target</th>
+                                                            </tr>
+                                                        </thead>
+                                                          <tbody>
+                                                            <tr>
+                                                                <td>Current Ratio</td>
+                                                                <td></td>
+                                                                <td></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>Quick Ratio</td>
+                                                                <td></td>
+                                                                <td></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>Leverage Ratio</td>
+                                                                <td></td>
+                                                                <td></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>Debt to Assets</td>
+                                                                <td></td>
+                                                                <td></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>Net margin Ratio</td>
+                                                                <td></td>
+                                                                <td></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>Return on Assets</td>
+                                                                <td></td>
+                                                                <td></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>Return on Investment</td>
+                                                                <td></td>
+                                                                <td></td>
+                                                            </tr>
+                                                        </tbody>
+                                                      </table>
                                       </div>
                                         <div class="tab-pane fade show pt-3" id="Advisory" role="tabpanel" aria-labelledby="Advisory-tab">
-                                        <p>Company Advisory Here</p>
+                                            <table class="table table-striped table-bordered">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Broker</th>
+                                                                <th>Advise</th>
+                                                                <th>Target</th>
+                                                                <th>Price (GHS)</th>
+                                                            </tr>
+                                                        </thead>
+                                                          <tbody>
+                                                            <tr>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                            </tr>
+                                                        </tbody>
+                                                      </table>
+
+                                            <p>Chart Here</p>
+
+                                            <p><small>These are sourced from our advisors</small></p>
+                                      </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <!-- Default Card Example -->
+                            <div class="card mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">Daily Returns  <i class='bx bxs-lock'></i></h6>
+                                </div>
+                                <div class="card-body text text-center">
+                                    <ul class="nav nav-tabs" id="myDailyReturns" role="tablist">
+                                      <li class="nav-item">
+                                        <a class="nav-link active" id="quantitative-tab" data-toggle="tab" href="#quantitative" role="tab" aria-controls="quantitative" aria-selected="false">Quantitative Values</a>
+                                      </li>
+                                        <li class="nav-item">
+                                        <a class="nav-link" id="returnChart-tab" data-toggle="tab" href="#returnChart" role="tab" aria-controls="returnChart" aria-selected="false">Charts</a>
+                                      </li>
+                                        <li class="nav-item">
+                                        <a class="nav-link" id="stats-tab" data-toggle="tab" href="#stats" role="tab" aria-controls="stats" aria-selected="false">Stats</a>
+                                      </li>
+
+                                    </ul>
+                                    <div class="tab-content" id="myDailyReturnsContent">
+                                      <div class="tab-pane fade show active pt-3" id="quantitative" role="tabpanel" aria-labelledby="quantitative-tab">
+                                          <p>Values are based on the last 52 weeks</p>
+                                        <table class="table table-bordered table-striped table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>Term</th>
+                                                    <th>Value</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>Beta</td>
+                                                    <td></td>
+                                                    <td></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Sharpe Ratio</td>
+                                                    <td></td>
+                                                    <td></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                      </div>
+                                      <div class="tab-pane fade show pt-3" id="returnChart" role="tabpanel" aria-labelledby="returnChart-tab">
+                                        <div class="row">
+                                              <div class="col-2">
+                                                <div class="nav flex-column nav-pills" id="v-returnChart" role="tablist" aria-orientation="vertical">
+                                                  <button class="nav-link active" id="v-lineChart-tab" data-toggle="pill" data-target="#v-lineChart" type="button" role="tab" aria-controls="v-lineChart" aria-selected="true">Line Chart</button>
+                                                    <br>
+                                                  <button class="nav-link" id="v-distChart-tab" data-toggle="pill" data-target="#v-distChart" type="button" role="tab" aria-controls="v-distChart" aria-selected="false">Dist Chart</button>
+                                                </div>
+                                              </div>
+                                              <div class="col-10">
+                                                <div class="tab-content" id="v-returnChartContent">
+                                                  <div class="tab-pane fade show active" id="v-lineChart" role="tabpanel" aria-labelledby="v-lineChart-tab">
+                                                    <p>LineChart Here</p>
+                                                  </div>
+                                                  <div class="tab-pane fade" id="v-distChart" role="tabpanel" aria-labelledby="v-distChart-tab">
+                                                    <p>DistChart Here</p>
+                                                  </div>
+                                                    <div class="tab-pane fade" id="" role="tabpanel" aria-labelledby="v-radar-tab">
+
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </div>
+                                      </div>
+                                        <div class="tab-pane fade show pt-3" id="stats" role="tabpanel" aria-labelledby="stats-tab">
+                                        <p>Values are based on the last 52 weeks</p>
+                                        <table class="table table-bordered table-striped table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>Term</th>
+                                                    <th>Value</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>Mean</td>
+                                                    <td></td>
+                                                    <td></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Standard Deviation</td>
+                                                    <td></td>
+                                                    <td></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Variance</td>
+                                                    <td></td>
+                                                    <td></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Min</td>
+                                                    <td></td>
+                                                    <td></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Max</td>
+                                                    <td></td>
+                                                    <td></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>1QR</td>
+                                                    <td></td>
+                                                    <td></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>1Q3</td>
+                                                    <td></td>
+                                                    <td></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
                                       </div>
 
                                     </div>

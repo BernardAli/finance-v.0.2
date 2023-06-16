@@ -334,6 +334,7 @@ POSITION_CHOICE = (
     ('Chairman', 'Chairman'),
     ('Director', 'Director'),
     ('C.F.O', 'C.F.O'),
+    ('Member', 'Member'),
 )
 
 

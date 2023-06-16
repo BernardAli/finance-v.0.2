@@ -58,7 +58,7 @@ admin.site.register(Advertisement)
 class ShareDetailAdmin(admin.ModelAdmin):
     list_display = ('company', 'issued_shares', 'listed_date', 'financial_period_ends')
     list_filter = ('financial_period_ends', 'company__market', 'status')
-    search_fields = ('company__name', )
+    search_fields = ('company__name',)
 
 
 @admin.register(SharePrice)
@@ -70,12 +70,18 @@ class SharePriceAdmin(admin.ModelAdmin):
 @admin.register(Indices)
 class IndicesAdmin(admin.ModelAdmin):
     list_display = ('index', 'date', 'value')
-    list_filter = ('index', )
+    list_filter = ('index',)
 
 
 admin.site.register(FinancialPeriod)
 admin.site.register(FinancialStatement)
-admin.site.register(Report)
+
+
+@admin.register(Report)
+class ReportAdmin(admin.ModelAdmin):
+    list_display = ('year', 'period', 'company')
+    list_filter = ('year', 'company')
+    search_fields = ('year', 'company__name')
 
 
 @admin.register(MarketReport)
@@ -95,11 +101,18 @@ admin.site.register(Secretary)
 @admin.register(KeyPeople)
 class KeyPeopleAdmin(admin.ModelAdmin):
     list_display = ('position', 'name')
-    list_filter = ('position',)
+    list_filter = ('position', 'company')
 
 
 admin.site.register(IPO)
-admin.site.register(Dividend)
+
+
+@admin.register(Dividend)
+class DividendAdmin(admin.ModelAdmin):
+    list_display = ('company', 'final_dividend', 'payment_date')
+    list_filter = ('company__company_id', )
+
+
 admin.site.register(Registrar)
 admin.site.register(Solicitor)
 admin.site.register(Subsidiaries)

@@ -368,11 +368,12 @@ def company_details(request, company_id):
         'release': release,
         'auditor': auditor,
         'secretaries': company.secretary.all(),
-        'key_people': company.key_people.all().order_by('-position'),
+        'key_people': company.key_people.all().order_by('position'),
         'current_dividend': Dividend.objects.filter(company_id=company_id).order_by('-register_closure')[:1],
         'price': price,
         'ipos': ipos,
         'dividends': dividends,
+        'dividend_chart': Dividend.objects.filter(company_id=company_id).order_by('register_closure'),
         'ownership': ownership,
         'similar_company': similar_company,
         # 'market_cap': market_cap,
@@ -944,6 +945,7 @@ def stock_market_view(request):
 def industry_view(request, tag_slug):
     industry = get_object_or_404(Tag, slug=tag_slug)
     companies = CompanyProfile.objects.filter(industry=industry).order_by('company_id')
+    industry_alt = Tag.objects.exclude(slug=tag_slug).order_by('slug')
 
     paginator = Paginator(companies, 10)
 
@@ -951,11 +953,74 @@ def industry_view(request, tag_slug):
     page_obj = paginator.get_page(page_number)
 
     industry_count = CompanyProfile.objects.filter(industry=industry).count()
+    share_price_latest = SharePrice.objects.filter(company__industry=industry).order_by('-date').first()
+    share_price = SharePrice.objects.filter(date=share_price_latest.date)
+    share_detail = ShareDetail.objects.select_related('company')
+    # data = CompanyProfile.objects.filter(share_type=1).prefetch_related("share_details", "share_price")
+    data = CompanyProfile.objects.filter(industry=industry).prefetch_related(
+        Prefetch("share_price", queryset=share_price),
+        Prefetch("statement", queryset=FinancialStatement.objects.all()),
+        Prefetch("dividend", queryset=Dividend.objects.all()),
+        Prefetch("share_details", queryset=share_detail)).order_by('name')
+    total_volume = SharePrice.objects.filter(date=share_price_latest.date).aggregate(Sum('volume'))
+
+    # Test
+    com_numbers = SharePrice.objects.filter(company__industry=industry).filter(date=share_price_latest.date).count()
+    sp = SharePrice.objects.filter(company__industry=industry).annotate(
+        prev_val=Window(
+            expression=Lag('price', default=0),
+            partition_by=['company'],
+            order_by=F('date').asc(),
+        )
+    ).annotate(
+        prev_wk_val=Window(
+            expression=Lag('price', default=5),
+            partition_by=['company'],
+            order_by=F('date').asc(),
+        )
+    ).annotate(
+        prev_mothn_val=Window(
+            expression=Lag('price', 20),
+            partition_by=['company'],
+            order_by=F('date').asc(),
+        )
+    ).annotate(
+        ytd_val=Window(
+            expression=Lag('price', 50),
+            partition_by=['company'],
+            order_by=F('date').asc(),
+        )
+    ).annotate(
+        one_yr_val=Window(
+            expression=Lag('price', 262),
+            partition_by=['company'],
+            order_by=F('date').asc(),
+        )
+    ).annotate(
+        three_yr_val=Window(
+            expression=Lag('price', 786),
+            partition_by=['company'],
+            order_by=F('date').asc(),
+        )
+    ).annotate(
+        five_yr_val=Window(
+            expression=Lag('price', 1310),
+            partition_by=['company'],
+            order_by=F('date').asc(),
+        )
+    ).annotate(
+        diff=F('price') - F('prev_val')
+    ).annotate(
+        year_diff=F('price') - F('ytd_val')
+    ).order_by('-date', 'company__name')[:com_numbers]
 
     context = {
         'page_obj': page_obj,
         'industry': industry,
         'industry_count': industry_count,
+        'data': data,
+        'sp': sp,
+        'industry_alt': industry_alt
     }
 
     return render(request, 'industry.html', context)

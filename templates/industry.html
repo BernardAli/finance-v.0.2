@@ -5,43 +5,185 @@
 {% block content %}
 
 <!-- Begin Page Content -->
-                <div class="container-fluid">
+<div class="container-fluid">
 
                     <!-- Page Heading -->
                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                        <h1 class="h3 mb-0 text-gray-800">{{ industry }} ({{industry_count}})</h1>
+                        <h1 class="h3 mb-0 text-gray-800">{{ industry }} ({{ industry_count }})</h1>
                         <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
-                                class="fa-sm text-white-50"></i>Companies Summary</a>
+                                class="fas fa-download fa-sm text-white-50"></i> Latest Report</a>
                     </div>
 
+                   <div class="row">
 
-                    <div class="row">
-
-                        <!-- Listed Company Card -->
-                        {% for company in page_obj %}
-                        <div class="col-xl-3 col-md-6 mb-4">
+                        <!-- Earnings (Monthly) Card Example -->
+                        <div class="col-xl-12 col-md-12 mb-6">
                             <div class="card border-left-primary shadow h-100 py-2">
                                 <div class="card-body">
                                     <div class="row no-gutters align-items-center">
                                         <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1" title="{{ company.company_id }}-{{company.country}}">
-                                                <a href="{{ company.get_absolute_url }}">{{ company.company_id }} - ISIN {{ company.isin }}</a>
+                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">{{ company.isin }}</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                                {{ industry }} Companies
                                             </div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ company.name }}</div>
+                                            <div class="h6 mb-0 font-weight-light text-gray-800">
+                                                <strong>Companies</strong>
+                                            </div>
                                         </div>
                                         <div class="col-auto">
-                                            <img src="{{ company.logo.url }}" alt="" height="100" width="120">
+                                            <img src="{{ company.logo.url }}" alt="" height="100">
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        {% endfor %}
 
                     </div>
 
+                    <br>
+
+                    <div class="row">
+
+                        <div class="col-lg-8">
+
+                            <!-- Basic Card Example -->
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">Components</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        {% for company in page_obj %}
+                                            <div class="col-xl-4 col-md-6 mb-4">
+                                            <div class="card border-left-primary shadow h-100 py-2">
+                                                <div class="card-body">
+                                                    <div class="row no-gutters align-items-center">
+                                                        <div class="col mr-2">
+                                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1" title="{{ company.company_id }}-{{company.country}}">
+                                                                <a href="{{ company.get_absolute_url }}">{{ company.company_id }} - ISIN {{ company.isin }}</a>
+                                                            </div>
+                                                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ company.name }}</div>
+                                                        </div>
+                                                        <div class="col-auto">
+                                                            <img src="{{ company.logo.url }}" alt="" height="100" width="120">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Default Card Example -->
+                            <div class="card mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">Components Stats</h6>
+                                </div>
+                                <div class="card-body text text-center">
+                                    <ul class="nav nav-tabs" id="myTab" role="tablist">
+                                      <li class="nav-item">
+                                        <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Correlation</a>
+                                      </li>
+                                      <li class="nav-item">
+                                        <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Covariance</a>
+                                      </li>
+
+<!--                                      <li class="nav-item">-->
+<!--                                        <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">Chart</a>-->
+<!--                                      </li>-->
+<!--                                        <li class="nav-item">-->
+<!--                                        <a class="nav-link" id="technical-tab" data-toggle="tab" href="#technical" role="tab" aria-controls="contact" aria-selected="false">Technical</a>-->
+<!--                                      </li>-->
+<!--                                        </li>-->
+<!--                                        <li class="nav-item">-->
+<!--                                        <a class="nav-link" id="analysis-tab" data-toggle="tab" href="#analysis" role="tab" aria-controls="contact" aria-selected="false">Analysis</a>-->
+<!--                                      </li>-->
+                                    </ul>
+                                    <div class="tab-content" id="myTabContent">
+                                      <div class="tab-pane fade show active pt-5" id="home" role="tabpanel" aria-labelledby="home-tab">
+                                        <p>Correlation</p>
+                                      </div>
+                                      <div class="tab-pane fade pt-5" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                                        <p>Covariance</p>
+                                      </div>
+                                      <div class="tab-pane fade pt-5" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+
+                                      </div>
+                                        <div class="tab-pane fade pt-5" id="technical" role="tabpanel" aria-labelledby="technical-tab">
+
+                                      </div>
+                                        <div class="tab-pane fade pt-5" id="analysis" role="tabpanel" aria-labelledby="analysis-tab">
+
+                                      </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Basic Card Example -->
+                            {% include 'companies_performance.html' %}
+
+                        </div>
+
+                        <div class="col-lg-4">
+
+                            <!-- Dropdown Card Example -->
+                            <div class="card shadow mb-4">
+                                <!-- Card Header - Dropdown -->
+                                <div
+                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                    <h6 class="m-0 font-weight-bold text-primary">Basic Info.</h6>
+                                    <div class="dropdown no-arrow">
+                                        <a class="dropdown-toggle" href="#" role="button" id="basicInfo"
+                                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                                <!-- Card Body -->
+                                <div class="card-body">
+                                    <p><strong>Components:</strong> </p>
+                                    <p><strong>Total Market Cap:</strong> </p>
+                                </div>
+                            </div>
+
+
+                            <!-- Dropdown Card Example -->
+                            <div class="card shadow mb-4">
+                                <!-- Card Header - Dropdown -->
+                                <div
+                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                    <h6 class="m-0 font-weight-bold text-primary">Stock Price Summary</h6>
+                                </div>
+                                <!-- Card Body -->
+                                <div class="card-body">
+                                    <p><strong>Previous Close:</strong></p>
+                                    <p><strong>Open:</strong></p>
+                                    <p><strong>Volume:</strong></p>
+                                </div>
+                            </div>
+
+                            <!-- Dropdown Card Example -->
+                            <div class="card shadow mb-4">
+                                <!-- Card Header - Dropdown -->
+                                <div
+                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                    <h6 class="m-0 font-weight-bold text-primary">Other Industries</h6>
+                                </div>
+                                <!-- Card Body -->
+                                <div class="card-body">
+                                    {% for industry in industry_alt %}
+                                        <p><a href="{{ industry.get_absolute_url }}">{{industry}}</a></p>
+                                    {% endfor  %}
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
 
                 </div>
-                <!-- /.container-fluid -->
+<!-- /.container-fluid -->
 
 {% endblock %}
