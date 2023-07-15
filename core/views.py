@@ -371,6 +371,7 @@ def company_details(request, company_id):
         'auditor': auditor,
         'secretaries': company.secretary.all(),
         'key_people': company.key_people.all().order_by('position'),
+        'management': company.management.all().order_by('position'),
         'current_dividend': Dividend.objects.filter(company_id=company_id).order_by('-register_closure')[:1],
         'price': price,
         'ipos': ipos,

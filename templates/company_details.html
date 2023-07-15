@@ -1558,7 +1558,26 @@
                                                     </table>
                                                   </div>
                                                   <div class="tab-pane fade" id="management" role="tabpanel" aria-labelledby="management-tab">
-                                                    <p>Management List Here</p>
+                                                    <table class="table table-bordered table-hover">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Name</th>
+                                                                <th>Since</th>
+                                                                <th>Title</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            {% for people in management %}
+                                                                <tr>
+                                                                    <td title="{{ people.description }}">{{ people.name }}</td>
+                                                                    <td>{{ people.appointment_date|date:"M, Y"  }}</td>
+                                                                    <td>{{ people.position }}</td>
+                                                                </tr>
+                                                            {% empty %}
+                                                                No person listed here
+                                                            {% endfor %}
+                                                        </tbody>
+                                                    </table>
                                                   </div>
                                                 </div>
                                               </div>

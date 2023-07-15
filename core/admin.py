@@ -3,7 +3,7 @@ from .models import Tag, Sector, CompanyProfile, Market, ShareDetail, SharePrice
     Indices, FinancialPeriod, Report, MarketReport, PressRelease, Subsidiaries, \
     Auditors, Secretary, KeyPeople, IPO, Dividend, Registrar, Solicitor, Ownership, Opinions, \
     FinancialStatement, Review, AuditingServices, Products, ShareSplit, GCX_Types, ShareType, \
-    EconomicCalendar, AGM, Brand, OperatingSegment, Advertisement, BankHealth
+    EconomicCalendar, AGM, Brand, OperatingSegment, Advertisement, BankHealth, Management
 
 
 # Register your models here.
@@ -75,7 +75,13 @@ class IndicesAdmin(admin.ModelAdmin):
 
 
 admin.site.register(FinancialPeriod)
-admin.site.register(FinancialStatement)
+
+
+@admin.register(FinancialStatement)
+class FinancialStatementAdmin(admin.ModelAdmin):
+    list_display = ('company', 'auditor', 'financial_period', 'file')
+    list_filter = ('financial_period', 'auditor', 'company')
+    search_fields = ('financial_period', 'company__name')
 
 
 @admin.register(Report)
@@ -101,6 +107,12 @@ admin.site.register(Secretary)
 
 @admin.register(KeyPeople)
 class KeyPeopleAdmin(admin.ModelAdmin):
+    list_display = ('position', 'name')
+    list_filter = ('position', 'company')
+
+
+@admin.register(Management)
+class ManagementAdmin(admin.ModelAdmin):
     list_display = ('position', 'name')
     list_filter = ('position', 'company')
 

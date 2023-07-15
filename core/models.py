@@ -366,6 +366,33 @@ class KeyPeople(models.Model):
         return f"{self.name}"
 
 
+MANAGEMENT_POSITION_CHOICE = (
+    ('CEO', 'CEO'),
+    ('C.F.O', 'C.F.O'),
+    ('C.H.R', 'C.H.R'),
+    ('HEAD OF SALES AND MARKETING', 'HEAD OF SALES AND MARKETING'),
+    ('HEAD OF QUALITY AND REGULATORY AFFAIRS', 'HEAD OF QUALITY AND REGULATORY AFFAIRS'),
+    ('HEAD OF SUPPLY CHAIN', 'HEAD OF SUPPLY CHAIN'),
+)
+
+
+class Management(models.Model):
+    name = models.CharField(max_length=250)
+    picture = models.ImageField(upload_to='key_pople', default='person.png')
+    description = models.TextField()
+    birth_date = models.DateField()
+    highest_education = models.CharField(max_length=250)
+    position = models.CharField(max_length=50, choices=MANAGEMENT_POSITION_CHOICE)
+    appointment_date = models.DateField(null=True, blank=True)
+    company = models.ManyToManyField(CompanyProfile, blank=True, related_name='management')
+
+    def get_absolute_url(self):
+        return reverse('management', args=[str(self.id)])
+
+    def __str__(self):
+        return f"{self.name}"
+
+
 class IPO(models.Model):
     company = models.ForeignKey(CompanyProfile, on_delete=models.CASCADE, related_name='ipo')
     prospectus = models.FileField(upload_to='prospectus')
